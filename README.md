@@ -44,61 +44,47 @@ It is:
 
 The JSDT source distribution consists of the following:
 
-AUTHORS                         - the people who wrote JSDT.  
-MAINTAINERS                     - the people who maintain JSDT.  
-NEWS                            - the main changes with each new JSDT release.  
-README.md                       - the file you are reading now.  
-ChangeLog                       - description of changes made to JSDT.  
-ChangeLog-199<n>                - description of changes made to JSDT in  
-                                  previous years.  
-TODO                            - the list of (old) known problems, bugs and  
-                                  suggested enhancements.  
+AUTHORS			- the people who wrote JSDT.  
+MAINTAINERS		- the people who maintain JSDT.  
+NEWS			- the main changes with each new JSDT release.  
+README.md		- the file you are reading now.  
+ChangeLog		- description of changes made to JSDT.  
+ChangeLog-199<n>	- description of changes made to JSDT in previous years.  
+TODO			- the list of (old) known problems, bugs and suggested enhancements.
 
-doc/                            - the JSDT documentation.  
-doc/api                         - the generated JavaDoc for all the JSDT  
-                                  classes.  
-doc/userguide                   - the User Guide in LibreOffice and PDF format.  
-doc/implguide                   - the Implementers Guide in LibreOffice and  
-                                  PDF format.
+doc/			- the JSDT documentation.  
+doc/api			- the generated JavaDoc for all the JSDT classes.  
+doc/userguide		- the User Guide in LibreOffice and PDF format.  
+doc/implguide		- the Implementers Guide in LibreOffice and PDF format.
 
-impl/                           - various files to help JSDT implementors.  
-impl/Authentication             - describes the various messages passed  
-                                  between a client trying to join a managed  
-                                  session and the server and manager for that  
-                                  session.  
-impl/Messages                   - a description of the messages between the  
-                                  proxies and the server.  
-impl/NOTES                      - more detailed notes for some of the entries  
-                                  in the TODO file.  
+impl/			- various files to help JSDT implementors.  
+impl/Authentication	- describes the various messages passed between a client trying to join a managed session and the server and manager for that session.  
+impl/Messages		- a description of the messages between the proxies and the server.  
+impl/NOTES		- more detailed notes for some of the entries in the TODO file.  
 
-out/production/JSDT/            - the JSDT class files and examples.  
+out/production/JSDT/		- the JSDT class files and examples.  
 
-src                             - the various JSDT source files.  
-src/com/sun/media/jsdt/         - the JSDT API classes and interfaces.  
-src/com/sun/media/jsdt/event    - the event/listener JSDT API classes and  
-                                  interfaces.  
-src/com/sun/media/jsdt/impl     - the implementation independent JSDT  
-                                  classes and interfaces.  
-src/com/sun/media/jsdt/socket   - a socket based implementation of JSDT.  
-src/com/sun/media/jsdt/http     - an HTTP implementation of JSDT.  
-src/com/sun/media/jsdt/template - JSDT template files to use, to start to  
-                                  create a new transpoirt implementation.  
+src				- the various JSDT source files.  
+src/com/sun/media/jsdt/		- the JSDT API classes and interfaces.  
+src/com/sun/media/jsdt/event	- the event/listener JSDT API classes and interfaces.  
+src/com/sun/media/jsdt/impl	- the implementation independent JSDT classes and interfaces.  
+src/com/sun/media/jsdt/socket	- a socket based implementation of JSDT.  
+src/com/sun/media/jsdt/http	- an HTTP implementation of JSDT.  
+src/com/sun/media/jsdt/template	- JSDT template files to use, to start to create a new transpoirt implementation.  
 
-src/examples/                   - simple examples using JSDT.  
-src/examples/chat/              - a chat applet.  
-src/examples/whiteboard         - a shared whiteboard applet.  
-src/examples/ppong              - two player networked game based on Atari  
-                                  Pong  
-src/examples/sound              - a audio file server and receiver applet.  
-src/examples/stock              - a stock quote server and viewer.  
-src/examples/browser            - a collaborative web browser and server.  
-src/examples/phone              - an Internet phone and server.  
-src/examples/synth              - a midi keyboard "jam" player and server.  
-src/images                      - the various images used by the examples.  
-src/sounds                      - the various sounds used by the examples.  
+src/examples/			- simple examples using JSDT.  
+src/examples/chat/		- a chat applet.  
+src/examples/whiteboard		- a shared whiteboard applet.  
+src/examples/ppong		- two player networked game based on Atari Pong  
+src/examples/sound		- a audio file server and receiver applet.  
+src/examples/stock		- a stock quote server and viewer.  
+src/examples/browser		- a collaborative web browser and server.  
+src/examples/phone		- an Internet phone and server.  
+src/examples/synth		- a midi keyboard "jam" player and server.  
+src/images			- the various images used by the examples.  
+src/sounds			- the various sounds used by the examples.  
 
-src/test/                       - a test application that exercises the  
-                                  various JSDT methods.
+src/test/	- a test application that exercises the various JSDT methods.
 
 
 ### Building and configuring the distribution.
