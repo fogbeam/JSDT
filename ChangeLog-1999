@@ -1,0 +1,3283 @@
+
+/*
+ * $Header: /cvs/jsdt/ChangeLog-1999,v 1.2 2005/04/05 21:44:13 richburridge Exp $
+ *
+ * Copyright (c) 1996-2005 Sun Microsystems, Inc.
+ * All Rights Reserved.
+ *
+ */
+
+JSDT Change History - 1999.
+===========================
+
+v2.1 - 20th December 1999.
+
+* From: Scott Swann <scott@frontiertechnologies.com>
+  "Problem with the "multicast" implementation. When using multiple channels 
+   and a proxy dies, all the proxies leave there channel. This also holds 
+   true for tokens."
+
+  Created a new removedId() method in SessionServer.java. This now gets called
+  from the checkConnections() method in the CleanupConnections thread. When a
+  proxy is no longer pinging, it's clients are now cleaned up by that pinging
+  id, not by the multicast thread that it was using. 
+
+----
+
+v2.1 - 15th December 1999.
+
+* From: #CHEONG CHEE KIN# <770703016633@NTU.EDU.SG>
+  The Browser.html file should have been using:
+  "code=examples.browser.WebBrowser.class" and not:
+  "code=examples.browser.Student.class".
+
+* From: Scott Swann <scott@frontiertechnologies.com>
+  "I have a server with 1 session and 2 channels.  I start 1 proxy for each
+   channel. The first proxy connects and receives data without any problem, 
+   but when the second proxy connects it begins throwing exceptions and 
+   attempts to find the other channel."
+
+  In SessionProxyMessage.java, if the Channel with the given name cannot be
+  found, rather than put out an error message, it should silently ignore that
+  message (which wasn't for that proxy in the first place).
+
+  Similar changes needed for ByteArrays and Tokens too.
+
+----
+
+v2.1 - 15th December 1999.
+
+* From: Scott Swann <scott@frontiertechnologies.com>
+  Getting packets delivered out of order when running the "multicast" 
+  implementation at high data rates. Also getting an IndexOutOfBoundException 
+  in the getData() method in .../impl/JSDTThread.java, because the 
+  dataIn.read() call returned -1, which wasn't being checked for.
+
+  Adjusted the processEvent() method in the "multicast" implementation to
+  display an error message if showMessage/showStack are set true and an
+  LrmpEventHandler.UNRECOVERABLE_SEQUENCE_ERROR has occured. It will also
+  call the connectionFailed() method for any Connection listeners associated
+  with that JSDT application.
+
+  Adjusted the getData() method in .../impl/JSDTThread.java to check for a
+  return of -1 from the dataIn.read() call, and to throw an IOException if 
+  found. This in turn will generate a ConnectionException in the calling method.
+
+  Added the following to the LrmpProfile associated with each LRMP connection:
+  lrmpProfile.setQoS(lrmpProfile.NoLoss, true, lrmpProfile.AdaptedThroughput); 
+
+  Adjusted the stopMulticastSession() method to now take a boolean forceStop
+  parameter. This is true for the stopMulticastSession() in the processEvent()
+  method, and false otherwise.
+
+  Adjusted the sendWindowSize and rcvWindowSize for the LRMP profile to be
+  512 (the default is 64).
+
+----
+
+v2.1 - 9th December 1999.
+
+* From: Pete Boysen <pboysen@iastate.edu>
+  Improvements to the phone example, to reduce the amount of "silent" data
+  send by each phone user. The algorithm checks each buffer for any bytes 
+  above a certain threshold (BYTE_THRESHOLD) and sends the buffer if there 
+  are any. Also, it only clamps the output if there are BUFFER_THRESHOLD or 
+  more buffers of continuous silence.
+
+  This still results in transmitting  7.5-10K/sec which wouldn't work with 
+  a 28.8 line.  By using a Deflater during transmission and an Inflater 
+  during reception I found that the sound portions were being sent at 
+  2.8-3.2K with a lot of silence in between which should be acceptable.
+
+  Changes to .../phone/PhoneUser.java and .../phone/SoundPacket.java
+
+----
+
+v2.1 - 8th December 1999.
+
+* Needed to adjust the writeMessageHeader() calls for the 
+  Client/DestroyClient and Client/Invite message changes from yesterday, 
+  to now wait for a reply. This now allows test3 on the Test Suite to work
+  with the "http" implementation for the HttpToPortSocketFactory.
+
+----
+
+v2.1 - 7th December 1999.
+
+* From: Seppo Tarkiainen <seppo.tarkiainen@teamware.com>
+  Registry manager authentication wasn't working (generated a null pointer
+  exception). The authThread in RegistryClient.java was being resumed before
+  it had ever been suspended.
+
+  Rewrote RegistryClient.java to use wait() and notifyAll() and added a 
+  couple more states to its internal state machine.
+
+* Test10 doesn't work with HTTP sockets:
+ 
+  port in use
+  at com.sun.media.jsdt.http.TCPSocketServer.<init>(TCPSocketServer.java:81)
+  at com.sun.media.jsdt.http.ClientServer.<init>(ClientServer.java:71)
+  at com.sun.media.jsdt.http.httpClient._createServer(httpClient.java:249)
+  at com.sun.media.jsdt.http.NamingProxy.bind(NamingProxy.java:414)
+  at com.sun.media.jsdt.Naming.bind(Naming.java:145)
+  at com.sun.media.jsdt.ClientFactory.createClient(ClientFactory.java:119)
+  at Test10.<init>(Test10.java:100)
+  at Test10.main(Test10.java:254)
+
+  This was caused because no response was sent to the HTTP request for the
+  Client/DestroyClient message in ClientServer.java. There was a similar
+  problem for the Client/Invite message in the same class.
+
+----
+
+v2.1 - 30th November 1999.
+
+* From: Scott Swann <scott@frontiertechnologies.com>
+  Adjusted the removeConnectionListener() method in ConnectionThread.java,
+  for all three implementations, to throw a NoSuchListenerException if the
+  listener is null.
+
+* From: Seppo Tarkiainen <seppo.tarkiainen@teamware.com>
+  With .../JSDT-2.0/Test10, the Registry manager wasn't being called to
+  authenticate Session/Client creates and destroys.
+
+  Have revamped the startregistry() methods in RegistryFactory.java to
+  call a package protected startRegistry() method to do the actual registry
+  startup. This means the getRegistry() is only called once, and the manager
+  is attached to the proper registry instance.
+
+* From: Scott Swann <scott@frontiertechnologies.com>
+  Running .../JSDT-2.0/Test10 generates the following exception:
+    NamingProxyMessage: handleMessage: null
+    java.io.EOFException
+        at java.io.DataInputStream.readUnsignedByte(DataInputStream.java)
+        at java.io.DataInputStream.readUTF(DataInputStream.java)
+        at java.io.DataInputStream.readUTF(DataInputStream.java)
+        at com.sun.media.jsdt.multicast.NamingProxyMessage.handleMessage(
+                                                NamingProxyMessage.java:97)
+        at com.sun.media.jsdt.multicast.NamingProxyThread.handleMessage(
+                                                NamingProxyThread.java:107)
+        at com.sun.media.jsdt.multicast.multicastThread.run(
+                                                multicastThread.java:563)
+        at java.lang.Thread.run(Thread.java)
+
+  Added a check in the handleMessage() method in NamingProxyMessage.java for
+  the multicast implementation, to see if the length of the resourceName
+  field was zero. If so, then no more fields are read, and a message in
+  not sent on to the Registry listeners.
+
+----
+
+v2.1 - 29th November 1999.
+
+* Adjusted the versionString variable in JSDTObject so that it's no longer
+  final. This means that the version string will no longer be hard-wired 
+  into any class files when it's compiled.
+
+* From Scott Swann <scott@frontiertechnologies.com>
+  Adjusted the dataReceived() method in ChannelProxy.java (for all three
+  implementations), to first check if drq is null, before attempting to
+  add this message to the incoming queue. It's possible that the connection
+  might have been lost, and drq set to null.
+
+----
+
+v2.1 - 24th November 1999.
+
+* From Fulvio Biondi <fulvio.biondi@methus.com>
+  Start the Registry as a separate application.
+  Start the server application with a Registry Listener.
+  Kill the Registry, and try to restart it as a thread inside the server
+  when the server's connectionFailed(RegistryEvent re) method gets called.
+  It hangs.
+
+  Three problems here:
+  1/ For the "socket" implementation, a check needed to be added to the 
+     removeThread() method in SessionServer.java to see if the socket server 
+     thread instance was not null.
+  2/ For the "socket" implementation, a check needed to be added to the 
+     removeThread() method in SessionServer.java to see if the 
+     SessionServerThread was an instance of TCPSocketThread before trying 
+     to close the socket.
+  3/ The RegistryFactory class no longer keeps a static hashtable of 
+     registry entries, but instead creates and destroys them as needed.
+     All the methods in RegistryFactory that call the getRegistry() method
+     have been adjusted to set the registry variable to null, so that it
+     will be garbage collected.
+
+----
+
+v2.1 - 22nd November 1999.
+
+* From sammy_pak@hp.com
+  Reworked the way that threads are terminated when cleaning up
+  SessionServerThreads. No more calls to Thread.stop(). It now uses a
+  combination of setting a running boolean to false and interrupting the
+  thread to be terminated. It also closes the socket associated with that
+  SessionServerThread.
+
+  Changes applied to the "socket" implementation.
+
+* Added a section to the introductory chapter in the Implementers Kit to
+  mention the two new methods that need to be supported by alternate socket 
+  factory implementations.
+
+* Moved several common methods from socket/SocketThread.java, 
+  http/HttpThread.java and multicast/multicastThread.java into 
+  impl/JSDTThread.java.
+
+* For all three implementations, moved the create methods for ByteArrays,
+  Channels and Tokens with managers into .../impl/SessionImpl.java, and
+  adjusted the AbstractSessionProxy and SessionProxy classes accordingly.
+
+  Adjusted the template package for these changes, plus the Implementers
+  Guide.
+
+----
+
+v2.1 - 17th November 1999.
+
+* From sammy_pak@hp.com
+  When all the Sessions associated with a SessionServerThread are destroyed,
+  that SessionServerThread was not being terminated.
+
+  Changes applied to the "socket" implementation.
+
+  See test program in /export/space/richb/jsdt/test/JSDT-2.1/Test5
+
+* Removed the "synchronized" keyword from the finishReply() and
+  terminate() methods in .../impl/JSDTThread.java
+
+* From Yanmu Zhou <yanmu@link-systems.com>
+  If a Channel has a manager, but not the Session within which it was created,
+  then this generates a NullPointerException when doing Client authentication.
+
+  The problem was due to always trying to send the Client/Authenticate message
+  over the manager thread associated with the Session. This has been adjusted
+  to now send the message over the manager thread associated with the managed
+  object.
+
+  Changes applied to all three implementations.
+
+  See test program in /export/space/richb/jsdt/test/JSDT-2.1/Test6
+
+* Fixed up the synth example to work with the latest JavaSound sound.jar.
+  Changed code section in the initialize() method in MidiSynth.java to:
+
+        try {
+            synth = MidiSystem.getSynthesizer();
+        } catch (MidiUnavailableException mue) {
+            System.out.println("Could not get default synthesizer");
+            System.exit(1);
+        }
+
+* Updated .../lib/sound/sound.jar with the latest version from the JavaSound
+  nightly builds.
+
+----
+
+v2.1 - 16th November 1999.
+
+* From: Gregory Gray <ggray@unixpros.com>
+  "Try running the chat example from 2.0 and killing the server process and
+   then bring it back up again.  The first time the chat user program tries
+   to send a message, it should see that it is not connected (exception)
+   and reconnect.  The next time it should send the message just fine.
+   Unfortunately this doesn't happen."
+
+  Needed to add a check to sendMulticastPacket in LRMPImpl to check if the
+  thread variable was null, in which case we should just return.
+  Also needed to set the static drq (data received queue) variable in
+  ChannelProxy.java to null, when cleanup up the DataReceivedThreads, and
+  recreate it when a new ChannelProxy (ie. when the user reconnects) is
+  created.
+
+  Similar changes applied to the "socket" and "http" implementations.
+
+* With the "multicast" implementation, doing a "SignOff" with the chat 
+  example, wasn't removing references to that user in the server. The 
+  problem was that a call to proxyThread.terminate() in SessionProxy.java 
+  was now occuring too early. This was moved to after the Session/Close 
+  message had been sent to the server.
+
+  Similar changes applied to the "socket" and "http" implementations.
+
+* From: Scott Swann <scott@frontiertechnologies.com>
+  The "multicast" implementation sometimes output the following error message 
+  and stack:
+
+  NamingProxyMessage: handleMessage: null
+  java.io.EOFException
+        at java.io.DataInputStream.readUnsignedByte(DataInputStream.java:247)
+        at java.io.DataInputStream.readUTF(DataInputStream.java:526)
+        at java.io.DataInputStream.readUTF(DataInputStream.java:498)
+        at com.sun.media.jsdt.multicast.NamingProxyMessage.handleMessage(
+					   NamingProxyMessage.java:95)
+        at com.sun.media.jsdt.multicast.NamingProxyThread.handleMessage(
+					   NamingProxyThread.java:107)
+        at com.sun.media.jsdt.multicast.multicastThread.run(
+					   multicastThread.java:820)
+        at java.lang.Thread.run(Thread.java:479)
+
+  Changed the handleMessage() method in NamingProxyMessage.java to handle 
+  only the Registry/InformListener message types, not all InformListener
+  messages.
+
+* The ConnectionThread and the NamingProxy thread are now only terminated
+  if there are no Session or Clients associated with that proxy, *AND* if
+  there are no connection listeners.
+
+----
+
+v2.1 - 15th November 1999.
+
+* Moved the Message class for the three implementations to the impl package.
+  Adjust the three implementations to use this.
+
+* Added an abstract JSDTThread class to the impl package. Adjusted the three
+  implementations to use this.
+
+----
+
+v2.1 - 12th November 1999.
+
+* From: Scott Swann <scott@frontiertechnologies.com>
+  Got a connection failure with the latest version of the "multicast"
+  implementation. Two problems:
+  > One of the places where getPacket() was called in the getSocketMessage()
+    method in multicastThread.java was not then getting the new buffer from
+    that packet.
+  > Several memory leaks related to packets associated with messages that
+    had to be gragmented being left in hashtables.
+
+  See test program in /export/space/richb/jsdt/test/JSDT-2.1/Test4
+
+* Adjusted all instances of Class.forName() throughout the JSDT code, to
+  instead use the new getClassForName() method in .../impl/Util.java. This
+  was done because it's possible that the Class.forName() call inside this
+  method will be replaced by:
+
+    Thread.currentThread().getContextClassLoader().loadClass(className);
+
+  at some later point in time, and this simplifies things. See entry from
+  Ted Neward in the TODO file on this.
+
+* From Zoltan.Luspai@Proxima-tech.com
+  Added a:
+
+      URLString Session.getURL();
+
+  method to Session.java, which returns the URLString used to create this
+  Session.
+
+----
+
+v2.1 - 10th November 1999.
+
+* From: Marko Klopcic <marko.klopcic@HERMES.SI>
+  The JSDTSocketFactory doesn't allow you to create the unreliable
+  datagram sockets.
+
+  The factory has been adjusted to include two new methods:
+
+/**
+ * <A NAME="SD_CREATEDATAGRAMSOCKET"></A>
+ * <EM>createDatagramSocket</EM> returns a socket for sending and receiving
+ * datagram packets, bound to any available port on the local host machine.
+ * This socket is configured using the socket options established for this
+ * factory.
+ *
+ * @exception SocketException if the socket could not be opened, or the socket
+ * could not bind to the specified local port.
+ *
+ * @see java.net.DatagramSocket
+ *
+ * @return a DatagramSocket on any available local port.
+ */
+
+    DatagramSocket
+    createDatagramSocket() throws SocketException;
+
+/**
+ * <A NAME="SD_CREATEDATAGRAMSOCKET"></A>
+ * <EM>createDatagramSocket</EM> returns a socket for sending and receiving
+ * datagram packets, at the given local port. This socket is configured using
+ * the socket options established for this factory.
+ *
+ * @param port the local port to use
+ *
+ * @exception SocketException if the socket could not be opened, or the socket
+ * could not bind to the specified local port.
+ *
+ * @see java.net.DatagramSocket
+ *
+ * @return a DatagramSocket on the given local port.
+ */
+
+    DatagramSocket
+    createDatagramSocket(int port) throws SocketException;
+
+  The "socket" implementation code has been adjusted to create datagram
+  sockets through the provided factory. 
+
+  Note that you can't use unreliable Channels with the SSLSocketFactory or
+  with any of the socket factory provided for the "http" implementation.
+
+----
+
+v2.1 - 9th November 1999.
+
+* From: Craig Minton <cmminton@DSTSYSTEMS.COM>
+  For the "socket" implementation, doing a RegistryFactory.stopRegistry() 
+  wasn't terminating the RegistryServerThread and the NamingProxyThread 
+  threads. 
+
+  Similar fixes were applied to the other two implementations.
+
+* From: Craig Minton <cmminton@DSTSYSTEMS.COM>
+  The DataReceivedThread is used by the Channel proxy to handle incoming Data
+  sent over the Channel. A new one is created each time a new Channel is
+  created, upto "maxThreadPoolSize" of them (default is 5).
+
+  The code has been adjusted so that if the proxy application no longer has
+  any references to Sessions (ie. it's destroyed them all), then any
+  DataReceivedThreads that have been started, will be terminated.
+
+  This fix has been applied to all three implementations.
+
+* From: Craig Minton <cmminton@DSTSYSTEMS.COM>
+  The NamingProxy and ConnectionThread threads are two more proxy-side
+  threads. The former is used to listen for any Session or Client changes 
+  happening in the Registry, and pass them onto any potential Registry 
+  listeners. The latter is used to determine whether there has been any 
+  kind of failure in the underlying connection. 
+ 
+  The code has been adjusted so that if, the proxy application, when it's 
+  tidying up after destroying a Session, no longer has any references to 
+  any Sessions or special Clients, then these two threads are terminated.
+
+  This fix has been applied to all three implementations.
+
+* From: Craig Minton <cmminton@DSTSYSTEMS.COM>
+  TCPSocketServerThread is a server-side thread that has the server socket 
+  running, and which accepts new connections for that particular port.
+
+  The code has been adjusted so that if there are no longer any server-side
+  sessions left, then this thread is terminated.
+
+  See test program in /export/space/richb/jsdt/test/JSDT-2.1/Test3
+
+----
+
+v2.1 - 8th November 1999.
+
+* Removed the creation of the three client-side .jar files from the build.csh
+  script.
+
+* Adjusted all references to LRMP to indicate it's now one of the possible
+  reliable multicast frameworks that can be used by the new "multicast"
+  implementation.
+
+----
+
+v2.1 - 5th November 1999.
+
+* Got the "multicast" implementation of JSDT working with the RMF/RAMP RM
+  packages from TASC (downloadable from: http://www.tascnets.com/mist/RMF/)
+  Note that to prevent RMF/RAMP using 100% CPU, then you need to change the
+  RMF/Timer.Yield() method to look like:
+
+  public static void Yield() {
+      final String  mn = "Yield";
+
+      try {
+          Thread.sleep(20);
+      } catch (InterruptedException ie) {
+          log(mn, "Interrupted exception.");
+      }
+  }
+
+  Added an rmf.jar file under the .../lib/rmf directory, and adjusted the
+  build environment to build against that.
+
+* Optimised the LRMP implementation class so that only one LrmpImpl object
+  (and therefore thread) is created (and started). The packet handler 
+  associated with that lrmp object now places a copy of each incoming LRMP 
+  multicast packet into the vector of packets for all the interested threads.
+  This is a significant performance improvement (particularly on the 
+  server-side).
+
+----
+
+v2.1 - 3rd November 1999.
+
+* From Stephen_Hinde@hplb.hpl.hp.com
+  JSDT has memory leaks. I have a simple test application that creates a 
+  managed Session (with a Channel in it), and then destroys it. This 
+  operation is repeated multiple times.
+
+  The problem was that there was a couple of threads hanging onto a reference 
+  to the Session object that should have been garbage collected. I needed to 
+  terminate the run() method for those threads, and then everything freed 
+  itself. The slightly tricky (icky really) thing here was that these threads
+  were in a wait() state, waiting for the next incoming message, so I had to 
+  do a notifyAll() to wake them up, and get them to check a boolean flag to 
+  determine that they'd been terminated.
+
+  Changes applied to all three implementations.
+
+  See test program in /export/space/richb/jsdt/test/JSDT-2.1/Test2
+
+* From Benjamin D. Engelsma <bengelsm@GFS.COM>
+  It looks like the source for the synth example was left out of the JSDT
+  2.0 (FCS) distribution.
+
+----
+
+v2.1 - 2nd November 1999.
+
+* The "send to others" case was not setting up the list of receiver names
+  correctly in the T_DataReceived message, in the send() method in 
+  ChannelServer.java, for the "multicast" implementation.
+
+* The checkForServer() method in NamingProxy.java, for all three 
+  implementations needed to also check if the name in the Registry was a 
+  Session URL (as well as having equal address and port).
+
+----
+
+v2.1 - 1st November 1999.
+
+* Created an RMFImpl.java class for an RMF reliable multicast framework.
+  RMF is available from: http://www.tascnets.com/mist/RMF/index.html
+  Still needs some work.
+
+* Set the "multicast" Registry version number to 2.1.
+
+* For the "multicast" implementation, optimised the ChannelServer.send() 
+  method to only send out one dataReceived message to the Channel proxies, 
+  for each call to Channel.sendToAll() and Channel.sendToOthers(). 
+
+  This message now contains a list of the client names that should receive 
+  this message. The code on the proxy-side has been adjusted to properly 
+  handle this.
+
+* The two calls to NamingProxy.cleanupSession() needs to be adjusted to pass
+  in a Session URL string which had been adjusted to contain the IP address
+  of the server (rather than the host). Change made to all three 
+  implementations.
+
+----
+
+v2.1 - 28th October 1999.
+
+* Added a "multicast" implementation, which replaces the "lrmp" implementation.
+  This uses a new "multicastImplClass" Connection property to determine the 
+  reliable multicast implementation that should be used. There is currently 
+  only one RM impl, and that's LRMP, so multicastImplClass is set to:
+  "com.sun.media.jsdt.multicast.LRMPImpl".
+
+----
+
+v2.1 - 27th October 1999.
+
+* From: Joshua Fox <Joshua_Fox@VOCALTEC.COM>
+  The following generates a "port in use" exception:
+  > Create a Session, say a ChatSession, on a given port.
+  > From another java process, create a different Session (different
+    name, same port, same physical machine, different virtual machine).
+
+  This is no longer a problem. Changes applied to all three implementations.
+
+  See test program in /export/space/richb/jsdt/test/JSDT-2.1/Test1
+
+* Started work on the JSDT 2.1 distribution:
+  - Copied the master JSDT 2.0 workspace and removed files that are no longer
+    needed.
+  - Made the various changes outlined in .../impl/BUILD.
+  - Changed the versionString variable in JSDTObject to "JSDT 2.1 (EA)".
+
+---- Work finished on the JSDT 2.0 (FCS) release ----
+
+v2.0 - 27th October 1999.
+ 
+* Adjusted the install/solaris/script.txt file to properly create the .html 
+  files for the Browser, Phone and Synth examples for the Solaris dist. 
+ 
+* Changed the versionString variable in JSDTObject to "JSDT 2.0 (FCS)". 
+
+----
+
+v2.0 - 26th October 1999.
+
+* For the http implementation, needed to start a ping thread in
+  SameVMSessionProxyThread and SameVMManagerProxyThread, if mustPing()
+  returned true.
+
+----
+
+v2.0 - 19th October 1999.
+
+* From Stephen_Hinde@hplb.hpl.hp.com
+  Included a better description of the httpURIName property in the JSDT
+  User Guide.
+
+----
+
+v2.0 - 8th October 1999.
+
+* Updated the Release Notes to include in all the changes between beta and FCS.
+
+----
+
+v2.0 - 7th October 1999.
+
+* Removed the transient keyword from the InputStream and OutputStream variables
+  in TCPSocketThread.java for the socket implementation. This was not the fix
+  for the RMI serialization problem.
+
+* Added a waitForPermanentConnection() call in the authenticateClient()
+  method in NamingProxy.java for the http implementation, to be consistent
+  with the similar code in the authenticateClient() method in the
+  SessionProxy class.
+
+* Needed a call to thread.finishMessage() in the authenticate() method in 
+  RegistryClient.java for the http implementation, to correctly close the 
+  socket connection when run with the HttpToPortSocketFactory class.
+
+----
+
+v2.0 - 6th October 1999.
+
+* Adjusted the "http" implementation to (hopefully) properly close the
+  socket connection (both on the proxy and the server sides), after each
+  request/response, if the socket is not reusable.
+
+* From Stephen_Hinde@hplb.hpl.hp.com
+  Added in a new Connection property (httpURIName) for setting the relative 
+  URI name associated with the HttpToPortSocketFactory class with the "http"
+  implementation of JSDT. 
+
+  Updated the JSDT User Guide to reflect this change.
+
+----
+
+v2.0 - 4th October 1999.
+
+* Adjusted the phone and synth examples to work with what will be the JavaSound
+  API for JDK 1.3 (FCS).
+
+  Added a .../lib/sound/sound.jar file to the JSDT distribution to allow it
+  to be successfully compiled against the new JavaSound classes.
+
+* From: Vijay Bhandari <vijay.bhandari@CITICORP.COM>
+  Added the following method to RegistryListener and RegistryAdaptor:
+
+    public void
+    connectionFailed(RegistryEvent event);
+
+  For every Registry listener added, this method is called if the connection
+  to the Registry fails.
+
+  Two new convenience methods have been added to RegistryEvent:
+
+    public String
+    getAddress();
+
+    public int
+    getPort();
+
+  which return the host address and port number of the failed registry 
+  connection.
+
+  The JavaDoc and JSDT User Guide have been updated to reflect these changes.
+
+----
+
+v2.0 - 30th September 1999.
+
+* Synchronized the informListeners() method in the ConnectionThread class.
+  This means that for the socket implementation, one and only one call is
+  made to each connection listeners connectionFailed() method, irrespective
+  of the number of Sessions associated with the failed connection.
+
+----
+
+v2.0 - 29th September 1999.
+
+* From: Vijay Bhandari <vijay.bhandari@CITICORP.COM>
+  Added a couple of paragraphs to the Connection section of chapter 2 of
+  the User Guide to describe what to do in the event of a connection failure.
+
+* From: Vijay Bhandari <vijay.bhandari@CITICORP.COM>
+  For the "socket" implementation, if the server is terminated, the proxy 
+  automatically detects this and cleans up any sessions associated with that 
+  connection. These sessions are removed from a hashtable. Unfortunately this 
+  is the same hashtable that a ConnectionThread uses to ping the servers. 
+  So it's silently failing to generate a connectionFailed() call to any 
+  connection listeners.
+
+  Adjusted the cleanupConnections() method in SessionProxyThread to inform
+  all connection listeners of the connection failure.
+
+----
+
+v2.0 - 28th September 1999.
+
+* From: Vijay Bhandari <vijay.bhandari@CITICORP.COM>
+  The JavaDoc description of the port parameter for the 
+  URLString.createClientURL() method was incorrect. This has been changed to:
+
+  @param <EM>port</EM> the port number the Client is running on. This is
+  a port on the local machine; not the port number of the Registry.
+
+  The ClientFactory section in the JSDT User Guide has been adjusted to better
+  explain this.
+
+* From: John Ko <jko@PARAINC.COM>
+  Made the InputStream and OutputStream variables in the TCPSocketThread class
+  in the com.sun.media.jsdt.socket package transient, so that a Session is
+  now (hopefully) serializable over RMI.
+
+* From: Vijay Bhandari <vijay.bhandari@CITICORP.COM>
+  Trying to destroy a special client caused a null pointer exception. Was
+  unable to reproduce this, but in order to prevent the null pointer exception,
+  have added a check to see if the proxy thread connection to the Registry
+  is null. If so, then no message is sent.
+
+* From Ugo Cei <ugo@fuoriorario.it>
+  Applied the same server-side cleanup changes for non-pinging clients,
+  to the "socket" implementation, as were applied to the "http" and "lrmp"
+  implementations.
+
+----
+
+v2.0 - 22nd September 1999.
+
+* Changed all occurances of beta to FCS in the various JSDT files.
+
+---- Work finished on the JSDT 2.0 (beta) release ----
+
+v2.0 - 16th September 1999.
+
+* From: Scott Swann <scott@frontiertechnologies.com>
+  For the "lrmp" implementation, the handleRequests() method in the Registry
+  has been adjusted to only process messages if the message type is T_Registry.
+
+* From: Scott Swann <scott@frontiertechnologies.com>
+  For the "lrmp" implementation, the handleMessage() in ClientProxyMessage.java
+  should just silently have returned. There are no messages for the special 
+  Client proxies.
+
+----
+
+v2.0 - 15th September 1999.
+
+* The waitForReply() method (for each of the implementations), needed to be
+  adjusted to do a ">=" check (rather than just a ">" check) for the
+  millisecond difference.
+
+----
+
+v2.0 - 14th September 1999.
+
+* Needed to remove the Debug() call in impl.Util.getBooleanProperty() to
+  provent a stack overflow.
+
+* The previous timeout value wasn't been correctly reset after a
+  RegistryFactory.registryExists() call for the "lrmp" and "http" 
+  implementations.
+
+----
+
+v2.0 - 9th September 1999.
+
+* The tail line number value in .../install/solaris/script.txt was incorrect,
+  thus generating a Solaris distribution that wouldn't unpack properly.
+
+* Added a check for "session != null" in the removeSession() method in 
+  SessionProxy.java for all three implementations, to prevent a null pointer
+  exception.
+
+* Adjusted the way that the sendMessage() method in ConnectionThread.java
+  works for each of the three implementations. If the proxy sends an IsAlive
+  message and gets a TimedOutException, a flag is now set. A comparison
+  is made between the current time and the last time it received a reply for 
+  a ping message. If this is greater than the cleanup period, then a
+  connection failed event is sent, and the connectFailed() method gets called.
+
+----
+
+v2.0 - 8th September 1999.
+
+* Removed the call to waitForReplyNoTimeout() from the join() method in
+  ManageableProxy.java for the "socket" and "lrmp" implementations, and
+  removed this method from the base thread class for all three impls.
+  This now totally reverts the authentication code back to what was in
+  JSDT 1.4.
+
+----
+
+v2.0 - 6th September 1999.
+
+* For the "socket" and "lrmp" implementations, the JSDT 1.4 style
+  authentication code has been reinstated,  which hopefully means
+  the "unexpected message type" problem has been fixed. 
+
+  For those two implementations, it does reintroduce the following problem, 
+  which has been added back to the TODO file:
+
+  * From: Ugo Cei <ugo@fuoriorario.it>
+    When a Client does an operation that requires authentication, it's
+    authenticate() method is called. If that method did something like pop
+    up a dialog box asking the user for a password, then this would block
+    another Client from doing a similar thing until the first Client had
+    entered a password and dismissed that popup.
+
+  The "http" implementation should not have this problem.
+
+----
+
+v2.0 - 3rd September 1999.
+
+* The following methods in the Impl classes needed to catch and throw
+  TimedOutException, rather than letting it get caught by JSDTException
+  clause:
+
+  ByteArrayImpl: addByteArrayListener()
+  ByteArrayImpl: removeByteArrayListener()
+  ChannelImpl:   addChannelListener()
+  ChannelImpl:   removeChannelListener()
+  SessionImpl:   addSessionListener()
+  SessionImpl:   removeSessionListener()
+  TokenImpl:     addTokenListener()
+  TokenImpl:     removeTokenListener()
+
+----
+
+v2.0 - 2nd September 1999.
+
+* From Edwin Mol <edwin@uni.be>
+  "Can still get the error :  unknown type:
+     Message: session #: 1 id: -910417444 type: Client action: Authenticate
+   even with JSDT 2.0 (EA1)."
+
+  The problem was that the server was sending a reply to the managers
+  Client/Authenticate message before that manager had had a chance to call
+  waitForClientResponse(). Have adjusted waitForClientResponse() and the
+  run() method in SocketThread.java to now use a clientResponselock, and
+  calls to wait() and notifyAll(), rather than Thread.suspend() and 
+  Thread.wait(). The if() test in the run() method now also specifically
+  looks for a thread instance of ManagerProxyThread or
+  SameVMManagerProxyThread when it's testing for Client/Authenticate messages.
+
+  Similar changes applied to the "http" and "lrmp" implementation.
+
+----
+
+v2.0 - 31st August 1999.
+
+* The handling of the four different RegistryListener events needed to be 
+  done in a separate thread, and surronded by a Throwable clause, just like 
+  how all the other listener events are handled.
+
+* Added the ConnectionMessage.java and RegistryMessage.java classes to the
+  client-side jar generation for each implementation in .../install/build.csh.
+
+* From: Scott Swann <scott@frontiertechnologies.com>
+  If a connection failure is reported, then that connection listener is
+  automatically removed to prevent continual failure notifications.
+
+* Added the following utility methods to impl/Util.java, and adjusted the 
+  code accordingly:
+
+  public static Thread
+  startThread(Runnable target, String name, boolean isDaemon);
+
+  public static int
+  getIntProperty(String key, int default);
+
+  public static long
+  getLongProperty(String key, long default);
+
+  public static String
+  getStringProperty(String key, String default);
+
+  public static boolean
+  getBooleanProperty(String key, boolean default);
+
+* From: Scott Swann <scott@frontiertechnologies.com>
+  The waitForReply() method needed to call finishReply() just before it
+  was about to throw a TimedOutException. This was needed, rather than the
+  existing code, so that other threads, currently in a wait() state, could 
+  be notified that the state had changed.
+
+----
+
+v2.0 - 30th August 1999.
+
+* Rather than having implementation specific variables set in JSDTObject,
+  the following five methods have been added to Connection.java:
+ 
+    public static Properties
+    getProperties();
+ 
+    public static String
+    getProperty(String key);
+ 
+    public static void
+    setProperties(Properties properties);
+ 
+    public static Object
+    setProperty(String key, String value);
+
+    public static Object
+    removeProperty(String key);
+ 
+  Each implementation would have specific properties such as:
+ 
+    showStack       true
+    showMessage     true
+    waitPeriod      5
+ 
+  which could be set and adjusted in this way. If no such property was found,
+  that the default value (still in JSDTObject) would be used.
+
+  The Implementations chapter of the JSDT User Guide has been updated to 
+  reflect these changes, plus any JavaDoc that specifically mentioned
+  JSDTObject variables.
+
+  Note that explicitly setting the variables in JSDTObject will still 
+  work, as long as there isn't an equivalent Connection property set.
+
+* Added the following method to the URLString class:
+
+    public boolean
+    equals(Object anObject);
+
+  (see: ~/jsdt/test/JSDT-2.0/Test13).
+
+* Adjusted @since references from 1.6 to 2.0.
+
+* From: Scott Swann <scott@frontiertechnologies.com>
+  The handling of the ConnectionListener.connectionFailed() method call
+  needed to be in a separate thread, and surronded by a Throwable clause,
+  just like how all the other listener events are handled.
+
+----
+
+v2.0 - 24th August 1999.
+
+* The server-side, when keeping information on the latest ping times for the
+  various proxy-side applications, should have been keying these in a hashtable
+  by id, not thread. When it had found one that needed to be removed, then it
+  needed to get the thread associated with that id.
+
+----
+
+v2.0 - 23rd August 1999.
+
+* Added a section to the Introduction chapter in the Implementation Guide
+  to describe how to use alternate socket factory classes with the JSDT
+  "socket" implementation.
+
+----
+
+v2.0 - 22nd August 1999.
+
+* Adjusted the three implementations and the template package so that each
+  class extends from impl.JSDTObject. Obsoleted socketJSDTObject,
+  lrmpJSDTObject, httpJSDTObject, templateJSDTObject.
+
+----
+
+v2.0 - 21st August 1999.
+
+* Some adjustments to the way the server handles the cleaning up of clients
+  that are no longer pinging. When a proxy adds or removes a connection
+  listener, this now sends a message to each known session server thread,
+  which adds or removes an entry in ping[Threads, Ids], (and potentially
+  starts or stops the cleanup thread). The isAlive message now simply just
+  updates the hashtable entry for that thread/id with the current time.
+  This fixes the problem of the server incorrectly cleaning up a proxy 
+  thread/id, just because it's removed it's connection listener, and is 
+  therefore no longer pinging (which is perfectly valid).
+
+----
+
+v2.0 - 20th August 1999.
+
+* From Chris Spahn <cspahn@purdue.edu>
+  For the "socket" implementation, if the server-side application is 
+  terminated, then the proxy-side wasn't cleaning up the Sessions related 
+  to its connection, when it got an IO exception on that socket. The fix 
+  was to add a cleanupConnection() method to SessionProxyThread.java that 
+  removed the NamingProxy reference for its Session.
+
+* Scott Swann <scott@frontiertechnologies.com>
+  If a proxy-side application using the "lrmp" implementation is forceably
+  terminated, the server-side application does not cleanup the resources
+  associated with this proxy.
+
+  Two variables have been added to .../impl/JSDTObject.java:
+
+    /** Indicates whether we should cleanup pinging Clients, if we haven't
+     *  heard from them, in cleanupPeriod milliseconds.
+     */  
+    public static boolean cleanupPingingClients = true;
+
+    /** The number of milliseconds to wait before cleaning up a pinging
+     *  client, that hasn't pinged.
+     */
+    public static long cleanupPeriod = 30000;
+
+  If a proxy-side application now adds a Connection listener, the server
+  will keep a record of it's last ping time. If cleanupPingingClients is
+  true, and the server has not received a ping from that proxy application
+  for over cleanupPeriod milliseconds, then the server will cleanup the 
+  resources associated with this proxy.
+
+  These changes have been applied to the "lrmp" and the "http" implementations.
+  The "socket" implementation doesn't need to do this, because it keeps a
+  permanently open socket connection for each proxy.
+
+----
+
+v2.0 - 18th August 1999.
+
+* Readjusted the debug(), Debug(), error() and waited() methods in the root
+  class for each implementation, to no longer call the JSDTObject.Debug()
+  method which got the current class and method name from a thrown exception
+  stack trace. This approach did not work correctly in Internet Explorer.
+  This means that all the methods now have to supply their class and method 
+  names, but it does run a lot faster with debugging turned on.
+
+* Added a showTime variable to JSDTObject that will printout the time (in
+  milliseconds) from the start of running this application to the present.
+  This is only used with the debugging code.
+
+* Added an alwaysPing variable to JSDTObject that is used with the "http"
+  implementation. If set to true then the proxy will always ping for
+  asynchronous messages, irrespective of the socket factory being used.
+
+----
+
+v2.0 - 16th August 1999.
+
+* The HttpToCGISocketFactory class, which uses a CGI script or a Java
+  servlet to tunnel through a firewall, cannot, because of the nature of
+  the underlying CGI/servlet architecture keep a permanent established
+  socket connection through the firewall. For this case, the "http"
+  implementation will revert back to pinging for asynchronous messages.
+
+  Added the variable definitions for PingPeriod and RegistryPingPeriod 
+  back into the JSDT User Guide.
+
+* Also with the HttpToCGISocketFactory class, the Registry started slowly 
+  if started with:
+
+      if (RegistryFactory.registryExists(sessionType) == false) {
+          RegistryFactory.startRegistry(sessionType);
+      }  
+
+  and the Registry was not already running. What you are seeing is two
+  TimedOutExceptions (each occuring after 15 seconds), in the
+  registryExists() method in com.sun.media.jsdt.http.Registry.java.
+  It's trying to send a message from the proxy-side code to the
+  (non-existent) Registry.
+
+  The fix was to adjust the timeout period, just before writing the message
+  to the Registry proxy thread, to be 3000 (3 seconds) if it was greater
+  than this value, then reinstating the old timeout period value afterwards.
+
+* Adjusted all occurances of EA1 to Beta.
+
+----
+
+v2.0 - 12th August 1999.
+
+* From: "Haam" <haam_tham@specialtymd.com>
+  The getSocketMessage() methods in NamingPermThread.java and
+  SessionPermThread.java were getting NullPointerExceptions because the
+  socket object hadn't been created yet. Similar problem with the session.po
+  object when accessed in the run() method of PermMessageThread.java.
+
+  The solution was to move the creation of the permenant Session proxy
+  thread from the SessionProxy constructor to the initProxy method, and to
+  not create a special thread to send the T_Permanent messages. This now
+  obsoletes RegistryPermMessageThread.java and PermMessageThread.java.
+
+----
+
+v2.0 - 11th August 1999.
+
+* The build.csh script erronously put the HTML associated with the
+  Implementers Kit into the standard distributions, and not in the
+  devkit.
+
+* Added a new variable to the impl.JSDTObject class:
+
+  /** The factory class for creating sockets for the "http" implementation
+   *  of JSDT.
+   *   
+   *  To automatically first try TCP sockets, then direct HTTP sockets, 
+   *  then tunneling HTTP sockets, this should be set to:
+   *  "com.sun.media.jsdt.http.JSDTMasterSocketFactory"
+   *   
+   *  To just use TCP sockets, this can be set to:
+   *  "com.sun.media.jsdt.http.TCPSocketFactory"
+   *
+   *  To just use direct HTTP sockets, ths can be set to:
+   *  "com.sun.media.jsdt.http.HttpToPortSocketFactory"
+   *
+   *  To just use tunneling HTTP sockets, this can be set to:
+   *  "com.sun.media.jsdt.http.HttpToCGISocketFactory"
+   */
+  public static String httpFactoryClass =
+                          "com.sun.media.jsdt.http.JSDTMasterSocketFactory";
+
+  HttpThread.java, Registry.java and TCPSocketServer.java have been adjusted
+  to now use this to create the appropriate factory class.
+
+  Adjusted chapter 8 of the User Guide to reflect this change.
+
+* Removed the pingPeriod and registryPingPeriod variables from JSDTObject.
+  Adjusted chapter 8 of the User Guide to reflect this change.
+
+* Adjusted the build.csh script to no longer try to add the following class
+  files to the client-side jar files:
+
+      com/sun/media/jsdt/socket/JSDTByteArrayInputStream.class:
+      com/sun/media/jsdt/lrmp/JSDTByteArrayInputStream.class
+      com/sun/media/jsdt/http/JSDTByteArrayInputStream.class
+      com/sun/media/jsdt/http/PingThread.class
+
+* Adjusted the build.csh script to add the following class files to the
+  client-side jar files:
+
+      com/sun/media/jsdt/socket/ConnectionThread.class
+      com/sun/media/jsdt/socket/NamingProxyMessage.class
+      com/sun/media/jsdt/socket/NamingProxyThread.class
+
+      com/sun/media/jsdt/lrmp/ConnectionThread.class
+      com/sun/media/jsdt/lrmp/NamingProxyMessage.class
+      com/sun/media/jsdt/lrmp/NamingProxyThread.class 
+
+      com/sun/media/jsdt/http/ConnectionThread.class
+      com/sun/media/jsdt/http/JSDTMasterSocketFactory.class
+      com/sun/media/jsdt/http/JSDTSocketInfo.class
+      com/sun/media/jsdt/http/ManagerPermThread.class
+      com/sun/media/jsdt/http/NamingPermThread.class
+      com/sun/media/jsdt/http/NamingProxyMessage.class
+      com/sun/media/jsdt/http/NamingProxyThread.class 
+      com/sun/media/jsdt/http/PermMessageThread.class
+      com/sun/media/jsdt/http/SessionPermThread.class
+      com/sun/media/jsdt/http/TCPSocket.class
+      com/sun/media/jsdt/http/TCPSocketFactory.class
+
+----
+
+v2.0 - 10th August 1999.
+
+* Added three more examples to the JSDT distribution:
+  browser - collaborative web browser  (requires Ice HTML renderer Bean).
+  phone   - Internet phone             (requires JavaSound).
+  synth   - Midi synthesizer "jam"     (requires JavaSound).
+
+  The synth demo is now based on the ToySynth example in the JavaSound
+  distribution (so it's not dependent upon Swing, Java 2D or JDK 1.2
+  java.util.Vector methods).
+
+  These three examples will now run as applets as well as applications.
+
+* Adjusted the existing example source code to use a host name of "localhost"
+  instead of "stard". This will work for all implementations now that we no
+  longer have an RMI implementation.
+
+* Investigated running the speedtest (~/jsdt/test/speedtest) with the "http"
+  implementation. If used with the HttpToPortSocketFactory, everything now
+  works fine with the non-pinging version. If used with the TCPSocketFactory,
+  we were getting too much unread Data received (~ 32Kbytes), that was causing
+  each TestClient to block. The solution was to adjust the doLoop() method to
+  only send a new message out, if it had received all the previous messages
+  sent by the other two TestClients.
+
+----
+
+v2.0 - 3rd August 1999.
+
+* Changed versionString in impl.JSDTObject to be: "JSDT 2.0 (beta)".
+
+* Removed the MAX_CONNECTIONS definition from socket.TCPSocketServer.java.
+
+* Adjusted the wording for the hostname parameter for the
+  URLString.createClientURL() method. Added in the sentence:
+  "In other words, the name of the machine that is running the Registry 
+   where this special JSDT Client will be bound."
+
+* Added a "How do I sign my JSDT applet?" Q/A to the JSDT FAQ.
+  It points to the Dr. Dobbs article at:
+  http://www.ddj.com/articles/1999/9902/9902h/9902h.htm
+
+* Adjusted the HTTP implementation to no longer use ping threads. A
+  permanent connection is kept open, to each proxy, over which asynchronous
+  messages are returned.
+
+* Added some bullet proofing to the NamingProxy.cleanupClient() method for
+  all three implementations. Only send the client server a Destroy_Client
+  message if the cc variable is not null.
+
+----   Work finished on the JSDT 2.0 (EA1) release   ----
+
+v2.0 - 20th July 1999.
+
+* Changed various release files to make this a JSDT 2.0 (EA1) release
+  (rather than just JSDT 2.0). These files were:
+
+    install/solaris/script.txt
+    release/JSDT-2.0/license.txt
+    release/win32/license.txt
+    build/win32/ishield/license.txt
+    doc/userguide/titlepage.doc
+    doc/implguide/titlepage.doc
+    release/JSDT-2.0/README
+    release/JSDT-2.0/docs/JSDTNOTES.html
+    release/JSDT-2.0/html/configure.html
+    release/JSDT-2.0/html/examples.html
+    release/JSDT-2.0/html/feedback.html
+    release/JSDT-2.0/html/index.html
+    release/JSDT-2.0/html/issues.html
+    release/JSDT-2.0/html/menu.html
+    release/JSDT-2.0/html/welcome.html
+    release/solaris/JSDT-2.0/README
+    release/solaris/JSDT-2.0/html/configure.html
+    release/solaris/JSDT-2.0/html/examples.html
+    release/solaris/JSDT-2.0/html/setup.html
+    release/win32/JSDT-2.0/README.TXT
+    release/win32/JSDT-2.0/html/configure.html
+    release/win32/JSDT-2.0/html/examples.html
+    release/win32/JSDT-2.0/html/setup.html
+    install/solaris/genzip
+    install/build.csh
+    install/build-src.csh
+    build/win32/ishield/string_tables/0009-English/value.shl
+    build/win32/ishield/JSDT-2.0.ipr
+    build/win32/ishield/default.mda
+    build/win32/ishield/jsdt2_0.pfw
+    build/win32/ishield/makefile
+    build/win32/ishield/setup.rul
+
+----
+
+v2.0 - 19th July 1999.
+
+* Adjusted the "http" implementation code to correctly inform Registry
+  listeners of newly created/destroyed Sessions/Clients. This has meant the
+  inclusion of a registry ping thread (the ping period determined by the
+  JSDTObject.registryPingPeriod variable, which has been documented in the
+  User Guide.
+
+----
+
+v2.0 - 15th July 1999.
+
+* From: "Thomas Reichherzer" <treichhe@ai.uwf.edu>
+  For all three implementations, reversed the order of a couple lines in
+  the ChannelProxy.receive() method, so that the consumer for the special
+  receive client is not added, until after the new receive client has been 
+  added to the receive clients hash table.
+
+* From: Mark DeMichele <demi@intellipro-inc.com>
+  When tidying up a client connection that has terminated, the server-side
+  code needed to remove all server-side threads for all Clients associated 
+  with that proxy application, and not just stop after finding the first one.
+
+  Changes applied to the "socket" and "lrmp" implementations.
+
+* The "lrmp" implementation now fragments any JSDT messages (ie. large
+  Data messages over a Channel) being sent, that are greater than the 
+  maximum packet size that LRMP allows, and defragments them on the 
+  receiving side, so that they are reliably sent.
+
+  (see: ~/jsdt/test/JSDT-2.0/Test12)
+
+----
+
+v2.0 - 14th July 1999.
+
+* From: "Joshua Fox" <Joshua_Fox@vocaltec.com>
+  "JSDT should include "are-you-there" code, to determine if the various
+   client-side participants are still alive."
+
+  Fixed this problem by doing the following:
+
+  - Added a com.sun.media.jsdt.Connection class with the following methods:
+
+    public static void
+    addConnectionListener(String host, String connectionType,
+			  ConnectionListener listener);
+
+    public static void
+    removeConnectionListener(String host, String connectionType,
+			     ConnectionListener listener) 
+	throws NoSuchListenerException;
+
+  - Added a com.sun.media.jsdt.event.ConnectionListener interface, with
+    the following method:
+
+    public void
+    connectionFailed(ConnectionEvent event);
+
+  - Added a com.sun.media.jsdt.event.ConnectionAdaptor abstract class
+    with the following method:
+
+    public void               
+    connectionFailed(ConnectionEvent event) { }
+
+  - Added a com.sun.media.jsdt.event.ConnectionEvent class with the
+    following methods:
+
+    public
+    ConnectionEvent(String address, int port, int type);
+
+    public String
+    getAddress();
+ 
+    public int 
+    getPort();
+
+    public String
+    toString();
+
+  An object that implemented the ConnectionListener interface and added
+  that ConnectionListener via the Connection.addConnectionListener() method,
+  would receive a notification if (one of) its connection(s) failed.
+
+  The setting up of a connection listener (or more than one) would be optional.
+  Some apps might not require this functionality.
+
+  I realise that the adaptor only has one method in it, and why bother to
+  ignore that; you might as well not have bothered adding the listener in 
+  the first place, but this does provide a consistent framework, and other 
+  methods can easily be added at a future date as needed.
+
+  (see: ~/jsdt/test/JSDT-2.0/Test11)
+
+----
+
+v2.0 - 13th July 1999.
+
+* Updated the User Guide to reflect all the API changes for 2.0.
+
+* Added a "Changes in 2.0" section to the Release Notes.
+
+----
+
+v2.0 - 12th July 1999.
+
+* Removed the "rmi" implementation from the distribution. This implementation
+  was the first JSDT impl. and was done early in 1996 in order to try to get 
+  something ready for the JavaOne conference. It's been updated to implement
+  the current API (upto but not including the Registry manager/listener
+  changes), but it's crufty, has bugs, and in some cases, has problems that 
+  are never going to be properly addressed. It's also not being used much by
+  developers.
+
+* Updated the Implementers Guide to reflect the changes needed to implement
+  the Registry listeners and manager.
+
+* Included the message version field to '\u0005' for the JSDT 2.0 release.
+  Changes to:
+    .../socket/socketJSDTObject.java
+    .../http/httpJSDTObject.java
+    .../lrmp/lrmpJSDTObject.java
+
+* Updated .../impl/Messages to include all the new messages for the Registry
+  listeners and manager.
+
+----
+
+v2.0 - 9th July 1999.
+
+* Made several API changes to allow the following functionality:
+  > add a manager to the Registry.
+  > add/remove listeners to a Registry.
+  > allow the Registry to list it's contents.
+  > allow clients to automatically join a newly created managed ByteArray,
+    Channel, Session or Token.
+  > list all known Sessions (optionally by host).
+  > list all known Clients (optionally by host).
+  > totally remove the Naming class.
+
+  (see: ~/jsdt/test/JSDT-2.0/Test10)
+
+  In more detail, the changes were:
+
+  > Added the following methods to RegistryFactory.java:
+
+    public static void
+    addRegistryListener(String host, String type,
+                        RegistryListener listener) ... ;
+
+    public static void
+    removeRegistryListener(String host, String type,
+                           RegistryListener listener) ... ;
+
+    public static void
+    startRegistry(String registryType, RegistryManager registryManager) ... ;
+
+    public static URLString[]
+    list() ... ;
+
+    public static URLString[]
+    list(String host, String registryType) ... ;
+
+  > Added the following methods to SessionFactory.java:
+
+    public static void
+    destroySession(Client client, URLString urlString) ... ;
+
+    public static URLString[]
+    listSessions() ... ;
+
+    public static URLString[]
+    listSessions(String host, String connectionType) ... ;
+
+  > Changed the following method in SessionFactory.java:
+
+    public static Session
+    createSession(URLString urlString, SessionManager sessionManager) ... ;
+
+    now becomes:
+
+    public static Session
+    createSession(Client client, URLString urlString,
+                  boolean autoJoin, SessionManager sessionManager) ... ;
+
+  > Removed the following deprecated methods from SessionFactory.java:
+
+    public static Session
+    createSession(String url) ... ;
+
+    public static Session
+    createSession(Client client, String url, boolean autoJoin) ... ;
+
+    public static Session
+    createSession(String url, SessionManager sessionManager) ... ;
+
+    public static boolean
+    sessionExists(String url) ... ;
+
+  > Added the following methods to ClientFactory.java:
+
+    public static void
+    destroyClient(Client client, URLString urlString) ... ;
+
+    public static URLString[]
+    listClients() ... ;
+
+    public static URLString[]
+    listClients(String host, String connectionType) ... ;
+
+    public static Client
+    lookupClient(URLString urlString) ... ;
+
+  > Changed the following method in ClientFactory.java:
+
+    public static void
+    createClient(URLString urlString, Client client, 
+		 ClientListener listener) ... ;
+
+    now becomes:
+
+    public static void
+    createClient(Client client, URLString urlString, 
+		 ClientListener listener) ... ;
+
+  > Remove the following deprecated methods from ClientFactory.java:
+ 
+    public static void
+    createClient(String url, Client client, ClientListener listener)
+                throws ConnectionException, InvalidClientException,
+                       InvalidURLException, NoRegistryException,
+                       NoSuchHostException, NoSuchClientException,
+                       PortInUseException, TimedOutException;
+ 
+    public static boolean
+    clientExists(String url)
+        throws ConnectionException, NoSuchHostException,
+               NoRegistryException, InvalidURLException,
+               TimedOutException;
+
+  > For consistency, an autoJoin parameter has been added to the following
+    methods in Session.java:
+
+    public ByteArray             
+    createByteArray(Client client, String byteArrayName,
+                    boolean autoJoin, ByteArrayManager byteArrayManager) ... ; 
+ 
+    public Channel 
+    createChannel(Client client, String channelName, boolean autoJoin,
+                  boolean reliable, boolean ordered,
+                  ChannelManager channelManager) ... ; 
+
+    public Token 
+    createToken(Client client, String tokenName, 
+                boolean autoJoin, TokenManager tokenManager) ... ; 
+
+  > Rather than add an autoJoin parameter to the deprecated create... methods 
+    with a manager in Session.java and to tidy things up in general, all the
+    deprecated methods in Session.java have been removed. These are:
+
+    public ByteArray 
+    createByteArray(Client client, String byteArrayName, 
+                    byte[] value, boolean autoJoin) ... ; 
+ 
+    public ByteArray 
+    createByteArray(Client client, String byteArrayName, boolean autoJoin, 
+                    byte[] value, ByteArrayManager byteArrayManager) ... ; 
+ 
+    public ByteArray 
+    createByteArray(Client client, String byteArrayName, 
+                byte[] value, int offset, int length, boolean autoJoin) ... ;
+ 
+    public ByteArray 
+    createByteArray(Client client, String byteArrayName, 
+                    byte[] value, int offset, int length, 
+                    ByteArrayManager byteArrayManager) ... ; 
+ 
+    public void 
+    close() ... ;
+
+  > All other deprecated methods have been removed. These are: 
+ 
+    ByteArray.java:
+ 
+      public byte[]
+      getValue() ... ;
+ 
+    Data.java: 
+ 
+      public byte[] 
+      getData(); 
+
+  > Added the following new classes:
+ 
+    - com.sun.media.jsdt.RegistryManager
+ 
+      public interface
+      RegistryManager extends JSDTManager {
+ 
+          public boolean
+          registryRequest(AuthenticationInfo info, Client client);
+      }
+
+    - com.sun.media.jsdt.event.RegistryEvent
+ 
+      public class
+      RegistryEvent extends EventObject implements JSDTDebugFlags {
+ 
+          public static final int SESSION_CREATED   = 1 << 0;
+ 
+          public static final int SESSION_DESTROYED = 1 << 1;
+ 
+          public static final int CLIENT_CREATED    = 1 << 2;
+ 
+          public static final int CLIENT_DESTROYED  = 1 << 3;
+ 
+          private String clientName;
+ 
+          private URLString resourceName;
+ 
+          private int type;
+
+          public
+          RegistryEvent(String clientName, URLString resourceName, int type);
+ 
+ 
+          public String
+          getClientName();
+
+          public URLString
+          getResourceName();
+       
+          public String
+          toString();
+      }
+
+    - com.sun.media.jsdt.event.RegistryListener
+
+      public interface
+      RegistryListener extends EventListener, Serializable {
+
+            public void
+            sessionCreated(RegistryEvent event);
+ 
+            public void
+            sessionDestroyed(RegistryEvent event);
+ 
+            public void
+            clientCreated(RegistryEvent event);
+ 
+            public void
+            clientDestroyed(RegistryEvent event);
+      }
+
+    - com.sun.media.jsdt.event.RegistryAdaptor
+
+      public abstract class
+      RegistryAdaptor implements RegistryListener {
+
+          public void
+          sessionCreated(RegistryEvent event) { }
+
+          public void
+          sessionDestroyed(RegistryEvent event)  { }
+
+          public void           
+          clientCreated(RegistryEvent event) { }
+                              
+          public void           
+          clientDestroyed(RegistryEvent event) { }
+      }                           
+
+  > The following variables have been added to the
+    com.sun.media.jsdt.AuthenticationInfo.java class:
+ 
+      /** The Registry authentication type. */
+      public static final char REGISTRY = 5;
+ 
+      /** The create Session authentication action. */
+      public static final int CREATE_SESSION   = 1 << 8;
+
+  > Made the com.sun.media.jsdt.Naming class and its methods, package 
+    readable only.
+
+    The list() methods now return an array of URLString's, which is now
+    zero length (rather than null), if there are no bound objects. As these
+    are now URLString's, they are no longer sorted first.
+
+  > Added a couple of methods to the com.sun.media.jsdt.impl.Util class:
+
+    public static final boolean
+    isClient(URLString url);
+
+    public static final boolean
+    isSession(URLString url);
+
+  > Created a RegistryClient class to do the proxy-client authentication with
+    the manager for the Registry.
+
+* Adjusted the examples and the test suite to use the new API.
+
+* If you did a Naming.list() and had connected previously to multiple
+  Registries, and one of the them had no objects bound, then Naming.list()
+  would have incorrectly returned null, even if the other Registries had
+  had objects bound.
+
+* In the removeListener() method in ManageableServer.java, noListeners was
+  being set to the size of the listeners hash table when there was no need.
+
+* Moved the ManageableProxy.getClientName() method to the Util class and
+  adjusted accordingly.
+
+* With the "lrmp" implementation, if you did a Session.destroy() and then
+  recreated the same session again, you would get a "no such session"
+  exception when you tried to join it.
+
+----
+
+v2.0 - 30th June 1999.
+
+* The JavaDoc comment for the DESTROY_SESSION authentication action in
+  AuthenticationInfo.java was incorrect.
+
+* Test 3 in the Test Suite wasn't working properly with the "lrmp" impl. 
+
+  The fix was to set a message id of 0 with the T_Client/T_Invite message 
+  sent from ManageableServer.invite(), rather than using message.id.
+
+----
+
+v2.0 - 29th June 1999.
+
+* Adjust the return statement in the getSocketMessage() code for various
+  methods in the "socket", "http" and "lrmp" implementations. The
+  message.validMessageHeader() method already returns a boolean.
+
+* test2 and test3 of the Test Suite sometimes don't work with the http
+  implementation.
+
+  The problem was that the "http" implementation was written with the
+  assumption that only one authentication process could be happening at 
+  any one time. There were two variable; clientThread and 
+  authenticationResult which were getting inappropriately over-written 
+  when two authentications occured together. Changed the 
+  suspendClientThread() and resumeClientThread() methods in HttpThread.java 
+  to work with hash tables. Removed the getAuthenticationResult() and 
+  setAuthenticationResult() methods in HttpThread.java.
+
+* Adjusted the code for the chat example (in ChatUser.java), so that it
+  will automatically attempt to reconnect, if the server goes away.
+
+* Added a couple sentences to the SessionFactory section in the Getting
+  Started chapter in the User Guide to try to make it clearer that for
+  the unicast implementations, the server application must be started on 
+  the same machine as where you started the Registry. In other words, the 
+  machine you gave as the "<server>" portion of the JSDT Session URL.
+
+----
+
+v2.0 - 28th June 1999.
+
+* For the "socket" implementation, the channel server code was sending 
+  data received over an unreliable channel, back out over the reliable 
+  server session socket for each consumer rather than over the channel's 
+  unreliable datagram socket for each consumer.
+
+  The fix was to adjust the addConsumer methods in ChannelProxy.java and
+  ChannelServer.java to send and receive two extra parameters if this is
+  an unreliable channel. These are the local address and proxy. If it is
+  an unreliable channel, ChannelServer.addConsumer() then uses them to
+  create a UDPChannelProxyThread back to the proxy, in which it can then
+  send data in an unreliable manner (using UDP packets).
+
+  (see: ~/jsdt/test/JSDT-2.0/Test9)
+
+----
+
+v2.0 - 25th June 1999.
+
+* From: Scott Swann <scott@frontiertechnologies.com>
+  Added in the ability to adjust the minimum and maximum rates for data
+  throughput, for the LRMP implementations. Two new variables have been
+  added to com.sun.media.jsdt.impl.JSDTObject:
+
+  /** The expected minimum data rate, in kbits/sec for LRMP. */
+  public static int minRate = 8;
+ 
+  /** The expected maximum data rate, in kbits/sec for LRMP. */
+  public static int maxRate = 64;
+
+  Using these default values has immediately given a 8x data throughput.
+
+* Adjusted the createSocket() method in the SSLSocketFactory class in the
+  "socket" implementation to work correctly with both the domestic and
+  general version of SSL v1.1.2.
+
+  The fix was to write a zero length array to the socket in createSocket()
+  before returning that socket handle. This forces the handshake between
+  this socket and the server socket to complete.
+
+  Notes for setting this up:
+  > used SSL v1.1.2 which can be found in:
+
+    /usr/local/java/ssl1.1.2.[dom, gl]/solaris.sparc
+
+  > Set LD_LIBRARY_PATH to:
+
+    setenv LD_LIBRARY_PATH /usr/openwin/lib:/usr/motif/lib:
+        /usr/local/java/ssl1.1.2.[dom, gl]/solaris.sparc/lib/solaris/sparc
+ 
+  > Set SSL_CLASSES in .../build/solaris/makefiles/Makefile.config to:
+
+    SSL_CLASSES = /usr/local/java/ssl1.1.3/binary/do/solaris.sparc/lib/ssl.jar
+
+* Adjusted .../build/win32/ishield/setup.bmp to show "Version 2.0".
+
+  Adjusted .../release/JSDT-2.0/html/title.gif file to be "JSDT 2.0"
+
+  Modified the .../impl/BUILD file to include a section on how to create 
+  the title.gif file.
+
+----
+
+v2.0 - 24th June 1999.
+
+* From Rafa Morant <RMORANT@santandersupernet.com>
+  From Mark DeMichele <demi@intellipro-inc.com>
+  What happens if the host where the Registry is running have 2 IPs (2
+  network cards).  Can Clients of both networks connect to the same Session?
+  The answer is no. The second Client will get a "port in use" exception.
+
+  The fix was to add two new methods to the Registry:
+
+  > createAddressList: which, when the Registry is initialised, generates a
+    list of all the IP addresses the current host is known by using the
+    InetAddress.getAllByName() method.
+  > nameExists: which checks to see if there is already a bound object in
+    the Registry with this name. All the alternate IP addresses for this
+    host are substituted for the host portion of the JSDT URL. It returns
+    the actual bound name in the Registry if it exists, or null if no entry
+    was found for this name (with all it's alternate IP addresses).
+
+  This second method is then used in the bind(), unbind() and lookup()
+  methods instead of directly looking in the hashtable of known bindings.
+
+  Changes applied to the "socket" and "http" implementations.
+
+----
+
+v2.0 - 23rd June 1999.
+
+* From: "Joshua Fox" <Joshua_Fox@vocaltec.com>
+  Threads not being terminated after Session.close(). 
+
+  The "socket" and "lrmp" needed extra code to be executed when the user
+  does a Session.close() call.
+
+  For the "socket" implementation, the problem was that the cleanupConnection()
+  method in NamingProxy.java was not calling proxyThread.cleanupConnection()
+  to close the socket connection to the Registry.
+
+  For the "lrmp" implementation, three changes were needed:
+  > the cleanupConnection() method in NamingProxy.java was not calling 
+    proxyThread.cleanupConnection() which in turn was not calling lrmp.stop().
+  > the proxyThread created by NamingProxy.java needed to be stop()'ed.
+  > the proxyThread created by SessionProxy.java needed to be stop()'ed.
+
+  (see: ~/jsdt/test/JSDT-2.0/Test8)
+
+----
+
+v2.0 - 22nd June 1999.
+
+* Various error() calls needed to be adjusted to use the error(String, Object)
+  method, rather than the error(String) one.
+
+* From: "Joshua Fox" <Joshua_Fox@vocaltec.com>
+  From: "Golden G. Richard III, Ph.D." <golden@cs.uno.edu>
+  From: Seppo Tarkiainen <seppo.tarkiainen@teamware.com>
+  Under certain circumstances, the authentication of a client by a manager
+  generates the following error:
+    ManagerProxyMessage: handleMessage: unknown type: Message: session #: 10
+    id: 591224569 type: Client action: Authenticate
+
+  The problem was that if the manager is in the same proxy (ie. same VM) as
+  the client, then direct calls to [session,byteArray,channel,token]Request
+  should occur. There were four places where this was not happening:
+
+  * ByteArray 
+    createByteArray(Client, String, byte[], int, int, boolean) 
+    in SessionProxy.java
+
+  * Channel
+    createChannel(Client, String, boolean, boolean, boolean)
+    in SessionProxy.java
+
+  * Token
+    createToken(Client, String, boolean)
+    in SessionProxy.java
+
+  * void
+    join(Client, boolean, int)
+    in ChannelProxy.java
+
+  The same fix needed to be applied to the "socket", "http" and "lrmp"
+  implementations.
+
+  (see ~/jsdt/test/JSDT-2.0/Test7).
+
+----
+
+v2.0 - 14th June 1999.
+
+* Adjusted various files to indicate that the JSDT mailing list is now at
+  jsdt-interest@java.sun.com and you [un]subscribe to it through
+  listserv@java.sun.com.
+
+* From: "Harris, Darren" <darren.harris@nomura.co.uk>
+  "I'm creating a special Client (for use with invite/expel) using the
+   ClientFactory.createClient(url, client, client) method.
+
+   I'm catching the PortInUseException to increment the port number and retry.
+   However, the createClient method seems to create a registry entry for the
+   failed attempts also."
+
+  The fix was to add "unbind(naming, urlString, name) in the catch clause
+  for PortInUseException in _bind() in NamingProxy.java. Fix applied to the
+  "socket" and "http" implementations.
+
+  Note that there is a small window where the bogus entry will appear in the
+  Registry.
+
+  (see ~/jsdt/test/JSDT-2.0/Test6).
+
+----
+
+v2.0 - 10th June 1999.
+
+* Added a static printStack() method to .../impl/JSDTObject. This is now
+  called by all the error and debug methods in all four implementations.
+  Removed the implementation specific printStack() methods.
+
+* From: "Jonathan B. Owen" <jb_owen@kbwiz.com>
+  If you try to start a Registry, and there is already one running, the
+  following message is now sent to JSDTObject.debugStream (by default:
+  System.err):
+
+  Unable to start Registry; perhaps there is already one running...
+
+  This change has been applied to the "socket" and "http" implementations.
+
+----
+
+v2.0 - 9th June 1999.
+
+* Changed the message type for Throwable messages, from debug() to error().
+  Added an entry in the contents[][] array in .../impl/locale/JSDTProps.java
+  for "impl.thrown", which is now called in all those Throwable error
+  messages.
+
+* From: Justin Couch <couch@ccis.adisys.com.au>
+  "I have a managed object. In the objectRequest method, I throw an
+   unexpected RuntimeException (NullPointer etc). What happens to the
+   object running the request? Do you catch these exceptions and then pass
+   back an error condition (permission denied?) to the requesting client?"
+
+  This was handled correctly if the manager was in the same VM as the Client
+  that was requiring authentication. Otherwise it was not properly handled.
+  Added a try/catch clause to catch Throwable's arround the ...Request()
+  calls in the run() method in AuthenticateClient.java. An error message is
+  displayed, and permission is denied to the requesting Client.
+
+  (see ~/jsdt/test/JSDT-2.0/Test5).
+
+* Inserted the new JSDT 1.5 style license in:
+   .../release/JSDT-2.0/license.txt
+   .../release/win32/license.txt
+   .../install/solaris/script.txt        (adjusted the tail number).
+   .../build/win32/ishield/license.txt
+
+----
+
+v2.0 - 8th June 1999.
+
+* From: Justin Couch <couch@ccis.adisys.com.au>
+  The Registry starts slowly with the "lrmp" implementation, if started
+  with:
+
+      if (RegistryFactory.registryExists(sessionType) == false) {
+          RegistryFactory.startRegistry(sessionType);
+      }  
+
+  and the Registry is not already running. What you are seeing is two 
+  TimedOutExceptions (each occuring after 15 seconds), in the 
+  registryExists() method in com.sun.media.jsdt.lrmp.Registry.java. 
+  It's trying to send a message from the proxy-side code to the 
+  (non-existent) Registry.
+
+  The fix is to adjust the timeout period, just before writing the message
+  to the Registry proxy thread, to be 3000 (3 seconds) if it was greater 
+  than this value, then reinstating the old timeout period value afterwards.
+
+  Also, in the catch clause for TimedOutException, a call is now made to:
+  "proxyThread.finishReply();", to tidy up the internal state machine for
+  this proxy thread.
+
+  (see ~/jsdt/test/JSDT-2.0/Test3).
+
+* From: Sebastien George <george@lium.univ-lemans.fr>
+  "Naming.list(host, connectType) returns a list of Session URLs where the 
+  host portion is an IP address. Doing a SessionFactory.sessionExists(url) 
+  where the host portion of the URL is not an IP address doesn't match it."
+
+  There is a similar problem for ClientFactory.clientExists() as well.
+
+  The fix was to convert the host portion of the JSDT URL parameter passed
+  into the sessionExists() method, to an IP address, then compare it with
+  each of the URLs returned by Naming.list()
+
+  Naming.list() now just returns the JSDT URLS as they are stored in the
+  Registry. In other words, it no longer attempts to convert the host portion
+  of the URL, from an IP address to the actual hostname.
+
+  Moved the common Registry.adjustHost() method to Util.adjustIPString() 
+  which is now used by SessionFactory.sessionExists() and
+  ClientFactory.clientExists().
+
+  (see ~/jsdt/test/JSDT-2.0/Test4).
+
+----
+
+v2.0 - 7th June 1999.
+
+* For consistency, listClientNames() now returns an array of zero elements,
+  if there are no Clients joined to that object.
+
+  (see ~/jsdt/test/JSDT-2.0/Test1).
+
+* From Mark DeMichele <demi@intellipro-inc.com>
+  Trying to create Sessions using JSDT URL's with different hostnames (such
+  as "stard" and "localhost, which should resolve to the same machine) fails.
+
+  Have added a getIPAddress(String hostname) method to Util class in the
+  impl package.  This is using by the bind, rebind, unbind and lookup methods
+  in the NamingProxy class for the "socket" and "http" implementations.
+  It returns the IP address of the given hostname. A check is also made to 
+  see if the hostname is "localhost" or "127.0.0.1". If so, then this is 
+  replaced with the IP address of the local host.
+
+  Have changed the adjustHost() method in the Registry.java class. This no
+  longer needs to look for "localhost" or "127.0.0.1". This is now handled
+  on the proxy side.
+
+  (see ~/jsdt/test/JSDT-2.0/Test2).
+
+----
+
+v2.0 - 4th June 1999.
+
+* Moved JSDTByteArrayInputStream.java and JSDTListenerImpl.java into the 
+  impl package and adjusted accordingly.
+
+* Removed special code related to the evaluation copy of JSDT.
+
+* Added the following methods to impl.JSDTObject:
+
+    public final static void
+    Debug();
+
+    public final void
+    debug();
+
+    public final static void
+    Debug(String output);
+
+    public final void
+    debug(String output);
+
+  which simplify (and centralise) the printing of debug messages.
+
+  Added similar methods to each of the implementations, which in turn, call
+  the methods in JSDTObject. Because most classes in the implementation 
+  extend a base object, this makes it cleaner than calling the JSDTObject 
+  methods direct. These methods are called in numerous places.
+
+  Changed the two unknown() methods to be variants of the error() method.
+
+  Adjusted the error(), unknown() and waited() methods to call the debug
+  methods.
+
+  Added a "debugStream" PrintStream variable in impl.JSDTObject which is 
+  used in the debug() methods. All debug statements now print to this. This 
+  means you can override this variable, and get all your debug output 
+  written to an alternate print stream than System.err.
+
+  Adjusted several error messages that were printing to System.err, to go
+  through the error() and unknown() methods.
+
+* Started work on the JSDT 2.0 distribution:
+  - Copied the master JSDT 1.5 workspace and removed files that are no longer
+    needed.
+  - Made the various changes outlined in .../impl/BUILD.
+  - Changed the versionString variable in JSDTObject to "JSDT 2.0 (build 1)".
+
+----   Work finished on the JSDT 1.5 (FCS1.0) release   ----
+
+v1.5 - 19th May 1999.
+
+* Adjusted the build script to include the license.txt file in the solaris
+  and win32 distributions as well as the generic distribution.
+
+* Embedded new license agreement at/in:
+     .../release/JSDT-1.5/license.txt
+     .../release/win32/license.txt
+     .../install/solaris/script.txt
+     .../build/win32/ishield/license.txt
+
+----
+
+v1.5 - 14th May 1999.
+
+* From: Justin Couch <couch@ccis.adisys.com.au>
+  "If you haven't joined a ByteArray, and you try to set its value, then a
+   NoSuchClientException exception should be thrown."
+
+  The fix was to test for the client having being joined to the ByteArray
+  in setValue() in ByteArrayProxy.java, and throw the exception if it wasn't.
+
+  Fix applied to the "socket", "http" and "lrmp" implementations.
+
+----
+
+v1.5 - 12th May 1999.
+
+* Replaced all occurances of "localhost" with "stard" in the example programs
+  and the test suite. Similar changes in .../run/minclude/Makefile.run. This
+  reverses the change made on 4th May 1998, because "localhost" doesn't work
+  with the "rmi" implementationi; it generates the following errors:
+
+  java.rmi.AccessException: Registry.bind localhost/127.0.0.1 != 
+  stard/129.144.251.176.
+
+
+v1.5 - 8th May 1999.
+
+* From: Justin Couch <couch@ccis.adisys.com.au>
+  If a client application does a Session.close(), but doesn't force a close
+  of the connection, and there are one or more other Sessions associated
+  with that server:port, then the server-side hashtables and such associated
+  with the Session that was closed, aren't being cleaned up. Needed to add a
+  call to removeThread() in the close() method in SessionServer.java.
+
+  Change applied to the "socket" and "lrmp" implementations.
+
+----
+
+v1.5 - 7th May 1999.
+
+* From: Justin Couch <couch@ccis.adisys.com.au>
+  "If I attempt to call Channel.dataAvailable() using a client that has not
+   joined the channel, a NullPointerException is thrown."
+
+  Needed to check that the clientDataDirections hashtable in ChannelProxy
+  contained an entry for that client, before trying to take the intValue()
+  of the entry. This change has applied to the "socket", "http" and "lrmp" 
+  implementations.
+
+* There was still a reference to "JSDT-1.5-EA" in:
+  .../build/win32/ishiels/setup.rul. This should now be "JSDT-1.5".
+
+----
+
+
+v1.5 - 4th May 1999.
+
+* From James 'Bo' Begole <bo.begole@sun.com>
+  "The JSDT build didn't work when I set the JDK_DIR to point to a 1.2
+   version of JDK.  I presume that is because the standard classes are in a
+   different place in 1.2 (java1.2/jre/lib/rt.jar) than in 1.1
+   (java1.1/lib/classes.zip)".
+
+  Have added a JDK_CLASSES definition in 
+  .../build/[solaris,win32]/Makefile.config that is used in the CLASSPATH 
+  definition in .../build/[solaris,win32]/Makefile.defs.
+
+* Changed all occurances of "stard" for "localhost" in the example programs
+  and the test suite. Similar changes in .../run/minclude/Makefile.run
+
+----
+
+v1.5 - 30th April 1999.
+
+* Modified the .../impl/Messages file, for the recent changes tho the messages
+  sent by NamingProxy.[bind, rebind, unbind, lookup], to pass the IP address
+  of the sender to the server as part of the message, as opposed to the
+  server trying to determine it.
+
+----
+
+v1.5 - 27th April 1999.
+
+* Removed the question: "How do I get install support?" from faq.html.
+
+* Fixed up the Copyright notice on the InstallShield splash image to include
+  1999.
+
+----
+
+v1.5 - 23rd April 1999.
+
+* Changed the default ticker symbols for the stock example for the win32
+  platform from "SUNW+NSCP+IBM" to "SUNW+AOL+IBM" in:
+  .../release/win32/JSDT-1.5/examples/templates/Stock.txt.
+
+----
+
+v1.5 - 21st April 1999.
+
+* Updated the Release Notes to give the correct location of where to download
+  LRMP from (http://webcanal.inria.fr/lrmp/index.html).
+
+----
+
+v1.5 - 20th April 1999.
+
+* Needed to add:
+
+    try {
+        JSDTSecurity.enablePrivilege.invoke(JSDTSecurity.privilegeManager,
+                                            JSDTSecurity.connectArgs);
+    } catch (Exception e) {
+    }
+
+  clauses to the bind, rebind, unbind and lookup methods in NamingProxy.java
+  for the "socket", "http" and "lrmp" distributions, to prevent these methods 
+  from throwing an AppletSecurityException in the Netscape browser.
+
+* Adjusted the:
+  - disconnect() method in ChatUser.java for the chat example.
+  - disconnect() method in WhiteBoardUser.java for the whiteboard example.
+  - stopSession() method in SoundUser.java for the sound example.
+  - disconnect() method in StockViewer.java for the stock example.
+  - end() method in Game.java and
+    shutdown() method in GeneralClient.java for the ppong example.
+
+  Put the calls to "session.close()"  in a separate try/catch block, to make
+  sure that this is called even if the earlier calls to leave the channel
+  and/or session throws an exception.
+
+* Adjusted the calls to "session.close()" in the examples (now a deprecated 
+  method), to "session.close(true)".
+
+* Changes to the stock example:
+  - changed the default ticker symbols for the stock example from
+    "SUNW+NSCP+IBM" to "SUNW+AOL+IBM".
+  - the format of the quote.yahoo.com stock query page has changed.
+    Adjusted the code in parseReply() in StockServer.java to compensate,
+    and to be more bullet-proof.
+
+* The build.csh script should not have been referencing 
+  .../http/TCPSocketThread.class. There is no longer such a file.
+
+* The script.txt file in .../install/solaris needed to be adjusted from
+  JSDT-1.5-EA to JSDT-1.5
+
+* Changes to .../release/solaris/JSDT-1.5/html/setup.html:
+  - Adjusted text to read "Solaris 2.5.x or later" (rather than "Solaris 
+    2.5.x and 2.6").
+  - Added "appletviewer Ppong.html" and "runppongapp" in the examples section.
+
+* Changes to .../release/win32/JSDT-1.5/html/setup.html:
+  - Adjusted text to read "Windows 95, Windows 98 or Windows NT 4.0" (rather 
+    than "Windows 95 or Windows NT 4.0").
+  - Added "appletviewer Ppong.html", "runppongserver" and "runppongapp" in 
+    the examples section.
+
+* Changes to .../release/JSDT-1.5/html/setup.html:
+  - Added sections for starting the Ppong server, Ppong.html and the Ppong
+    user application.
+
+----
+
+v1.5 - 19th April 1999.
+
+* From: Justin Couch <couch@ccis.adisys.com.au>
+  URLString has the URL format in the top. You use <host>:<connection> etc. 
+  These are being interpreted as tags by the web browser, so you end up with
+
+    jsdt://:///
+
+  actually showing. Need to change these to the escaped versions of &gt; &lt;
+  for them to show up properly - even in <PRE> sections.
+
+* From: "Malcolm R. Railey" <mrailey@cme.com>
+  The wording for the references in the documentation for JSDT, to 
+  reliable/guaranteed delivery of messages to multiple consumers was
+  confusing and has been reworded.
+
+* Adjusted various files from EA to FCS wording.
+
+----   Work finished on the JSDT 1.5 (EA3.2) release   ----
+
+v1.5 - 16th April 1999.
+
+* From: Joshua Fox <Joshua_Fox@vocaltec.com>
+  On win32 machines, depending on how name lookup was configured on that
+  machine, it was possible for the JSDT Registry to hang when trying to
+  do the following method call:
+
+      address = InetAddress.getByName(hostName);
+
+  in the adjustHost() method in Registry.java.
+
+  The NamingProxy code has been adjusted to pass the IP address of the
+  sending machine across in the message to the Registry. The Registry
+  then uses this, rather than try to determine it for itself.
+
+  These changes have been applied to the socket, http and lrmp implementations.
+
+  Removed the question that deals with this problem, from the JSDT FAQ that 
+  comes with the distribution.
+
+* Updated the JSDT Release Notes with all the various changes since 12th
+  March 1999.
+
+----   Work finished on the JSDT 1.5 (EA3.1) release   ----
+
+v1.5 - 14th April 1999.
+
+* From: Joshua Fox <Joshua_Fox@vocaltec.com>
+  If a JSDT application has two or more Sessions created on the same
+  "host:port", then doing a Session.close() on one of them, would not close 
+  the connection until you'd done a Session.close() on the others as well.
+
+  Changes applied to the "socket", "http" and "lrmp" implementations.
+
+  For the "socket" implementation, this now has the side-effect of the 
+  application having to do a Session.close() or all it's Sessions for a 
+  particular "host:port" in order to get the underlying connection 
+  (ie. socket) closed. There are similar side-effects for the "http" and
+  "lrmp" implementations.
+
+* Deprecated the existing:
+
+    public void
+    close() throws ConnectionException, NoSuchSessionException;
+
+  method in Session.java, and added in a new variant method signature:
+
+/**
+ * <A NAME="SD_CLOSE"></A>
+ * closes the session, rendering the session handle invalid. This method
+ * should be called when an applet or application terminates to facilitate
+ * the cleanup process. If a client wishes to further participate in this
+ * session, then it will need to get a new session handle with
+ * <CODE>SessionFactory.createSession</CODE> 
+ *
+ * If there are no other Sessions on the same "host:port" as this Session, 
+ * the underlying connection being used by this applet or application will 
+ * automatically be closed.
+ *
+ * @param <EM>closeConnection</EM> indicates whether the underlying connection
+ * used by this applet or application should be forcefully closed. Forcefully
+ * closing this connection would automatically render all references to other 
+ * Sessions on the "host:port" being used by this Session as invalid.
+ *
+ * @exception ConnectionException if a connection error occured.
+ * @exception NoSuchSessionException if this Session doesn't exist.
+ *
+ * @since       JSDT 1.5
+ */
+
+    public void
+    close(boolean closeConnection) 
+		throws ConnectionException, NoSuchSessionException;
+
+----
+
+v1.5 - 13th April 1999.
+
+* Work on the build environment:
+  - Added an include call line for Makefile.config before the minclude
+    lines in the Makefiles for building the "socket" and "http" implementations
+    for both the "solaris" and "win32" environments. This now correctly
+    picks up the USE_SLL and USE_SERVLET definitions from the Makefile.config
+    files.
+
+----
+
+v1.5 - 12th April 1999.
+
+* Work on the build environment:
+  - Added DEBUGBUILD and OPTIMIZEDBUILD lines to the Makefile.config files
+    for both the solaris and win32 build hierarchies. The appropriate
+    line needs to be uncomments to generate that kind of build. By default,
+    neither the debug or the optimized compiler flag is turned on.
+  - Changed the default build to no longer compile with -g.
+  - Adjusted the "make clean" target for javadoc and javadoc-dev for the
+    solaris hierarchy, to remove all files in the JAVADOCDIR directory.
+  - Adjusted the Makefile.java.include files for both the solaris and win32
+    builds, to compile all .java files in one directory, that need compiling,
+    in one go, rather than one at a time.
+  - Removed $(CMD_PREFIX) from the beginning of the JAVAC definition in
+    Makefile.defs for the solaris and win32 build environments.
+  - Removed references to "SOURCES.platform.java" and SRCREFDIR from the
+    Makefile.java.include for the win32 build environment.
+  - Added a ".PRECIOUS: $(REMOTE_FILES.classes)" line to the
+    Makefile.rmi_stubs.include for the solaris and win32 build environments
+    (with REMOTE_FILES.classes defined in com_sun_media_jsdt_rmi.jmk) which
+    prevents Gnu Make thinking these are intermediate files when generating
+    the stubs/skels with rmic, and thereby removing them.
+
+----
+
+v1.5 - 9th April 1999.
+
+* From: "Graglia, Robert" <robert.graglia@gsc.gte.com>
+  "I should be getting events for resources being created only if the client 
+   actually is the one creating the resource.  If the client is simply being 
+   returned a reference to the resource, a creation event shouldn't be sent."
+
+   On 23rd September 1998, I made the following change:
+
+     For all four implementations, for all operations that generate events,
+     informing listeners of those events now occurs after sending the reply
+     to the original synchronous operation.
+
+   In moving the call to the informListeners() method in my server-side code,
+   I unfortunately forgot to take into account that operations like creating
+   a ByteArray, Channel or Token, should only generate the event once.
+
+   The fix has been applied to all four implementations.
+
+----
+
+v1.5 - 7th April 1999.
+
+* Work on the generation of a source distribution:
+  - Created .../install/build-src.csh
+  - Deleted .../impl/FUTURES (moving it's contents to a section in the TODO
+    file).
+  - Added two new definitions, USE_SSL and USE_SERVLET to the Makefile.config
+    files for the solaris and win32 build trees. Setting these values to
+    false, will prevent the SSL and servlet specific .java files from being 
+    compiled. By default they are set to true. Adjusted com_sun_media_jsdt.jmk
+    and com_sun_media_jsdt_http.jmk to use these two new definitions.
+  - Updated the top-level README file.
+
+* The setting of permissions for the killservers file in script.txt for the
+  Solaris distribution was incorrect.
+
+----   Work finished on the JSDT 1.5 (EA3.0) release   ----
+
+v1.5 - 5th April 1999.
+
+* From: Joshua Fox <Joshua_Fox@vocaltec.com>
+  If a JSDT URL used a hostname of "127.0.0.1", then this needed to be
+  replaced with the IP address of the local host to avoid a bogus entry
+  being created in the Registry. This change needed to be applied to the
+  "socket", "http" and "lrmp" implementations.
+
+----
+
+v1.5 - 15th March 1999.
+
+* Adjusted the HTTP implementation to use a pool (upto maxThreadPoolSize) of
+  SessionServerThreads. After the pool of threads has been created and
+  started, then the socket objects for subsequent connections are placed in
+  a queue of sockets connections. The SessionServerThreads try to get the
+  sockets out of this queue one at a time, and handle the request/response
+  associated with them.
+
+----   Work finished on the JSDT 1.5 (EA2.17) release   ----
+
+v1.5 - 12th March 1999.
+
+* The writeLine() method in WhiteBoardUser.java in the WhiteBoard example
+  needed to be adjust to create a Data object from a String (rather than
+  an array of bytes), to work properly with the changes for 10th March 1999.
+
+* Removed the showStack and showMessage definitions from StockServer.java
+  and StockViewer.java in the Stock example.
+
+* Removed the showStack and showMessage definitions from PpongServer.java
+  in the Ppong example.
+
+* Added a "JDK 1.2 Policy Files for the examples" section to the Release
+  Notes which includes the minimal policy files for the five examples that
+  are included with the JSDT 1.5 distribution.
+
+----   Work finished on the JSDT 1.5 (EA2.16) release   ----
+
+v1.5 - 10th March 1999.
+
+* From: Jose Jaime Meseguer Navarro <jjaime@dif.um.es>
+  If I send a string containing any spanish characters, like "ñ", "Ñ", 
+  "á", "é", "ü"... when I receive it in another client with 
+  Data.getDataAsString(), I'm always getting "Ã".
+
+  Adjust the Data(String) constructor to call the Data(Object) constructor
+  and the getDataAsString() method to call the getDataAsObject() method,
+  which simplifies things quite dramatically.
+
+----
+
+v1.5 - 8th March 1999.
+
+* Updated the Release Notes to include all changes since the EA5 release.
+
+----
+
+v1.5 - 3rd March 1999.
+
+* Investigated why, with the LRMP implementation, the proxy-side JSDT example
+  in ~/jsdt/test/receive didn't terminate. Looking at the thread dump at this
+  point, showed the following thread:
+
+    "inria.net.lrmp.LrmpImpl" (TID:0xfdf046b0, sys_thread_t:0xfee41db8, state:CW) prio=10
+        java.net.DatagramSocket.receive(DatagramSocket.java:224)
+        inria.net.MulticastSession.run(MulticastSession.java:237)
+        java.lang.Thread.run(Thread.java)
+
+  Added one line to .../inria/net/MulticastSession.java (at about line 76):
+
+        thread.setPriority(Thread.MAX_PRIORITY);
+        thread.setDaemon(true);                   // added this line.
+        thread.start();
+
+  Recompiled, and reran the application, and it then correctly terminated.
+
+----   Work finished on the JSDT 1.5 (EA2.15) release   ----
+
+v1.5 - 3rd March 1999.
+
+* More work on the HTTP implementation:
+  - Using a hostname of "localhost" in the Session URL's now works. This is
+    because the "http" implementation now attempts to use a direct TCP socket
+    connection first.
+  - Removed the system security code in the constructor of the AsyncConnector
+    class in JSDTMasterSocketFactory.java. Individual checks have been added
+    where they are needed. These are in:
+    > the createSocket() method in TCPSocketFactory.
+    > the run() method in TCPSocketServer.
+    > the readNotify() method in HttpSendSocket.
+  - Now works inside a Netscape browser; both with direct socket connections
+    and Http-To-Port connections.
+  - Now catches a ConnectionException in the run() method of the PingThread
+    class, and removes the entries in the two hash tables (sessionsById and
+    threadsById) for this id. This adjustment also means that the PingThread
+    thread doesn't die, when something like the server process terminates,
+    and is there to accept new ping thread entries when the server process 
+    is restarted.
+  - If the server wasn't running, then any time a proxy did an operation
+    that needed to create an instance of the Naming class, a new NamingProxy
+    instance was also created and a thread started, but that thread was not
+    terminated. Now, when we get a ConnectionException, that thread is stopped
+    in the cleanupConnection() method in NamingProxy.java.
+
+----   Work finished on the JSDT 1.5 (EA2.14) release   ----
+
+v1.5 - 2nd March 1999.
+
+* More work on the HTTP implementation:
+  - The close() method in SessionProxy.java needed to get a reply back from
+    the server. Without this, the server-side server socket was getting in
+    the wrong state, and not accepting (and processing) any new connections.
+  - Changed the httpProxyPort variable in JSDTObject to be httpTunnelPort,
+    and to default to 80 (was 8080). Adjusted the User Guide and the Release 
+    Notes for this change.
+
+----   Work finished on the JSDT 1.5 (EA2.13) release   ----
+
+v1.5 - 1st March 1999.
+
+* Got the restart changes mostly working for the HTTP implementation:
+  - If any of the client/server methods in NamingProxy.java get an
+    IOException, then cleanupConnection() is called to remove the connection
+    for that host.
+  - Added one line to the cleanupConnection() method in HttpThread.java to
+    set pingThread to null, forcing it to be created again.
+
+  There is still one scenerio that doesn't work. See entry in the TODO file.
+
+* Updated the Implementers Guide to include the recent change to the
+  initProxy() method in NamingProxy.java.
+
+* Changed the default timeout period for a message sent by a proxy to the
+  server, from 5 seconds, to 15 seconds.
+
+* Adjustments to the way the HTTP implementation works:
+  - It now attempts to establish a direct socket connection first. If this
+    fails, it reverts back to the two different Http connection types.
+  - Added in the equivalent class to the RMISocketInfo interface that the
+    RMI code uses, which defines the isReusable() method to determine if a
+    socket connection is reusable. This is needed in the HttpThread flush()
+    method, to determine if "out.close()" needs to be called.
+  - Update the User Guide and the Release Notes to reflect these changes.
+
+----
+
+v1.5 - 26th February 1999.
+
+* Applied the InterruptedException changes to the HTTP, LRMP and RMI
+  implementations.
+
+* Applied the restart changes to the HTTP and LRMP implementations. 
+
+  With the LRMP implementation, rather than throw a ConnectionException when 
+  the server process has been terminated, it throws a TimedOutException. This
+  needs to be caught, and used to force the reconnect.
+
+  The HTTP implementation does not correctly restart. Needs more investigation.
+
+----   Work finished on the JSDT 1.5 (EA2.12) release   ----
+
+v1.5 - 25th February 1999.
+
+* From: Ernie Varitimos <Ernie.Varitimos@GSC.GTE.Com>
+  "I have a JSDT 1.5 ea6 applet with several components. The applet makes a
+   connection to a Session and then the components set up various channels and
+   byte arrays. The applet works peachy! When I leave the page, or try to
+   reload the page, I get the following JSDT Exceptions:
+
+   java.lang.InterruptedException: operation interrupted
+ 	at java.lang.Object.wait(Native Method)
+ 	at java.lang.Object.wait(Compiled Code)
+ 	at com.sun.media.jsdt.socket.SocketThread.run(Compiled Code)"
+
+  There were several places where a call to wait() needs to be surronded by
+  a try/catch block for InterruptedException. These were:
+
+  - The getMessage() method in the DataReceivedQueue class now catches the 
+    InterruptedException rather than throwing it, and this means the 
+    try/catch block for InterruptedException in the DataReceivedThread class 
+    no longer needs to be there.
+  - The putMessage() method in the DataReceivedQueue class now catches the
+    InterruptedException rather than throwing it, and this means the 
+    try/catch block for InterruptedException in the ChannelProxy class no
+    longer needs to be there.
+  - Two occurances in the getMessage method in the ReceiveClient.java. The
+    first one is in a while loop; the second one was waiting for a specific
+    timeout period. If the latter is interrupted, then so be it. The 
+    getMessage() method no longer throws InterruptedException.
+  - The putMessage() in ReceiveClient.java no longer throws 
+    InterruptedException.
+  - The getMessage(), getMessage_(), putMessage() and putMessage_() methods
+    in SameVMThread.java no longer throw InterruptedException. This means
+    there in no longer a need to catch InterruptedException in the 
+    getSocketMessage().
+  - Added a try/catch block for InterruptedException around the wait() call
+    in the finishMessage() method in SocketThread.java, and removed it from
+    the main try/catch block outside the "while (state == FOUND_REPLY)" loop.
+  - Added a try/catch block for InterruptedException around the wait() call
+    in the waitForReplyNoTimeout() method in SocketThread.java, and removed 
+    it from the main try/catch block outside the "while (state == FOUND_REPLY)"
+    loop.
+  - Added a try/catch block for InterruptedException around the two wait() 
+    calls in the run() method in SocketThread.java.
+
+----   Work finished on the JSDT 1.5 (EA2.11) release   ----
+
+* From: Joshua Fox <Joshua_Fox@vocaltec.com>
+  Further work on the restart problem:
+  - The SessionFactory.sessionExists() method no longer needs to get do a
+    specific Naming.getRegistryConnection() call. It can instead call
+    Naming.list(String host, String connectionType).
+  - Adjusted the impl.AbstractNamingProxy interface initProxy() method to 
+    pass in the hash table of connections (keyed by host name) from the
+    Naming instance.
+  - Added a cleanupConnection() method to the NamingProxy class, which gets
+    called by SessionProxy.close(), to remove the known connection for this
+    host.
+ 
+----   Work finished on the JSDT 1.5 (EA2.10) release   ----
+
+v1.5 - 25th February 1999.
+
+* From: Joshua Fox <Joshua_Fox@vocaltec.com>
+  "I run the Chat Server.
+   I log in and Chat.
+   I kill the server while the connection is still running. Of course, I get
+   a connection exception when I try continue.
+   At this point I try everything possible to get a new connection, but 
+   despite it all, I keep getting a connection exception when I try to log in."
+
+   What I think you should be able to do at this point is call
+
+     session.close()
+
+   which should tidy up your proxy-side connection, but this tried to send a 
+   message to the server (so it can cleanup the server-side for this proxy), 
+   then it cleans up the proxy-side. Trouble is sending a message to the 
+   server is going to cause another ConnectionException, which means that the 
+   proxy-side cleanup doesn't occur properly. 
+
+   I've reworked this. If you now do a "session.close()", then it should tidy 
+   up the proxy-side before throwing a new ConnectionException.  You can then 
+   either terminate that applet, or perhaps add some kind of restart facility,
+
+----   Work finished on the JSDT 1.5 (EA9) release   ----
+
+v1.5 - 24th February 1999.
+
+* From: Joshua Fox <Joshua_Fox@vocaltec.com>
+  1. Create a session
+  2. Destroy it -- this is successful, as the Registry shows.
+  3. Create a session of the same name -- this is successful, as the Registry
+     shows.
+  4. Create a channel in the re-created session -- I get a "no such session"
+     exception.
+
+  The problem was that the old Session was not being removed from the hash
+  table of Sessions in the NamingProxy. Adjusted the destroy() method in
+  ManageableProxy.java, to, in the case of a Session destroy(), call a new
+  removeSession() method in SessionProxy.java, which will remove the entry
+  from the NamingProxy sessions hash table, and set the proxies session
+  variable to null.
+
+----
+
+v1.5 - 23rd February 1999.
+
+* More changes to the way the Registry works for the socket implementation:
+  > The registryExists() method now attemps to do the following:
+    - If the registry was started in this VM, then return true.
+    - If not in this VM, then get a proxy-side connection to the running
+      registry. Send it a T_Exists message, and wait for a reply. If it
+      doesn't get a reply (TimedOutException or IOException), then return
+      false. If it does get a reply, and the retval is 0, then return true.
+  > The stopRegistry() methods now attempts to do the following:
+    - If the registry was started in this VM, then just stop the thread.
+    - If not in this VM, then get a proxy-side connection to the running
+      registry. Send it a T_Stop message, and wait for a reply. If it
+      doesn't get a reply (TimedOutException or IOException), then throw
+      NoRegistryException. If it does get a reply, check that the retval
+      is zero. If the registry was started with startRegistry(), then it
+      will just stop that thread; otherwise it will do a System.exit(0)
+      to terminate the Registry application.
+
+* Applied the same changes to the LRMP implementation, with the following
+  differences:
+  - If a new Registry address is passed in via a command line argument to
+    the Registry, this is placed into JSDTObject.registryAddress.
+  - Added a RegistryEventHandler class to Registry.java so that messages
+    for the proxy and server threads can be sent to different handlers.
+  - If a message has been set to the Registry to terminate itself, and it
+    wasn't started by RegistryFactory.startRegistry(), then sleep for a
+    couple seconds before exiting, so the reply can be successfully sent
+    back to the proxy-side connection.
+
+* Applied the same changes to the HTTP implementation, with the following
+  differences:
+  - the proxyThread needs to be created every time.
+  - the calls to HttpThread.writeMessageHeader() need to include the sendNow
+    parameter.
+  - adjusted the makeNewConnection() method in HttpThread.java, to no longer
+    catch IOException.
+
+----   Work finished on the JSDT 1.5 (EA8) release   ----
+
+v1.5 - 19th February 1999.
+
+* Adjusted the way the RegistryFactory works. This was to fix the problems
+  that people were getting with the Registry not starting correctly on SGI,
+  and with the Registry process persisting under WinNT. The RegistryFactory
+  class now has the following public methods:
+
+    public static void
+    startRegistry(String registryType)
+                throws RegistryExistsException, NoRegistryException;
+
+    public static void
+    startRegistry(String registryType, int port)
+                throws RegistryExistsException, NoRegistryException;
+
+    public static void
+    stopRegistry(String registryType)
+                throws NoRegistryException;
+
+    public static void
+    stopRegistry(String registryType, int port)
+                throws NoRegistryException;
+
+    public static boolean
+    registryExists(String registryType) throws NoRegistryException;
+
+    public static boolean
+    registryExists(String registryType, int port)
+                throws NoRegistryException;
+
+  The variable com.sun.media.jsdt.impl.JSDTObject.registryPort
+  will be set to the given port number.
+
+  If the Registry is started by the startRegistry method, then it runs in
+  its own thread. This is not a deamon thread, so it should either be 
+  stopped with the stopRegistry method, or it will be terminated when the 
+  application that started it, exits.
+
+  Note that if you start a Registry on anything but the default port, then
+  all other JSDT applets and applications running in other VM's, *must*
+  define the new registry port number at the beginning of their code with 
+  the JSDTObject.registryPort variable. Ie:
+
+    com.sun.media.jsdt.impl.JSDTObject.registryPort = 5555;
+
+  These changes were applied to all implementations.
+
+* Adjusted Registry.java  for the RMI implementation to no longer exec the
+  sun.rmi.registry.RegistryImpl application, but instead to create a new
+  instance of RegistryImpl(JSDTObject.registryPort), and then to just go to
+  sleep.
+
+* Adjusted the RegistryFactory section of the User Guide. Removed all
+  references to JSDTObject.useJreForRegistryStart from the User Guide and
+  the Release Notes.
+
+* Adjusted the Implementers Guide to fixup the methods in the
+  AbstractRegistry interface.
+
+----
+
+v1.5 - 17th February 1999.
+
+* From: "Joshua Fox" <Joshua_Fox@vocaltec.com>
+  Server-side application was exiting with:
+    Exception: timed out
+    TCPSocketThread: handleMessage: Should be over-ridden by it's subclass.
+
+  The NamingProxy class is the only class to create a "new TCPSocketThread".
+  All other classes create a subclass of it. If the application was performing
+  a NamingProxy operaion (such as Naming.lookup()), and this operation timed
+  out for some reason (perhaps because the network wasn't configured 
+  correctly), then the handleMessage() method inside the SocketThread run()
+  loop is called. In short, the handleMessage() shouldn't print out an error
+  message; it should just silently handle that message. Note that the
+  TimedOutException is new to JSDT 1.5. In JSDT 1.4, the operation would
+  have waited patiently forever, so this situation couldn't occur.
+
+* Updated the Release Notes and the User Guide to reflect that the default 
+  timeout period has been changed to 15000.
+
+----   Work finished on the JSDT 1.5 (EA7) release   ----
+
+v1.5 - 17th February 1999.
+
+* Applied the printing of exception error messages and stack traces changes,
+  to the LRMP and RMI implementations.
+
+* From: "Varitimos, Ernie" <Ernie.Varitimos@GSC.GTE.Com>
+  Getting a java.lang.InterruptedException: operation interrupted in the
+  run() method in DataReceivedThread with the socket implementation, when
+  the Netscape Navigator browser window holding the applet is resized.
+
+  Solution is to catch (and ignore) InterruptedException in the run() method.
+
+----   Work finished on the JSDT 1.5 (EA6) release   ----
+
+v1.5 - 16th February 1999.
+
+* The default timeout period (the time in milliseconds to wait for a reply
+  from the server) has been extended from 5000 (5 seconds) to 15000 (15 
+  seconds).
+
+* Changed the version string to "JSDT 1.5 (EA6)".
+
+* Adjusted the JSDTSecurity class to add in code to allow permission for
+  certain restricted operations to work under Microsoft Internet Explorer.
+  See: http://support.microsoft.com/support/kb/articles/q175/6/22.asp
+  This still isn't enough. The applet needs to reside in a signed cab file
+  before it will work properly. The Microsoft support document has a link
+  on more information, and there was also a Dr Dobbs article in the February
+  1999 edition. See: http://www.ddj.com/articles/1999/9902/9902toc.htm
+
+* Changed the debug output for messages with either "unknown type" or
+  "unknown action", to do a message.toString(), which translates the type
+  and action to their equivalent token. It'll also printout the session
+  number and the client id. Changes to the "socket", "http" and "lrmp"
+  implementations.
+
+* Added a Q14 to the JSDT FAQ that comes with the distribution:
+  Q14. Why do some of the methods in the URLString class take an 
+       extraordinarily long time on Windows?
+  This is based on the Q/A in the RMI FAQ at:
+  http://java.sun.com/products/jdk/rmi/faq.html#bind
+
+* Added several new methods to socketJSDTObject.java:
+
+    void final
+    error(Object o, String s, Exception e);
+
+    final void
+    error(Object i, String method, String message);
+
+    final void
+    unknown(Object i, String method, String s, Object o);
+
+    final void
+    unknown(Object i, String method, String s, int val);
+
+    final void
+    waited(Object i, String method, char action);
+
+  which simplify (and centralise) the printing of exception error messages
+  and stack traces. They are called in numerous places. Similar changes for
+  the HTTP implementation.
+
+----
+
+v1.5 - 12th February 1999.
+
+* Adjusted the Makefiles under .../build/win32 to correctly build the 
+  "javadoc" and "javadoc-dev" targets.
+
+* Generated a signed jsdt.jar file. Here are the steps:
+  - Copy the jsdt.jar file to be signed into:
+    /export/home/richb/jsdt/other/sign/jar.
+  - Get the Verisign floppy from Mike, and copy it's contents into:
+    /export/home/richb/jsdt/other/sign/keydir. This should include a
+    subdirectory called .netscape.
+  - Inside that sub-directory:
+    mv CERT7.DB cert7.db
+    mv KEY.DB key.db
+  - Copy /export/home/richb/jsdt/other/sign (and all its subdirectories) to
+    /net/capra/export6/richb
+  - Logon to capra as root.
+  - Change directory to /export6/richb/sign
+  - Run:  csh -x signjar.csh
+    It's ask you for a password. Give capra's root password.
+  - This should then successfully build a signed JSDT jar file called
+    jsdtsigned.jar in /tmp/JSDT-tmp.
+  - Move that file to /export/home/richb/jsdt/other/sign/jar (via
+    /home/richb).
+
+----   Work finished on the JSDT 1.5 (EA5) release   ----
+
+v1.5 - 9th February 1999.
+
+* Changes to the HTTP implementation:
+  > Included a Java servlet equivalent of the CGI script which is *much*
+    faster.
+  > Added a cross reference to the JSDT User Guide HTTP implementation section,
+    to point to the JSDT Release Notes for more details on how to install the
+    servers CGI script or Java servlet for use through firewalls.
+  > Added a paragraph to that same section to describe that the JSDT 
+    applications need to properly cleanup their JSDT resources as there is no 
+    permanent connection between either the proxies and the server or the 
+    server and the Registry.
+  > Added a section to the Release Notes which describes how to install the
+    files needed to work through a firewall.
+  > Added the Apache jserv Java servlet classes to the .../lib/jserv directory
+    and updated Makefile.[config,defs] to use them.
+
+* Fixups to correctly build (and document) the generation of the deliverables:
+  > Adjustments to the PC section of the .../impl/BUILD document.
+  > The .../examples/templates/*.txt files were not being included in the
+    Solaris or Windows distributions.
+  > The .../bin/JSDTConfig script needed execute permission.
+  > The .../bin/killservers script needed write and execute permission.
+  > The JSDTConfig script needed to include runppongapp and runppongserver.
+  > The killservers script needed to also kill runppongserver and 
+    examples.ppong.
+  > The files in .../examples/templates, .../bin/examples/templates and the
+    runme.bat file for the Windows distribution all needed to have write
+    permission.
+
+----
+
+v1.5 - 8th February 1999.
+
+* Changes to the HTTP implementation:
+  > Integrated the HTTP socket abstraction code from RMI to replace the
+    previous way that HttpThread did HTTP calls.
+  > Added httpProxyPort to section 8.6 of the JSDT User Guide and the JSDT
+    Release Notes.
+  > Added a section to the User Guide describing how to use this implementation
+    through a firewall.
+  > Adjusted the build.csh script where it creates the client-side HTTP jar 
+    file, to include the new HTTP socket classes.
+
+* Tested client-side jar files for the socket, http and lrmp implementations.
+  This resulted in the socketServers hash table for the socket/lrmp/http 
+  implementations being moved from the SessionServer class into the 
+  TCPSocketServer class for the socket and http implementations, and the
+  portServers hashtable being moved into the lrmpThread class for the LRMP
+  implementation.
+
+----
+
+v1.5 - 3rd February 1999.
+
+* Adjustments to the build.csh script to:
+  > Correctly install the README.TXT and zero-length runme.bat for the win32
+    distribution.
+  > Only include license.txt for the generic distribution.
+  > Put the five .html files under the examples sub-directory for the generic
+    distribution.
+
+* Changes made to the HTTP implementation to hopefully provide a firewall
+  solution. Have taken a similar approach to the way that RMI does it.
+
+  There are two forms of HTTP-tunneling, tried in order. The first is
+  http-to-port; the second is http-to-cgi.
+ 
+  In http-to-port tunneling, we attempt an HTTP POST request to a http: URL
+  directed at the exact hostname and port number of the target server. The
+  HTTP request contains a single JSDT request. If the HTTP proxy accepts this
+  URL, it will forward the POST request to the listening JSDT server, which
+  will recognise the request and unwrap it. The result of the call is wrapped
+  in an HTTP reply, which is returned through the same proxy.
+ 
+  Often, HTTP proxies will refuse to proxy requests to unusual port numbers.
+  In this case, we will fall back to http-to-cgi tunneling. The JSDT request
+  is encapsulated in a HTTP POST request as before, but the request URL is of
+  the form http://hostname:8080/cgi-bin/java-jsdt.cgi?port=n (where hostname
+  and n are the hostname and port number of the intended server). There must
+  be an HTTP server listening on port 8080 on the server host, which will run
+  the java-jsdt.cgi script (supplied with the JSDT distribution), which will
+  in turn forward the request to a JSDT server listening on port n. JSDT can
+  unwrap a HTTP-tunneled request without help from a http server, CGI script,
+  or any other external entity. So, if the client's HTTP proxy can connect
+  directly to the server's port, then you don't need a java-jsdt.cgi script
+  at all.
+
+  Added in another configurable variable httpProxyPort, to the JSDTObject
+  class in the impl package. This allows the user to specify an alternate
+  port that the HTTP proxy server on the JSDT server machine is running on.
+  The default port number is 8080.
+
+----
+
+v1.5 - 2nd February 1999.
+
+* Adjusted the .../install/build.csh script to build the JSDT Developers Kit.
+
+----
+
+v1.5 - 1st February 1999.
+
+* Changes needed to get JSDT to build on the win32 platform:
+  > Fixed up the locations of various things in the Makefile.config file
+  > Fixed up the JAVADOC and CLASSPATH definitions in the Makefile.defs
+    file.
+  > Put the ssl.jar file under the JSDT workspace in the .../lib/ssl
+    directory.
+  > Removed all references to SRCREFDIR (relic from the JMF workspace).
+
+----
+
+v1.5 - 29th January 1999.
+
+* Adjusted the Data(String string) constructor to get the bytes in that
+  string using getBytes("UTF8") rather than just getBytes(). This is the
+  result of seeing an email by David Brownell to the java-networking alias
+  that stated:
+
+  "If you don't pass "UTF8" (no dash!) in, the high byte of each
+   Unicode characters will be silently stripped off and when
+   you recreate a string from bytes it'll be incorrect in many
+   increasingly common cases.  For example, your code will fail
+   completely when used with Japanese, Chinese, Korean, Thai,
+   Vietnamese, Greek, Turkish, Russian, etc ..."
+
+* Made the following changes to the JSDT User Guide:
+  > Added in a small paragraph to describe how to delete Clients registered
+    in the Registry.
+  > Added to the LRMP section in the Implementation chapter, a new 
+    sub-section which describes how to trouble-shoot the various likely 
+    problems (taken from faq.html).
+
+* Fixed up the Table of Contents "chapter" on the Developers Guide.
+
+* From Alexandre Garneau <Alexandre.Garneau@Unifor.Com>
+  When a session is no longer needed, calls to destroy() and close() should
+  remove all resources associated with it. I noticed though that the
+  following threads remains in memory:
+
+  - TCPSocketThread:"host":4561
+  - TCPSocketServerThread:"session_port"
+  - SameVMSessionServerThread:"session_port"
+  - DataReceivedThread:Channel:"channel_name"
+     ( 1 for each channel of the session)
+
+  I suspect that these threads have all freed their resources and that they
+  are the only objects remaining. But still, i would appreciate to see these
+  threads die, allowing the VM the exit "normally" and to simplify the "Full
+  Thread Dump". [socket, http, lrmp].
+
+  The short answer to this is that all proxy threads (and one server thread)
+  that JSDT creates and starts should be deamon threads. A lot of them 
+  already were, but it only takes one non-daemon thread still running to 
+  prevent all the daemon threads from terminating.
+
+  The following threads have been adjusted to be daemon threads in the
+  "socket", "http" and "lrmp" implementations:
+
+  Class/method:  ByteArrayProxy: valueChanged()
+  Thread name:   "ListenerMessageThread:" + byteArray.getName()
+
+  Class/method:  DataReceivedThread: handleMessage()
+  Thread name:   "ConsumerMessageThread:" + c.getName()
+
+  Class/method:  JSDTMessage: informListeners()
+  Thread name:   "ListenerMessageThread: " + clientName + ":" + resourceName
+
+  Class/method:  ManagerProxyMessage: parseManagerMessage()
+  Thread name:   "AuthenticateClientThread:" + manageable.getName()
+
+  Class/method:  SessionProxyMessage: parseServerClientMessage()
+  Thread name:   "ClientMessageThread:" + client.getName() + ":" + tokenName
+  [2 occurances].
+
+  Class/method:  SessionServer: constructor
+  Thread name:   "TCPSocketServerThread:" + port
+
+  Class/method:  TCPSocketServer: createSameVMSessionServerThread()
+  Thread name:   "SameVMSessionServerThread:" + port
+
+* Updated the "Changes between 1.4 and 1.5" section in
+  .../release/JSDT-1.5/docs/JSDTNOTES.html with the changes since the first
+  early-access version was released.
+
+---------- Send out the latest jsdt.jar (EA3) to one EA tester -------------
+
+v1.5 - 27th January 1999.
+
+* The build.csh now seems to generate the three JSDT distributions correctly.
+
+* Fixed up the faq.html document to mention the http implementation, and to
+  use a link to www.sun.com/software/jsdt rather than 
+  java.sun.com/prodicts/java-media/jsdt.
+
+----
+
+v1.5 - 26th January 1999.
+
+* More work on the HTTP implementation:
+  > NamingProxy:initProxy() always creates an HttpThread for proxyThread,
+    irrespective of whether it's running on the same machine as the Registry.
+  > The RegistryServerThread class now extends HttpThread and not 
+    TCPSocketThreead.
+  > This means that Java applications and applets running in appletviewer now
+    work, on other machines besides the one that the server is running on.
+
+* Fixed up the deprecated methods in the Ppong example.
+
+* Created an install directory that will be used to build the three JSDT
+  distributions. Wrote a build.csh script that will copy all the relevant
+  files into this area, under three directories; solaris, win32 and generic.
+
+----
+
+v1.5 - 25th January 1999.
+
+* Created a master workspace for JSDT 1.5 on capra, at:
+  /net/capra/export5/JavaMedia/Share/workspace/JSDT-1.5
+  Workspace on stard is now a child of that.
+
+  Made the following changes:
+  > Added the lrmp.jar file to the workspace as .../lib/lrmp/lrmp.jar
+  > Adjusted .../build/solaris/makesfiles/Makefile.[defs,config] to
+    successfully build the four implementations, using just files in the
+    workspace.
+
+----
+
+v1.5 - 21st January 1999.
+
+* Work on the HTTP implementation:
+  > Adjusted the initProxy() method in the NamingProxy class. The comparison
+    between the host and the local host is now done with InetAddress.equals()
+    not using host name Strings. The latter was failing when comparing "stard"
+    against "stard.eng.sun.com".
+  > If I add the following line:
+
+    http.nonProxyHosts=stard.eng.sun.com|stard
+
+    to my ~/.hotjava/properties file, then the JSDT HTTP implementation now
+    successfully works inside appletviewer. Note that the <host> portion of
+    the JSDT Session URL used by the applet must exactly match an entry in
+    this http.nonProxyHosts line.
+  > Added a bit of debug to the getMessageHeader() method in Message.java.
+    If the HTTP response code is not HTTP_OK, then the response code and
+    message is printed out (if showMessage is true). Note that if we are
+    running in a Netscape browser, this causes a ClassCastException, because
+    they have a netscape.net.URLConnection, not an HttpURLConnection.
+  > Add a code chunk to call JSDTSecurity.enablePrivilege.invoke() in the
+    initProxy() method of the NamingProxy class.
+  > With Netscape 4.5, you can setup "no proxies on host" via the Advanced
+    Preferences panel. This writes the following line to 
+    ~/.netscape/preferences.js:
+    user_pref("network.proxy.no_proxies_on", "stard.eng.sun.com,stard");
+  > Added an initial space to the " application/octet-stream" parameter in
+    the call to urlConn.setRequestProperty() in the writeMessageHeader()
+    method in HttpThread.java. For some reason, under Netscape it was not
+    including one in the: "Content-type: application/octet-stream" line it 
+    generated.
+
+----
+
+v1.5 - 19th January 1999.
+
+* From: Jonathan Gray <ceejg1@cee.hw.ac.uk>
+  Needed to add a "created = true;" line to the small code sample on page 20
+  of the User Guide, that deals with Session creation.
+
+----
+
+v1.5 - 15th January 1999.
+
+* Changes to the Ppong example:
+  > Moved the code that was in Ppong:stop() to Ppong:destroy(). Removed the
+    stop() method.
+
+* Started to add the JSDTSecurity calls to the LRMP implementation.
+
+----
+
+v1.5 - 13th January 1999.
+
+* The RMI implementation of Channel.sendToClient() was incorrect. It should 
+  have been using an _RMIClient to try to get the consumer out of the 
+  clientConsumers hash table, not the receiverName String.
+
+* Changed the way that Channel.receive() works for all implementations.
+  It no longer uses a name of "__receive__" + client.getName(). It now
+  just uses the normal client.getName().
+
+* Added links to Bo's paper and the original Ppong! web page in the three
+  examples.html files.
+
+* Changes to the Ppong example:
+  > PpongServer was getting a "no such consumer" exception in
+    PortListener.channelJoined(). Moved the addConsumer() call for that
+    proxy from PpongCourt.handleSession() to GeneralClient.run().
+  > Game:send was getting a "no such client" exception when trying to send
+    the score to the server. Fix was to remove the name randomness factor 
+    out of the PpongClient constructor, and put just before the two places
+    (in Game:constructor and GeneralClient:run), where a PpongClient is 
+    created.
+  > Should have been using court.client.getName() rather than myHost in the
+    call to writeScore() in Game:end().
+  > The PortListener:channelJoined() method should be channelConsumerAdded().
+  > Added a Channel listener to the Player class. When that Player leaves
+    the Channel, the connected boolean is set false. This is used in the
+    Player:send() method, to determine if the message should be sent or not.
+
+----
+
+v1.5 - 12th January 1999.
+
+* Updated the Copyright messages on the release HTML web pages to 1999.
+
+* Added screen shots of the fives examples to the three examples.html pages.
+  Adjusted the makelinks shell script to automatically generate these links.
+
+---------- Send out the latest jsdt.jar file to EA testers ---------------
+
+v1.5 - 11th January 1999.
+
+* Changes to the Ppong example:
+  > Adjusted code to allow it to play sounds when run as an application (as 
+    opposed to an applet).
+  > Adjust the constructor for the PpongClient class to append a random
+    number on the end of the name so that two instances of Ppong can be
+    run on the same machine.
+
+----
+
+v1.5 - 8th January 1999.
+
+* Added a JSDTSecurity class to the impl package which enables calls to
+  various methods that the Netscape security manager finds restrictive.
+  These methods are:
+
+      URLString:constructor
+      socket.TCPSocketFactory:createSocket
+      socket.TCPSocketServer:run
+
+* For the socket implementation, changed the run() method in SocketThread 
+  to call notifyAll() instead of waitingThread.interrupt() when a reply 
+  has been found. This means that the waitingThread variable is no longer 
+  needed. Applied similar changes to the LRMP and HTTP implementations.
+
+----
+
+v1.5 - 7th January 1999.
+
+* Simplified the import calls in each .java file by reverting back to the
+  '*' wildcard for each package.
+
+* Updated all the Copyright messages in each .java file to 1999 (from 1998).
+
+----
+
+v1.5 - 5th January 1999.
+
+* Added the Ppong example into the distribution. Updated all the scripts
+  files, Makefiles etc... that made reference to examples.
+
+----
+
+v1.5 - 4th January 1999.
+
+* The following token methods always get a status integer value returned
+  from the server to the proxy, irrespective of whether the return value
+  in zero or not:
+
+  give()    grab()    request()    release()    test()
+
+  This was a problem with the socket, lrmp and http implementations.
+
+====

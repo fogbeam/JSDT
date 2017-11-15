@@ -1,0 +1,985 @@
+
+/*
+ *  Copyright (c) 1996-2005 Sun Microsystems, Inc.
+ *  All Rights Reserved.
+ *
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU Library General Public License as
+ *  published by the Free Software Foundation; either version 2, or (at
+ *  your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful, but
+ *  WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ *  General Public License for more details.
+ *
+ *  You should have received a copy of the GNU Library General Public
+ *  License along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+ *  02111-1307, USA.
+ */
+
+/* Things to fixup / improve in the new version. */
+
+- finish work on the README.md file.
+- fixup all the warnings if possible - (see below).
+- Work out what needs to be done w.r.t. the "synchronized on non-final field"
+  warnings.
+- add description to all @param tags (where missing).
+- add description to all @return tags (where missing).
+- fixup all "Can be replaced with single 'Map.putIfAbsent' method call ...".
+- fixup all places where we are getting "implicit call to toString()".
+- fixup all the Thread stop(), suspend() and resume() calls. See:
+  https://docs.oracle.com/javase/1.5.0/docs/guide/misc/threadPrimitiveDeprecation.html
+  for more details.
+- fixup all the "Dereference of '<whatever>' may produce
+  'java.lang.NullPointerException' ..." warnings.
+- fixup all non-Javadoc related comments that start with "/** ...".
+- update the User Guide.
+- make sure each of the examples still works.
+- test the "http" implementation to make sure it work.
+- equivalent of readFully() when fixing the deprecated readLine().
+  https://stackoverflow.com/questions/20782164/c-java-datainputstream-readfully-equivalent
+- first player in ppong game "locks up" after a while with debug messages on.
+- test synth demo on two different machines.
+- synth demo doesn't seem to play the second instance of the client application
+  when running on the same machine.
+- Need to finish fixing up the stock demo server parsing of the marketwatch
+  web page.
+- Get the sound demo working.
+- Get the phone demo working.
+
+- Current compilation warnings to fixup:
+  Information:javac 1.8.0_131 was used to compile java sources
+  Information:10/30/17 1:52 PM - Compilation completed successfully with 22 warnings in 10s 507ms
+
+  /home/richb/IdeaProjects/JSDT/src/com/sun/media/jsdt/impl/SessionImpl.java
+  Warning:(969, 11) java: unreachable catch clause
+  thrown types com.sun.media.jsdt.ConnectionException,com.sun.media.jsdt.NoSuchSessionException have already been caught
+
+  /home/richb/IdeaProjects/JSDT/src/com/sun/media/jsdt/http/TCPSocketServer.java
+  Warning:(201, 23) java: stop() in java.lang.Thread has been deprecated
+
+  /home/richb/IdeaProjects/JSDT/src/com/sun/media/jsdt/http/HttpThread.java
+  Warning:(552, 15) java: suspend() in java.lang.Thread has been deprecated
+  Warning:(580, 15) java: resume() in java.lang.Thread has been deprecated
+
+  /home/richb/IdeaProjects/JSDT/src/com/sun/media/jsdt/http/SessionServer.java
+  Warning:(1067, 30) java: stop() in java.lang.Thread has been deprecated
+  Warning:(1072, 30) java: stop() in java.lang.Thread has been deprecated
+
+  /home/richb/IdeaProjects/JSDT/src/com/sun/media/jsdt/http/HttpInputStream.java
+  Warning:(74, 23) java: readLine() in java.io.DataInputStream has been deprecated
+
+  /home/richb/IdeaProjects/JSDT/src/com/sun/media/jsdt/http/SessionProxy.java
+  Warning:(1486, 24) java: stop() in java.lang.Thread has been deprecated
+
+  /home/richb/IdeaProjects/JSDT/src/com/sun/media/jsdt/http/Registry.java
+  Warning:(811, 23) java: stop() in java.lang.Thread has been deprecated
+  Warning:(867, 23) java: stop() in java.lang.Thread has been deprecated
+
+  /home/richb/IdeaProjects/JSDT/src/com/sun/media/jsdt/http/CGIHandler.java
+  Warning:(307, 32) java: readLine() in java.io.DataInputStream has been deprecated
+
+  /home/richb/IdeaProjects/JSDT/src/com/sun/media/jsdt/http/NamingProxyThread.java
+  Warning:(124, 19) java: stop() in java.lang.Thread has been deprecated
+
+  /home/richb/IdeaProjects/JSDT/src/com/sun/media/jsdt/http/NamingProxy.java
+  Warning:(307, 15) java: stop() in java.lang.Thread has been deprecated
+  Warning:(308, 17) java: stop() in java.lang.Thread has been deprecated
+  Warning:(310, 20) java: stop() in java.lang.Thread has been deprecated
+
+  /home/richb/IdeaProjects/JSDT/src/com/sun/media/jsdt/http/ConnectionThread.java
+  Warning:(233, 15) java: stop() in java.lang.Thread has been deprecated
+
+  /home/richb/IdeaProjects/JSDT/src/examples/ppong/GeneralClient.java
+  Warning:(79, 17) java: stop() in java.lang.Thread has been deprecated
+
+  /home/richb/IdeaProjects/JSDT/src/com/sun/media/jsdt/http/ServletHandler.java
+  Warning:(401, 36) java: readLine() in java.io.DataInputStream has been deprecated
+
+- Longer term things to do:
+  > see if it's possible to write unit tests.
+  > replace the awt UI in the examples with whatever is used now (swing?).
+    If it's javaFX, then there is a tutorial at:
+    https://docs.oracle.com/javafx/2/get_started/jfxpub-get_started.htm
+  > see if there is anything out there that can replace the LRMP implementation.
+    See https://stackoverflow.com/questions/5861518/reliable-multicasting-in-java
+    for a couple of possibilities.
+  > consider using the new IO (nio).
+
+----
+
+/* Older entries (from 2004 and earlier). */
+
+Things to do for JSDT 2.4.
+--------------------------
+* Fixup the various warnings displayed when generating the javadoc with
+  JDK 1.5.0.
+* Fixup the new depreciated warnings when compiling with JDK 1.5.0.
+
+Limitations.
+------------
+* Data priorities are ignored. See the NOTES file. [all].
+
+* No unreliable channels. [multicast, http].
+  For the LRMP implementation, Tie suggests trying to set:
+      LrmpProfile.reliability = LrmpProfile.LossAllowed;
+
+* Cannot handle Data messages greater than 8 Kbytes on unreliable (UDP)
+  Channels. [socket].
+
+
+Bugs.
+-----
+* From sammy_pak@hp.com
+  See test program in: /export/space/richb/jsdt/test/sammy/4Rich2
+  "Using my latest test client program (TestClient2) I noticed the number
+  of SessionServerThreads:socket on the server (TestServer2 same as the
+  one I sent you previously) did not get cleaned up. The difference in
+  this TestClient2 program from the previous one I sent you is that the
+  session.close(false) is called after the session is destroyed and not
+  before. If I called it before then the SessionServerThreads do get
+  cleaned up."
+
+  The problem is that on the proxy-side, every time you are creating a new
+  Session, it's creating a new SessionProxyThread, which in turn is creating
+  a new socket connection to the server. This in turn then starts a new
+  SessionServerThread. When you destroy a Session, this calls a method called
+  removeSession(), which will only attempt to destroy all the
+  SessionServerThreads associated with the socket server on this particular
+  port, if the size of the sessions hashtable it has is zero. You have that
+  controlling session still going which prevents that happening.
+
+  I think the real fix here is for the proxy to not create another socket
+  Connection and therefore another SessionServerThread) if it already has a
+  SessionProxyThread for another Session connected to the same host:port.
+
+* From: jrchoi@GOODNEWS.OR.KR
+  [Need to check this one...]
+  After a Client has been expelled from a Channel, and that Client then
+  rejoins it, it gets two copies of each Data object sent to that Channel.
+
+* Adjust the processEvent() method in LRMPImpl.java for the "multicast"
+  implementation, to print out the error message (and stack), if showMessage
+  (and showStack) are true.
+
+* Things still to do for the new "multicast" implementation.
+  > Implementers Guide: add a section describing what needs to be done to add
+    in an alternative reliable multicast framework.
+  > RMF: need to get it to successfully run the Test Suite.
+  > RMF: need to apply the same optimisation changes as were applied to the
+    LRMPImpl class.  See: /export/space/richb/jsdt/other/RMFImpl.java.
+
+* /export/space/richb/jsdt/test/JSDT-2.1/Test1 doesn't work properly for the
+  "http" implementation, unless the Connection property "alwaysPing" is set
+  to true.
+
+* Get ClientFactory.createClient() working in Internet Explorer.
+
+* From: Ugo Cei <ugo@fuoriorario.it>
+  "When a Client does an operation that requires authentication, it's
+   authenticate() method is called. If that method did something like pop
+   up a dialog box asking the user for a password, then this would block
+   another Client from doing a similar thing until the first Client had
+   entered a password and dismissed that popup."
+
+  This is a problem for the "socket" and "multicast" implementations. If you
+  need this functionality, then you should use the "http" implementation.
+
+* From: "Varitimos, Ernie" <Ernie.Varitimos@GSC.GTE.Com>
+  I have another question regarding developing applets on one machine
+  using IE vs Navigator, this concerns using a JSDT URL with localhost vs
+  machinename for the hostname. Navigator likes localhost, IE like
+  machinename, but neither won't work visa versa.
+  See: http://java.sun.com/products/java-media/mail-archive/Share/0581.html
+
+* From: John Ko <jko@PARAINC.COM>
+  JSDT objects are not being serialized properly for passing through RMI.
+
+* From Scott Swann <scott@frontiertechnologies.com>
+  If a proxy-application is forceably terminated, any special Clients it had
+  created and bound in the Registry are not destroyed.
+
+* From: Justin Couch <couch@ccis.adisys.com.au>
+  [Need to be able to reproduce...]
+  User A creates a channel/token etc. User B joins said object. User A
+  exits (including the VM) User B attempts to do anything with the object
+  and it all hangs. If anything then attempts to access the registry to
+  add itself to an object or to even list items in the registry nothing
+  happens.
+
+* A couple of the JSDT examples use methods that are deprecated in JDK 1.2:
+  - sound/SoundListener.java:117: paf.resume();
+  - sound/SoundListener.java:137: paf.suspend();
+  - sound/SoundUser.java:224: list.addItem(titles[i]);
+
+* The "run-<example>-user" targets in Makefile.run don't work on the Windows
+  platform.
+
+* See if there is anything else that can be done to improve the deadlock
+  situation reported by Zoltan Luspai <zoltan@proxima.co.uk>. Message is
+  in the JSDT mail archives. Files are in: ~/jsdt/test/zoltan
+
+* Need to apply the client spoofing check to unreliable channels.
+
+* Problems with the "multicast" implementation:
+  - Probably need something like the syncInput() method from the "socket"
+    implementation.
+  - Add in the data priority hooks (setChannelThreads() etc...).
+  - Get working inside the Netscape browser.
+  - Might need to add a MulticastSession.stop() in the Session.close() method.
+
+* Problems with the HTTP implementation:
+  > The application (proxy or server) now needs to explicitly cleanup all
+    it's sessions and clients stored in the Registry.
+  > The cleanupConnection() methods have been removed from RegistryServerThread
+    and SessionServerThread. Can this code be put somewhere else?
+
+
+Possible Code Adjustments.
+--------------------------
+* For the "multicast" implementation:
+  - the getSocketMessage() method in multicastThread.java could be cleaner.
+  - the putback() method in multicastThread.java might be more efficient if it
+    inserted the entries in reverse order.
+
+* Termination of threads could be made cleaner.
+
+* Add more similar classes to JSDTThread.java to the impl package, and
+  adjust the code in the three implementations to use them. Move as much
+  common code as possible to those new impl package classes.
+
+* Vector and Hashtable methods are already synchronized. Probably don't need
+  synchronized blocks around these calls.
+
+* Need to adjust waitForReplyNoTimeout() to be something that waits for the
+  user to enter an authentication response. This should default to about
+  2 minutes, and should be a variable in JSDTObject that's settable on an
+  application basis.
+
+* See if the number of SessionProxyThreads and SessionServerThreads can be
+  reduced.
+
+* Should probably either not have a waitForReplyNoTimeOut() in the join()
+  method in ManageableProxy.java or add one in the authenticate() method
+  in AuthenticateClient.java, for consistency.
+
+* Should probably only do putPriviledgedClient() calls if this is a
+  managed object.
+
+* Should be able to call the create[Channel, ByteArray, Token]() methods
+  for an unmanaged session with a Client value of null if autoJoin is false.
+
+* See if the various protected/package variables in the various classes can
+  have a tighter protection (ie. private/protected).
+
+* Remove all Thread.[resume, suspend, stop] calls as these are now deprecated.
+
+* Consider NamingProxy being a subclass of ManageableProxy, then you wouldn't
+  need all the extra code for handling listeners; it would already be there.
+
+* From: Stephen_Hinde@hplb.hpl.hp.com
+  Considering adjusting the URLString constructor to let the objectName
+  field be the remainder of the URL string.
+
+* For the new "non-pinging" HTTP implementation:
+  > Might not need the synchronized (this) clause testing if this is a
+    T_Authenticate message, in the run method of SessionPermThread.
+  > Might be starting up too many permanent threads in the SessionProxy
+    constructor and the ManageableProxy attachManager methods.
+  > Might be able to rewrite the close() method in HttpOutputStream to be a
+    lot cleaner.
+  > Might not need to send back a reply in SessionServer.permanent(), and
+    therefore we might not need to catch (and ignore it) in
+    SessionProxyMessage.parseServerSessionMessage().
+  > Might need to do an mpThread.stop() somewhere to stop the permanent
+    manager thread connection.
+  > Might be able to combine the sendAsynchMessage() methods in
+    SameVMSessionServerThread.java and SessionServerThread.java to a
+    single one in HttpThread.java.
+  > Might need to add a cleanupConnections() method to the http
+    SessionServerThread class (similar to the one in the socket
+    implementation).
+
+
+Enhancements.
+-------------
+* Add the CustomJar application to the distribution.
+
+* From David Hamilton <David.Hamilton@cms.co.uk>
+  Add to the User Guide to describe the following:
+  - What is the situation w.r.t. re-entrancy of manager?
+    E.g. a SessionManager handling a client channel creation and in it
+    creating support objects including a ByteArray on that session.
+  - What can we safely assume about construction state when the manager's
+    sessionRequest with a type of CREATE_CHANNEL is invoked?
+    I'm assuming we cannot get the actual channel object using
+    createChannel, because it won't have been created yet, (and I'm also
+    assuming that my listener on my 'server' won't be necessarily be
+    informed of the channel creation before other 'client').
+
+* Need equivalent of the JSDTConfig shell script for the Windows distribution.
+
+* Adjust the debug output generated to print more useful information, rather
+  than just the parameters for that method.
+
+* Have a hierarchy of debug messages (similar to the RMI approach), that
+  prints out more detailed information depending upon the current setting of
+  the debug level.
+
+* Changes to make to the User Guide:
+  - Add a section to describe how to determine what Sessions are
+    currently created, and what Clients are registered with the Registry.
+
+* Possible improvements to all examples:
+  - Have a class of common functionality (parsing command line, joining
+    a session ...).
+  - Need to add text to the html pages for Chat and WhiteBoard to describe
+
+* Possible improvements to the Chat example:
+  - list who is in the chat session in a separate window.
+  - have a selection of chat rooms; perhaps one for each JavaMedia area.
+  - each message sent should have a timestamp. The server should generate
+    the timestamp so that everybody works off the same time.
+  - selecting a user, and then sending a message, just sends it to that user.
+  - display (in red) when people join/leave the chat session with a timestamp.    - The "Say" text field should probably be multi-lined.
+  - Associate an image/icon with each user. This can be done via a parameter
+    in the html file. If the user doesn't provide one, then there should be a
+    default "unknown" user icon.
+
+* Possible improvements to the WhiteBoard example:
+  - Replace all the controls with buttons, and a special button subclass of
+    canvas that can set an image and handles mouse up/down actions.
+  - consider using the EditDraw program, and converting it to use JSDT.
+
+* Possible improvements to the Stock example:
+  - Provide cleaner interaction with quote.yahoo.com
+  - When doing quotes, there might be more than one company name associated
+    with a quote.
+  - When there are a lot of stock symbols to monitor, the headlines are
+    being put on a separate page (with a hypertext link from the first).
+
+* Possible changes for the Ppong example:
+  > The ball seems to disappear after a Pause/Resume.
+  > The frame size is slightly too small for the application version.
+  > At the end of a game, the server gets the following exception:
+    no such client
+    Note that it's probably the other player (the one that we are trying to
+    send to) that is no longer there.
+  > The losing player at the end of the game incorrectly get the message:
+    "Game complete: The other player forfeits." displayed.
+  > At the end of a game, the losing player get the following error:
+    Game: end: exception: no such client
+
+* Possible changes for the browser example:
+  > Make the HTML renderer component plug compatible. Other such renderers are:
+    - HotJava
+    - HTML-EditorKit (part of the Swing components).
+    - Clue (www.coolclue.com)
+  > See if it's possible to add a Stop button.
+  > Allow any of the users in the collaboration to take control, and
+    act as the "teacher", and drive the web presentation.
+  > Handle other links besides those starting with "http://" and "file:/"
+  > Get everything working as an applet, as well as an application.
+
+* Possible changes for the phone example:
+  > Setting or unsetting the check boxes doesn't do the proper thing w.r.t.
+    the microphone and speakers.
+  > Get it to go "beep" when a new user is added or removed.
+  > As it currently stands, this example is only useful for a maximum of
+    two users. This is because JavaSound is automatically polling the input
+    channel continuously, and sending the audio data, even when there is
+    "silence". For more that two users, this amount of data is causing a
+    severe latency problem.  There are two potential solutions:
+    - Add in some kind of filtering in the run() method in PhoneUser.java
+      just before the input data is sent, that checks the amplitude of the
+      input buffer, and only sends it if it's over a certain value. Typically
+      only one person is talking in a phone conference at any one time, so
+      this will reduce the amount of data to managable proportions.
+    - Wait until the JavaSound getLevel() API call is implemented, and add in
+      code in the run() method to use it.
+
+* Possible changes for the synth example:
+  > See if we can get all the instruments in a single table (like the Swing
+    MidiSynth class).
+  > Just merge MidiServer into the MidiSynth/Share classes and have a command
+    line option for starting as the server.
+  > Add in the ability to still work as a standalone midi synthesiser
+    (probably via another command line option).
+
+* See if the create[ByteArray,Channel,Token] and the autoJoin of a Client can
+  be consolidated as one message from the proxy to the server.
+
+* Construct an architecture document for JSDT.
+
+* The test suite needs to be expanded to include all the new API functionality.
+
+* Write JavaDoc comments for all the implementation classes/methods.
+
+* Try fixing up the various other suggestions generated by the Metamata
+  Audit (lint) program (see: ~/jsdt/other/jsdt1.5.audit).
+
+* Consider adjusting the shell scripts and bat files in the distribution, to
+  allow them to use the other two implementation types besides "socket".
+
+* See if the amount of server->client messages can be optimised when two or
+  more listeners/consumers are from the same proxy session.
+
+* Justin Couch <couch@ccis.adisys.com.au>
+  Document somewhere the maximum packet limits for all of the protocols,
+  for both reliable and unreliable Channels.
+
+
+API Changes to consider.
+------------------------
+* Consider allowing event masks on Registry listeners.
+
+* Consider adding in a isManaged() method (somewhere) for testing if the
+  Registry is managed.
+
+* There should be another method on Channel that tells you whether unreliable
+  Channels are available.
+
+* Should the following be allowable?
+  "If the Client was created with ClientFactory.createClient(), and
+   therefore is bound in the Registry, you should be able to get a
+   proxy handle to it, and use that to expel it."
+
+  Should only the manager associated with that managed object be allowed
+  to expel a Client?
+
+* Consider being able to disassociate a manager from a managable object?
+  In other words, a new method on the Manageable class, something like:
+
+    public void
+    removeManager(JSDTManager manager)
+        throws NoSuchSessionException, NoSuchChannelException,
+               NoSuchByteArrayException, NoSuchTokenException,
+               NoSuchManagerException;
+
+  Only the original creator of the managable object (the one who provided the
+  manager), would be allowed to do this, hence the reason for providing the
+  handle to the manager.
+
+* Need to provide full extensibility of JSDT Objects (Session, ByteArray,
+  Channel and Token). This could be now by providing Factory classes for
+  creating these objects using objects which have been subclassed from
+  the [Session,ByteArray,Channel,Token]Impl objects in the impl package.
+
+  Implementing this would allow the following:
+  - Consider implementing LockableByteArray using these new classes. See:
+    /export/home/richb/jsdt/other/lockable.proposal.
+  - From: Henri ter Hofte <terhofte@cs.unc.edu>
+    It's natural to associate Tokens to Channels or ByteArrays.
+  - Consider if it's possible to provide the ability to subclass Sessions,
+    ByteArrays, Channels and Tokens using the classes in the impl package.
+  - Investigate class loading as a means of extending JSDT to do things like
+    the LockableByteArray.
+
+* Consider adding toString() methods to various classes.
+
+* Need to support the ":port" portion of a Session/Client URL being optional.
+
+* Rather then throwing a NameInUseException() when a client tries to join a
+  session/bytearray/channel/token, where that name is already in use, allow
+  the name, but the name that get's send to the server would be globally
+  unique. The uniqueName() method in JSDTObject should provide this.
+
+* From: Justin Couch <couch@ccis.adisys.com.au>
+  If you create a managed Channel, you can't enforce a particular Client
+  to join in read-only mode. There is an option to set this from the
+  proxy-side code, but there is no mechanism for enforcing the policy on
+  a managed session.
+
+* From: Justin Couch <couch@ccis.adisys.com.au>
+  If you want to keep the listeners as is, could I suggest providing a
+  second listener or a variation on the Adaptor class that allows me to
+  intercept the event stream and provides similar functionality to the
+  Component.processEvent method (that is being able to kill events before
+  the listeners are sent them). I believe this would be best placed in the
+  SessionManager class. The events that get sent to this are effected by
+  the event mask settings to improve performance.
+
+  Basically identical to what is done with the awt Component. This
+  processEvent method would be called first before sending information to
+  the listeners. You can then "consume" the event and not pass it on to the
+  event listeners.
+
+* A Session could be created with an optional start and end time.
+
+* Authorization could be based on a session's join policy which may be open
+  (everyone may join), group (only members of the group associated with the
+  session may join), or managed, which may be either relative (a given
+  percentage of managers must confirm) or absolute (a given number of
+  managers must confirm).
+
+* Consider making Channels, ByteArrays and Tokens accessable via URL's in the
+  Registry. The encompassing Session would be anonymous. Would possibly need
+  Factory classes for the creation of these objects.
+
+* Consider if Data objects have a "time-to-live" field and get/set methods?
+
+* From: Kevin Solie <ksolie@DataBeam.com>
+  One thing you might want to look at would be multiple modes of deletion.
+  One mode would be an  "all or nothing:" Any node calling destroy() on an
+  object causes that object to be removed totally from the session and
+  sessions unbound. The other might be a retain/release mode where the
+  object will be destroyed only after the participant count reaches 0.
+  The creator of the object dictates its mode.
+
+* From: Justin Couch <couch@ccis.adisys.com.au>
+  It would be nice to be able to query a server on a known port for
+  a list of all sessions and port numbers using a URL string. Something a
+  bit like a CGI query I suppose.
+
+* From: Brian Knep <knep@nearlife.com>
+  Consider allowing Data to be sent over a reliable Channel without sending
+  a reply.
+
+* Consider adding the TokenUtil class (with the waitOnExclusiveAccess()
+  method, to the JSDT distribution.
+
+* From: Daniel Enting <daniel@objekt-management.de>
+  To grab a token in exclusive Mode one currently has to burn cycles:
+  e.g:
+      while (listenerToken.grab(me,true) != Token.GRABBED); // busy waiting
+
+  I propose a method in class Token that elegantly (non busy) waits till
+  it gets exclusive access  or returns after a specified timeout period.
+  The method signatur could be
+      Token.waitOnExclusiveAccess(Client me, int timeout))
+
+* From: Scott Lewis <slewis@teleport.com>
+  Perhaps the URLString constructor, createSessionURL() and createClientURL()
+  methods should throw a MalformedURLException with a String describing what
+  the problem is, if there is a badly formed JSDT URL. The URLString.isValid()
+  method can then be removed.
+
+  Note that the various methods in the Naming class would have to be changed
+  to throw java.net.MalformedURLException, and the InvalidURLException should
+  be removed.
+
+* Consider changing all occurances InvalidURLException with
+  java.net.MalformedURLException.
+
+* Consider changing all occurances of NoSuchHostException with
+  java.net.UnknownHostException.
+
+* From: Vijay Bhandari <vijay.bhandari@citicorp.com>
+  Consider adding the ability to pre-process Data sent over a Channel, before
+  it is forwarded on to all the Channel Consumers.
+
+* From Greg Mowery <gmowery@certifyonline.com>
+  Add a way to change a clients status from read/write to read-only, or back
+  again, on the fly, without having him leaving/rejoining the channel.
+
+* From Tod <todp@rousse.bitex.com>
+  "What about an expel function that will work only for session manager
+   with parameter "String UserNameToExpel"? This way my manager can expel
+   any client that is in the session."
+
+   More generically it would be another method
+   on the Manageable class that could be used by the manager to expel one
+   (or more) Clients from that Manageable object. I suggest three more
+   expel signatures for consistency:
+
+       public void
+       expel(String[] clientNames) throws ... ;
+
+       public void
+       expel(String clientName) throws ... ;
+
+       public void
+       expel(Client client) throws ... ;
+
+   This allows either a single Client or multiple Clients to be expeled
+   with a single call. A similar change should be made for the Manageable
+   invite() method as well.
+
+
+To investigate.
+---------------
+* Have a look at SRRTP as an alternative (or addition) to LRMP. See:
+
+  http://www.marratech.com
+  http://www.cdt.luth.se/~peppar
+
+  They wrote an Internet Draft about it:
+
+  http://www.cdt.luth.se/~peppar/docs/rtp_srm/draft-parnes-rtp-ext-srm-01.txt
+
+* From: Christopher Taylor <taylor@onetouch.com>
+  "You might want to look at the JCE (Java Cryptography extensions) for
+   information about multi-stage handshaking (they implement it in the
+   javax.crypto.KeyAgreement interface). Part of the hand-shake data (in JSDT,
+   that would be the AuthenticationInfo) is a flag that says "I'm done".  That
+   way, each side can keep going back and forth until the authentication is
+   complete."
+
+  There is no reason why you can't do a multi-handshake between the manager
+  and the client now. What could be done is to give such an example in the
+  User Guide, perhaps using the JCE code.
+
+* Fixup the build environment for the windows platform to automatically
+  compile all files that need compiling, in one call to javac.
+
+* Might need to somehow add in:
+  -Dhttp.proxyHost=%BROWSER_PROXY_HOST%
+  -Dhttp.proxyPort=%BROWSER_PROXY_PORT
+  to the two Browser.txt templates and the generic Browser.html file (ie:
+  .../release/JSDT-2.0/examples/Browser.html
+  .../release/solaris/JSDT-2.0/examples/templates/Browser.txt
+  .../release/win32/JSDT-2.0/examples/templates/Browser.txt)
+  for the Browser applet.
+
+* From: Ming Fang <mfang@dlj.com>
+  I think of a Session and the Channels within a Session as abstract
+  objects (meaning not tied to implementation).
+  If there exist a Session and Channels within that Session, I should be
+  able to connect to that Session and its Channels, using any protocol
+  appropriate for me.  What's appropriate for me may not be for others,
+  they may using a different protocol.
+
+  From: carsten_bernhard@COMMERZBANK.COM
+  It would be great to extend the design to include "multiplexers": Since
+  the "multicast" is surely a great thing but would not work across router
+  boundaries, what about setting up a relay server, which talks "socket" on
+  the one side and "multicast" on the other side?
+
+* From: Bela Ban <bba@CS.Cornell.EDU>
+  Concerning the close() vs. shutdown() question: why not let the user decide?
+  E.g. invoke a callback which calls a method of a user-supplied 'policy'
+  object that returns true if the socket should be 'hard'-closed, otherwise
+  false. Such a solution would be conceptually similar to the Java security
+  manager, which delegates certains types of decisions (e.g. file access,
+  socket creation etc) to policy objects. I think supplying a whole new
+  socket factory just because of SO_LINGER would be an overkill.
+
+* Possible changes to the HTTP implementation:
+  - Need to use thread pools wherever possible rather than keep creating
+    new threads.
+  - See if syncInput() can be used in HttpThread.
+  - dataIn.readLine() in getSocketMessage() is a deprecated method. Need to
+    replace it appropriately.
+
+* Consider making JSDT a Jini "service".
+  See: /export/home/richb/jsdt/other/jini/chat.zip
+
+* See if there are other places where thread pools can be used.
+
+* Consider providing Win32 C++ and Visual Basic libraries that give the same
+  JSDT functionality.
+
+* From: Pedro <pedro@dif.um.es>
+  Consider including the binding to the CORBA event service and make JSDT
+  multi-language? We could then develop collaborative applications using
+  JSDT in Java, C++,...
+
+* Consider using other network protocols at the JSDT transport level:
+  - iBus
+  - CORBA
+  - HTTPS
+
+* Consider including functionality with the JSDT release that easily allows
+  you to use the JSDT toolkit in Microsoft J++, Symantic Cafe, JBuilder and
+  Sun Java Workshop.
+
+* From: Henri ter Hofte <terhofte@cs.unc.edu>
+  The problem of providing late joiners with current state. See the NOTES file.
+
+* From Greg Mowery <gmowery@certifyonline.com>
+  Possibly add a way to suppress a name on a channel list. ie, I have a few
+  clients joining a channel strictly for logging purposes. I also populate
+  a JList with the channel occupants, but would like to suppress the "server"
+  and "logger" clients that are in each channel.
+
+* From: Henri ter Hofte <terhofte@cs.unc.edu>
+  Providing various QoS options with Channels. See the NOTES file.
+
+* Various functionality to consider from the T.124 spec:
+  - a Mananageable.add(Client) method, which would automatically add that
+    Client to the Session/ByteArray/Channel/Token.
+  - a Manageable.lock() method which would lock a
+    Session/ByteArray/Channel/Token, preventing any Client from joining it.
+  - A Manageable.unlock() method to unlock it again.
+
+* Further possible optimizations to investigate:
+  - If a method doesn't use instance variables or call other instances
+    variables it could be declared static.
+  - Use StringBuffers instead of Strings, and reuse instead of new'ing.
+    i.e. stringBuffer.setLength(0);
+  - Check there are no calls such as "String s = new String("hello");
+    Replace with "String s = "hello";".
+  - Find areas where too much memory is being used with :
+    % java -verbosegc
+
+* The HTTP and socket implementations should try to derive from a single
+  common "unicast" package to cut down on the amount of code that's similar.
+
+* From: Justin Couch <couch@ccis.adisys.com.au>
+  The jsdt URL technically allows syntatically invalid URLs. That is, I can
+  create a client or session URL where the name client/session can have
+  whitespace in it.  Whitespace is illegal and should be replaced by the
+  appropriate characters ('+' or escape coded).
+
+* From: Justin Couch <couch@ccis.adisys.com.au>
+  Architecture for distributed systems with JSDT. Currently the system
+  is partially distributed the way I look at it. Somewhere there needs to
+  be a single ServerSocket that listens for the items which leads to a
+  single point of failure. Do you have any plans to look at a more
+  distributed architecture for the proxy implementation. The sort of thing
+  that I am thinking of is a bunch of proxy server type parts that do
+  multiplexing over a server to server type link for local clients. The
+  proxies talk to each other to distribute information much like IRC does.
+
+* Need to make sure that the server doesn't block because of high latency
+  connections. See the NOTES file. [socket].
+
+* Look at other collaborative technologies such as Ding, iChat, or
+  Microsoft's effort for RVP. There is a protocol being submitted as a
+  standard for this, WhoDP:
+  http://www.activerse.com/ding/info/whodp.html
+
+* From: "Raj K" <rajk_2060@hotmail.com>
+  Provide some kind of network statistics etc as to how long it takes for a
+  packet to reach a client from the server or any other network related info.
+
+* Investigate the Metamata metrics files for the various JSDT packages in
+  ~/jsdt/other/jsdt1.5.*.metrics.txt.
+
+* Consider using a hierarchical naming space for Session URL's.
+
+* Investigate generating a set of IDL interfaces for all of the JSDT classes.
+
+* Enterprise Java Beans have Session beans (short duration) and Entity beans
+  (for persistence). If we ever do persistent Sessions, consider calling them
+  Entity's.
+
+* Look at the way that iBus Posting objects work as a means of doing a
+  transaction type setup (ie. using multiple objects of type Data).
+
+* Consider generating a mobility coding example, based on the VoyagerB dist.
+  obj. training course sample code.
+
+* Investigate what would happen if the manager associated with a manageable
+  object was destroyed (garbage collected), or the proxy-app that created
+  it was terminated.
+
+* See if it's possible to not require a developer to have to add a
+  "synchronized" keyword to it's ChannelConsumer.dataReceived() methods.
+
+* Consider if the channel being used by receiveClient() is marked as
+  unreliable, whether data be thrown away.
+
+* Consider whether the invite() method in SessionProxy.java should wait
+  for replies from the invited clients ClientServer class objects?
+
+* From: Scott Lewis <slewis@teleport.com>
+  Need some way of informing all the proxies that a server has died. At the
+  moment, what happens is that they will get a ConnectionException, the next
+  time they try to do a JSDT operation.
+
+* See if the InfoBus spec can be extended to work between objects in different
+  VM's (ie. InfoBus over JSDT).
+
+* See if any of the JSDT technology can be made into Java Beans.
+
+* Consider providing JSDT help with JavaHelp (see: /usr/local/java/jh1.0).
+
+* From: Joshua Fox <Joshua_Fox@vocaltec.com>
+  Does JSDT work with NAT? NAT (Network Address Translation) is a way of
+  saving publically known IP addresses. You assign an illegal IP address
+  for your machine on your LAN, and the NAT translates this to a publically
+  known legal address.
+
+  My guess is that since the JSDT protocol does not contain the client's IP,
+  but the server's IP must be looked up, that there will probably be no
+  problem with a client that uses NAT, but that there may be problems with a
+  server that uses NAT.
+
+* From: "Joshua Fox" <Joshua_Fox@vocaltec.com>
+  Create an "https" implementation of JSDT.
+
+* From: Joshua Fox <Joshua_Fox@vocaltec.com>
+  Does JSDT work with Finjan? Finjan is a Java proxy, security software that
+  checks Java (as well as JavaScript, VBScript, and ActiveX) for security
+  concerns. Of course, applets are supposed to be safe, but there's always
+  someone paranoid enough to buy this sort of software.
+
+  www.finjan.com
+
+  The question is whether Finjan would block this.
+
+* Things to investigate for the "multicast" implementation:
+  - investigate if the new JDK security model allow you to use multicast
+    sockets in an applet.
+  - Should there be a cleanupConnections() method in Registry.java?
+  - Determine what needs to be put on the "unreliable" side in
+    setChannelThread() in ChannelProxy.java.
+  - Get the sound example working. Need to determine how to set a "multicast"
+    unreliable channel.
+  - Need to check if there is problems reading large Data messages.
+  - Due to the nature of multicast messages, there should be several places
+    which can be improved by reducing the number of messages (joining a
+    managed object for example).
+  - As everybody get's all the message sent, consider client-side caching of
+    information to cut down on the amount of work that the server has to do.
+  - Investigate if the "multicast" implementation works inside a Netscape
+    browser.  Comments from email sent on the iBus mailing list.
+    Netscape definitely supports IP
+    Multicast. The following document proves this:
+    http://developer.netscape.com/docs/manuals/signedobj/targets/index.htm
+
+   "You stumbled onto the biggest design fault the Netscape capabilities API
+    has...
+    1. Once Netscape has granted a capability, it is valid only in the current
+    method call (which includes further method calls from within the empowered
+    method, of course).
+    2. A static{} block, or a constructor call doesn't have a method "above"
+    it, which could have requested and gotten the capapility.
+    --> Whenever one needs a capability within a static{} or constructor, it
+    must be requested there!"
+
+* From: "Ted Neward" <ted@neward.net>
+  All class types have to be known on all sides in order for the object to
+  be shared between JVMs.
+
+* Consider using JNDI for the Registry.
+
+* Consider the possibility of changing sessions/channels (ie. TCP -> multicast)
+  on the fly.
+
+* Consider fragmenting large Data packets so other messages can be interleaved.
+
+* Consider adding a couple of methods to SessionFactory class:
+
+    void loadSession(String url);
+
+    void saveSession(String url);
+
+* From T. Alexander Popiel <popiel@pecan.snugharbor.com>
+  Are there any plans for channels which bridge protocol types?  (That is,
+  app1 joins a channel with "socket", app2 joins the same channel with
+  "multicast", and some third party (the registry?) acts as bridge.)  Plainly,
+  this is easier to do in client-server than in peer-to-peer.
+
+* From Wim Glassee <glassee@uia.ua.ac.be>
+  Are you planning of providing a means of inter process communication between
+  two VM's (or a VM and a native application for that matter) on 1 machine?
+  Sockets are too slow for this purpose. It would be great to have an
+  architecture that combined both local and network based communication that
+  uses the fastest solution for each problem.
+
+* From Justin Couch <couch@ccis.adisys.com.au>
+  What I would like to do is join a channel and have that channel send me
+  a complete status of what has happened so far.
+
+  In a similar thing, I would like to implement something that gives me a
+  history of everything that has happened over that channel for a given
+  amount of time.
+
+  This sort of functionality is provied by a higher level API or a higher
+  level type of channel. Something like:
+
+    public class
+    RecordableChannel implements Channel {
+
+        void
+        replay();
+
+        void
+        replay(Date startTime);
+
+        void
+        replay(Date startTime, Date endTime);
+    }
+
+* From Ramiro Calvo (ramir@apple.com):
+  Need both a server/client and a peer-to-peer model for their conferencing.
+  Ie. If a client creates a session and others join, then that client leaves,
+  need some way to migrate that session to another client. Should this be
+  part of the API?
+
+* From Stephen_Hinde@hplb.hpl.hp.com
+  "http" implementation RFE:
+  I see that the relative URI that is sent with the POST is "/"
+  (http://server:port/) - this makes it very hard to do anything intelligent
+  in terms of the Netscape redirecting servers which front most Web servers.
+  What we really need is to be able to set the URI to something distinctive -
+  so we can do something with it....This kind of comes back to my previous
+  email about being able to set the basename here...I see now that the URI
+  that you pass in your http transport is completely independent of the URL
+  that is returned to the Session ...so it could essentially be set to
+  anything. if we could get at it. I am making a request here to be able to
+  set it to some Basename e.g.  http://JsdtServer1/
+
+* From Stephen_Hinde@hplb.hpl.hp.com
+  "http" implementation RFE:
+  You create a socket to a given host and port. Inside the socket the magic
+  happens to reconstitute the URL in a POST request....So we need some way
+  of switching this from doing an http:// style URL to an https:// URL before
+  doing the URLConnection request. Could we have a property or a static we
+  could tickle please? This would enable https operating of the http transport
+  I think. So could we have a switch for this too?
+
+* From: Ted Neward <ted@neward.net>
+  Because of the parent/child relationship of ClassLoaders, when JSDT is
+  loaded as an extension, it gets loaded by the
+  sun.misc.Launcher$ExtClassLoader, which is the "ultimate parent"
+  ClassLoader. Normally code on the CLASSPATH is loaded by the
+  sun.misc.Launcher$AppClassLoader, which is a child to ExtClassLoader, and
+  represents the classical "system" ClassLoader spoken of in the Java docs.
+
+  When JSDT attempts to deserialize a class, it uses the Class.forName(), which
+  is shorthand for this.getClassLoader().loadClass() method call. The problem
+  is that "this.getClassLoader()" will resolve to be the ExtClassLoader
+  instance, and classes on the CLASSPATH (such as the current working
+  directory) aren't found.
+
+  RMI, you would think, would have this same problem. Not so--RMI sets its
+  downloading ClassLoader instance to be the current Thread's "context
+  ClassLoader" (Thread.setContextClassLoader), so that its ClassLoader gets a
+  shot at loading the code. JSDT could make use of the same mechanism, only
+  simply *using* the current Thread's contextClassLoader, instead of relying
+  on the current class's ClassLoader ("this.getClassLoader"):
+
+    Thread.currentThread().getContextClassLoader().loadClass("...");
+
+  instead of
+
+    Class.forName("...");
+
+  Because the Thread's current context ClassLoader is, by default, the same as
+  the "main" Thread, which is set to the AppClassLoader instance, you'd be
+  ensuring that you're looking in both the Extensions directory as well as the
+  CLASSPATH setting for loaded code.
+
+* From "Roberts George E (Ed) NPRI" <RobertsGE@Npt.NUWC.Navy.Mil>
+  There is a comparison on multicast protocols at:
+
+    http://www.tascnets.com/mist/doc/mcpCompare.html
+
+* Things to monitor:
+  - Remove the JSDT 1.4 educational version from
+    http://freeware.thesphere.com
+  - Removal of internal JSDT binaries at:
+    http://javamedia.eng/JSDT/
+    The 1.5 ones have been copied to hoth.eng
+
+* Get the javashare-interest alias(es) removed.
+
+* Register JSDT in the "Groupware and Collaborative Toolkits" section at:
+  http://www.developer.com/directories/directories.html
+
+* Try to implement the cyclic queue again for DataReceivedThread.java.
+
+* Try out the lrmp implementation of JSDT in a Netscape browser.
+  With the LRMP one, have adjusted the LRMP code in:
+  /export/space/LRMP/lrmp-1.4.1/src/inria/net/MulticastSession.java. Need
+  to add a security chunk to the run() method, to hopefully allow the
+  sock_in.receive() to work inside the Netscape browser.
+
+* Check out Justin Couch's chat/whiteboard example at:
+  ftp://ftp.vlc.com.au/private/book_cd.zip
+  ftp://ftp.vlc.com.au/private/book_cd_docs.zip

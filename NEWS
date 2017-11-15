@@ -1,0 +1,69 @@
+
+/*  $Header: /cvs/jsdt/NEWS,v 1.3 2005/04/05 21:44:13 richburridge Exp $
+ *
+ *  Copyright (c) 1996-2005 Sun Microsystems, Inc.
+ *  All Rights Reserved.
+ */
+
+Overview of changes in JSDT v2.3
+
+* Adjusted all copyright messages to be 1996-2005.
+* Made sure the zip distribution included the .../jsdt-src-2.3/build 
+  files and a compiled version (JDK 1.4) of JSDT under 
+  .../jsdt-src-2.3/build/solaris/lib-debug
+
+----
+
+Overview of changes in JSDT v2.2
+
+* Added in support for a JGroups reliable multicast implementation, and made
+  this the default multicast implementation (the alternative is LRMP).
+* Removed all references to the RMF/RAMP multicast implementation (as this
+  is no longer available for download).
+* Instructions have been updated in the top-level README to describe
+  what needs to be done to setup to build the JGroups and/or LRMP
+  multicast implementations.
+* Adjusted code to build with JDK 1.5.0.
+* Fixed up all the deprecated method warnings in the JSDT toolkit classes
+  (and implementations).
+* Fixed up the two deprecated method warnings in the sound example.
+* Fixed up 5 out of 6 of the deprecated warnings in the ppong example.
+* Adjusted .../socket/SSLSocketFactory.java to use the SSL Socket code in 
+  the javax.net.ssl classes.
+* Removed all references to USE_SSL and SSL_CLASSES from the README and the 
+  build environment.
+* Updated section 8.2.2. of the User Guide to use the only default cipher 
+  available (SSL_RSA_WITH_RC4_128_MD5) and remove the sentence indicating 
+  that you need to supply the SSL socket package.
+* Q12 of the JSDT FAQ now covers how to setup SSL socket supprt. See:
+  https://jsdt.dev.java.net/files/documents/1222/4670/JSDT-FAQ.html#Q12
+* Rewrote the browser example to use the Swing toolkit (with the JEditorPane 
+  widget doing the HTML rendering) rather than the ICE browser Java bean.
+* Adjusted the top-level README and the build hierarchy to remove
+  all references to the ICE Browser.
+* Browser example titleline now includes "[Teacher]" for the first started 
+  version.
+* With the browser example, if a URL is incorrect, a dialog now displays an 
+  error message.
+* Changes to decrement the noThreads count of the number of created
+  DataReceivedThreads when a data received thread terminates (after handling 
+  the received messages). Done for socket, http and multicast implementations.
+* Removed references to SOUND_CLASSES in the top-level README and the 
+  Makefile.defs and Makefile.config files as the Java sound classes are 
+  now a standard part of the JRE/JDK.
+* Adjusted the protection level of the various setShutdown methods. They 
+  should not be public.
+* Preparation for building irrespective of the build platform. Added 
+  preliminary ANT build file.
+* Changed the getManagerId() method in com.sun.media.jsdt.http.ManageableServer
+  to public to make the HTTP protocol version compile again.
+
+-----
+
+Overview of changes in JSDT v2.1
+
+* First open-source release to javadesktop.org. See the v2.1 entries in
+  ChangeLog and ChangeLog-1999 for more details of all the changes made
+  since the v2.0 release.
+
+====

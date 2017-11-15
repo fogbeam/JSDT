@@ -1,0 +1,256 @@
+
+/*
+ *  Copyright (c) 1996-2005 Sun Microsystems, Inc.
+ *  All Rights Reserved.
+ *
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU Library General Public License as
+ *  published by the Free Software Foundation; either version 2, or (at
+ *  your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful, but
+ *  WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ *  General Public License for more details.
+ *
+ *  You should have received a copy of the GNU Library General Public
+ *  License along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+ *  02111-1307, USA.
+ */
+
+/* Various extended notes of things that still need to be fixed. */
+
+============================================================================
+
+* Implementing Data priorities.
+
+  There are hooks in the socket implementation to do this, but it needs
+  more work.
+
+  - In the send() method in ChannelProxy.java, before the main try block,
+    need some code like:
+
+import java.net.SocketException;
+import java.net.UnknownHostException;
+
+...
+
+/** If somebody sends a Data message which is not at Channel.MEDIUM_PRIORITY
+ *  priority, then we create a separate channel proxy thread for that priority
+ *  level (if one doesn't already exist).
+ */
+
+        if (priority != Channel.MEDIUM_PRIORITY) {
+            if (!(channelThreads[priority] instanceof ChannelProxyThread)) {
+                try {
+                    channelThreads[priority] = new ChannelProxyThread(
+                                                    session, channel,
+                                                    sp.proxyThread.getHost(),
+                                                    sp.proxyThread.getPort());
+                } catch (SocketException se) {
+                    if (JSDTObject.showMessage) {
+                        System.out.println("ChannelProxy: send:" +
+                                           " exception " + se);
+                    }
+                    if (JSDTObject.showStack) {
+                        se.printStackTrace();
+                    }
+                } catch (UnknownHostException uhe) {
+                    if (JSDTObject.showMessage) {
+                        System.out.println("ChannelProxy: send:" +
+                                           " exception " + uhe);
+                    }
+                    if (JSDTObject.showStack) {
+                        uhe.printStackTrace();
+                    }
+                }
+            }
+        }
+
+   - Looking at the original implementation which is in the 1.1 version of
+     the files of the jsda-0.96 version, we need to do a setConsumer() for
+     each of the priority levels. This is in setConsumer() in ChannelProxy.java
+     and ChannelServer.java. It's not going to be so straight forward in the
+     latest JSDT code because:
+     > clientConsumers is no longer in ChannelServer.java. The Clients
+       consumers are now part of the ClientImpl.java file.
+     > We are now intending to only create a new ChannelProxyThread when the
+       user first attempts to send Data of that priority. We will need to fixup
+       the setConsumer() after creating the ChannelProxyThread, by resending
+       it over the new channelThread[priority].
+
+   - Here's what ChannelProxyThread.java should look like:
+
+package com.sun.media.jsdt.socket;
+
+import com.sun.media.jsdt.*;
+import com.sun.media.jsdt.impl.*;
+import java.net.SocketException;
+import java.net.UnknownHostException;
+
+/**
+ * JSDT Channel proxy thread class (socket implementation).
+ *
+ * @version     1.2 - 21 April 1998
+ * @author      Rich Burridge
+ */
+
+class
+ChannelProxyThread extends TCPSocketThread {
+
+    /** The proxy-side session associated with this thread. */
+    private SessionImpl session;
+
+    /** The proxy-side channel associated with this thread. */
+    private Channel channel;
+
+
+/**
+ * <A NAME="SD_CHANNELPROXYTHREAD"></A>
+ * <EM>ChannelProxyThread</EM>
+ *
+ * @param <EM>session</EM>
+ * @param <EM>channel</EM>
+ * @param <EM>host</EM>
+ * @param <EM>port</EM>
+ */
+
+    public
+    ChannelProxyThread(SessionImpl session, Channel channel,
+		       String host, int port)
+		throws SocketException, UnknownHostException {
+	super(host, port);
+
+	if (ChannelProxyThread_Debug) {
+            System.out.println("ChannelProxyThread: constructor:" +
+			       " session: " + session +
+                               " channel: " + channel +
+                               " host: "    + host +
+			       " port: "    + port);
+        }
+
+	this.session = session;
+	this.channel = channel;
+    }
+
+
+/**
+ * <A NAME="SD_HANDLEMESSAGE"></A>
+ * <EM>handleMessage</EM> process the next message.
+ *
+ * @param <EM>message</EM> the next message to be processed.
+ */
+
+    protected void
+    handleMessage(Message message) {
+        ChannelProxyMessage cpm = new ChannelProxyMessage(session, channel);
+
+        if (ChannelProxyThread_Debug) {
+            System.out.println("ChannelProxyThread: handleMessage:" +
+                               " message: " + message);
+        }
+
+        cpm.handleMessage(message);
+    }
+}
+
+   - Need to add the following like to socketDebugFlags.java:
+
+     static final boolean ChannelProxyThread_Debug      = false;
+
+=============================================================================
+
+* What to do when a high-latency connection is blocking the server:
+
+If you have an ordered channel, depending upon which implementation of JSDT
+you are using (socket or multicast), yes it will.
+
+With the socket implementation, there are two potential bottlenecks that a
+high latency connection may expose:
+
+* On the server-side, Data messages are written to each proxies socket
+  connection one after the other. If that proxy is not reading the messages
+  off the socket, then the server will block until it does.
+
+* On the proxy-side, as Data messages are read off, they are stored in a Vector,
+  and a special thread will then call the consumers dataReceived() method
+  for each one in turn. There is a potential blockage there if the consumer
+  takes quite a while to process that message and return
+
+There are not any timeouts at the moment.
+
+For the socket implementation, there is no reason, if on detecting that a
+connection has a high latency, something similar couldn't be done. Rather
+than writing the messages directly to the socket, they are written to a
+Vector on the server-side (one Vector for each connection), and the thread
+associated with that connection, will get the next one from that Vector,
+and write it out to the socket, when it's successfully written the previous
+one.
+
+There would also need to be a regular check made (either on the number of
+entries in the Vector, or the total size of the data still to be sent), and
+if it gets beyond a certain point, then the clients on that connection should
+be expeled, and the connection dropped.
+
+============================================================================
+
+* From: Henri ter Hofte <terhofte@cs.unc.edu>
+  The problem of providing late joiners with current state:
+
+  Does JSDT provide any other latecomer support other than Session/Channel
+  Listeners and have them all send a message containing status to the newly
+  joined client?
+
+  I think I have to make all joined clients listen and react to joins, which
+  is wasteful if fault tolerance is not an issue. To avoid the waste, I would
+  have to implement my own election program, which would tempt me to implement
+  the simple way out: statically electing the server as the one that sends the
+  state (which does not satisfy my goals).
+
+  Do you see a quick solution (perhaps based on some linear order of client
+  names that are available everywhere and that are guaranteed to be consistent
+  so that exactly one client will decide "I am the one").
+
+  I could imagine a future JSDT version implementing such an election
+  algorithm and requiring clients that want to use it to implement a
+  "StateTransfer" interface that consists of getState() and setState() (or
+  perhaps the StateTransfer interface could just extend Serializable, which
+  does not require programmers to implement any methods, but it would signal
+  that JSDT can do it's state transfer thing).
+  This could be used in applications where getState() on each existing client
+  would give the same result.
+
+============================================================================
+
+* From: Henri ter Hofte <terhofte@cs.unc.edu>
+  Providing various QoS options with Channels.
+
+  Would like to extend (in the long run) the ordering policies that
+  JSDT channels can provide.  Currently, JSDT provides
+  - unordered
+  - TOTAL ordered (= JSDT ordered)
+
+  Alternative orderings we'd like to provide (in the long run; possibly by
+  using or implementing iBus protocol objects) is
+  - FIFO order
+  - CAUSAL order
+  - TRANSFORMED order (optimistic order that uses minimal application
+  semantics to obtain performance improvements in high-latency and
+  disconnected networks)
+
+  In particular: the "boolean reliable, boolean ordered" I would like to
+  see changed to something more flexible.
+  E.g. replace both with a QoS string, like iBus does.
+
+  Consider adding a new createChannel() call with a new QoS string. The
+  existing createChannel() calls  would be deprecated. Those methods would
+  then call the new createChannel() method, with the QoS string set to the
+  equivalent tokens for un/ordered, and un/reliable.
+
+  This also allows new QoS tokens to be added as/when they have been
+  implemented.  In other words, I can easily initially support the
+  equivalent of the reliable and ordered flags, but allow for you and
+  other implementors to provide new tokens for additional functionality.
+
+============================================================================

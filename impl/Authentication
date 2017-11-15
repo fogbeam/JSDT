@@ -1,0 +1,118 @@
+
+/*
+ *  Copyright (c) 1996-2005 Sun Microsystems, Inc.
+ *  All Rights Reserved.
+ *
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU Library General Public License as
+ *  published by the Free Software Foundation; either version 2, or (at
+ *  your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful, but
+ *  WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ *  General Public License for more details.
+ *
+ *  You should have received a copy of the GNU Library General Public
+ *  License along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+ *  02111-1307, USA.
+ */
+
+Session join client authentication (socket implementation).
+-----------------------------------------------------------
+
+
+   Manager ----- Proxy A ------ Server ----- Proxy B ----- Client
+
+
+
+Client B (Proxy B) wants to join a session managed by the manager (Proxy A).
+
+
+
+From:       Message:                                                   To:
+------------------------------------------------------------------------------
+
+Proxy B     Session.M_Session T_Authenticate
+            <sessionName> <clientName> <action>                        Server
+(Client)
+
+File:       ManageableProxy.java
+Method:     authenticateClient(int id, AuthenticationInfo info,
+			       String clientName)
+Sent over:  sp.proxyThread
+Waits?:     yes
+
+------------------------------------------------------------------------------
+Server      T_Manager T_Authenticate Session.M_Session
+            <sessionName> <clientName> <action>                        Proxy A
+                                                                      (Manager)
+
+File:       ManageableServer.java
+Method:     authenticateClient(Message message)
+Sent over:  so.managerThread
+Waits?:     no
+
+------------------------------------------------------------------------------
+Proxy A     Client.M_Client T_Authenticate Session.M_Session
+            <sessionName> <clientName> <action> <challenge>            Server
+(Manager)
+
+File:       AuthenticateClient.java
+Method:     authenticate(AuthenticationInfo info)
+Sent over:  sp.getManagerThread()
+Waits?:     yes
+
+------------------------------------------------------------------------------
+Server      Client.M_Client T_Challenge Session.M_Session <sessionName>
+            <clientName> <action> <challenge>                         Proxy B
+                                                                      (Client)
+
+File:       ManageableServer.java
+Method:     clientChallenge(Message message)
+Sent over:  joiningMessage.thread
+Waits?:     no
+
+------------------------------------------------------------------------------
+Proxy B     Client.M_Client T_Challenge Session.M_Session
+            <sessionName> <clientName> <action> <response>             Server
+(Client)
+
+File:       JSDTMessage.java
+Method:     clientChallenge(Message message)
+Sent over:  session.po.proxyThread
+Waits?      no
+
+------------------------------------------------------------------------------
+Server      Client.M_Client T_Authenticate Session.M_Session
+            <sessionName> <clientName> <action>
+				        <return value> <response>      Proxy A
+                                                                      (Manager)
+
+File:       ManageableServer.java
+Method:     clientResponse(Message message)
+Sent over:  so.managerThread
+Waits?:     no
+
+------------------------------------------------------------------------------
+Proxy A     Client.M_Client T_Join Session.M_Session <sessionName>
+            <clientName> <admitted:true/false>                        Server
+(Manager)
+
+File:       AuthenticateClient.java
+Method:     run()
+Sent over:  session.so.proxyThread
+Waits?:     no
+
+------------------------------------------------------------------------------
+Server      Session.M_Session T_Authenticate <return value>
+            <admitted:true/false>                                      Proxy B
+                                                                       (Client)
+
+File:       SessionServer.java
+Method:     clientAuthenticate(Message message)
+Sent over:  joiningMessage.thread
+Waits?:     no
+
+------------------------------------------------------------------------------

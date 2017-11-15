@@ -1,0 +1,192 @@
+
+/*
+ * $Header: /cvs/jsdt/ChangeLog,v 1.19 2005/04/05 21:44:13 richburridge Exp $
+ *
+ * Copyright (c) 1996-2005 Sun Microsystems, Inc.
+ * All Rights Reserved.
+ *
+ */
+
+JSDT Change History.
+====================
+
+2005-04-05  Rich Burridge <rich.burridge@sun.com>
+
+    * Preparation for the third "fixup" release to javadesktop.org:
+      - Adjusted all copyright messages to be 1996-2005.
+      - Created an entry in the NEWS file describing the changes since 2.2.
+      - Made sure the zip distribution included the .../jsdt-src-2.3/build 
+        files and a compiled version (JDK 1.4) of JSDT under 
+        .../jsdt-src-2.3/build/solaris/lib-debug
+
+2004-09-30  Rich Burridge <rich.burridge@sun.com>
+
+    * Preparation for the second release to javadesktop.org:
+      - Fixed up all the @version entries in the Java source files,
+        replacing "2.1" with "2.2".
+      - Created an entry in the NEWS file describing the changes since 2.1.
+      - Adjusted the User Guide and Implementation Guide, replacing all
+        occurances of "2.1" with "2.2".
+
+2004-06-15  Rich Burridge <rich.burridge@sun.com>
+
+    * Added in support for a JGroups reliable multicast implementation.
+      This mainly was just this inclusion of a single new class file:
+      .../src/share/com/sun/media/jsdt/multicast/JGroupsImpl.java
+      although the default multicast implementation has been changed to
+      JGroups, as it's the only one that's currently supported (see the
+      multicastImplClass String in:
+      .../src/share/com/sun/media/jsdt/impl/JSDTObject.java
+
+      Updated the documentation (README and User Guide) to reflect these
+      changes. Removed all references to RMF/RAMP as the Java classes for
+      this don't seem to be available for download anymore.
+
+      Adjusted the Makefiles so that it will just try to build the JGroups
+      reliable multicast implementation by default (assuming you have added
+      "multicast" to the IMPLEMENTATIONS definition in 
+      .../build/[solaris,win32]/makefiles/Makefile.config. 
+
+      Instructions have been updated in the top-level README to describe 
+      what needs to be done to setup to build the JGroups and/or LRMP 
+      multicast implementations.
+
+2004-06-04  Rich Burridge <rich.burridge@sun.com>
+
+    * Adjusted code to build with Tiger (JDK 1.5.0 (beta 2). two problems:
+      - was using enum as a variable. It's now a keyword.
+      - calls to "super(null);" in classes subclassed from java.net.Socket
+        now need to qualify (i.e. "super((SocketImpl) null);").
+
+2004-05-27  Rich Burridge <rich.burridge@sun.com>
+
+    * Fixed up the two deprecated method warnings in the sound example.
+    * Fixed up 5 out of 6 of the deprecated warnings in the ppong example.
+
+2004-05-26  Rich Burridge <rich.burridge@sun.com>
+
+    * Further slight adjustments to the SSL changes suggested by Brad Wetmore.
+      - Adjusted doc. reference to point to the 1.4 JSSE Reference Guide.
+      - Moved the socket and server socket factory creation into the 
+        SSLSocketFactory constructor.
+
+2004-05-24  Rich Burridge <rich.burridge@sun.com>
+
+    * Further adjustments to the SSLSocketFactory based on feedback from
+      Brad Wetmore.
+      - Common code has now been moved to the constructor.
+      - Now gets an instances of a "SunX509" trust manager rather than
+        using the default one.
+      This means that you no longer need to pass:
+      "-Djavax.net.ssl.trustStore=/home/richb/ssl/samplecacerts"
+      to each java command  which will simplify the setup 
+      and the answer to this FAQ question.
+
+2004-05-21  Rich Burridge <rich.burridge@sun.com>
+
+    * Further adjustments to fixup the sample SSL Socket factory code.
+      This information was gleaned from the Java Secure Socket 
+      Extension (JSSE) Reference Guide for the Java 2 SDK, Standard 
+      Edition, v1.5.0. See:
+
+      http://java.sun.com/j2se/1.5.0/docs/guide/security/jsse/JSSERefGuide.html
+
+      My thanks also to Brad Wetmore for pointing me in the right direction.
+      When the JSDT FAQ is written, there will be a sample Q/A in there that
+      describes how to you SSL with the sample SSL socket factory 
+      implementation.
+
+2004-05-13  Rich Burridge <rich.burridge@sun.com>
+
+    * Adjusted .../socket/SSLSocketFactory.java to use the SSL Socket
+      code in the javax.net.ssl classes.
+    * Removed all references to USE_SSL and SSL_CLASSES from the README
+      and the build environment.
+    * Updated section 8.2.2. of the User Guide to use the only default
+      cipher available (SSL_RSA_WITH_RC4_128_MD5) and remove the sentence
+      indicating that you need to supply the SSL socket package.
+    * Added an entry to the TODO file to indicate that all the details of
+      how you set this up needs to be written up.
+
+2004-05-11  Rich Burridge <rich.burridge@sun.com>
+
+    * Finishing touches to the browser example rewrite.
+      - Back/Forward button code implemented. These buttons are in
+        activated when there are no URL's to go back/forward to.
+        Note that the back/forward logic doesn't work exactly the
+        same as browsers like Mozilla, but it's still useful.
+      - Set the initial web page to visit to http://java.net
+
+2004-05-10  Rich Burridge <rich.burridge@sun.com>
+
+    * Rewrote the browser example to use the Swing toolkit (with the
+      JEditorPane widget doing the HTML rendering) rather than the ICE
+      browser Java bean.
+    * Adjusted the top-level README and the build hierarchy to remove 
+      all references to the ICE Browser.
+    * Titleline now includes "[Teacher]" for the first started version.
+    * If a URL is incorrect, a dialog now displays an error message.
+
+2004-05-03 Andrea Colpo <andrea.colpo@ingeniumtech.it>
+
+    * Changes to decrement the noThreads count of the number of created
+      DataReceivedThreads (in ChannelProxy.java) when a data received
+      thread terminates (after handling the received messages).
+      (socket, http and multicast implementations).
+
+2004-04-16  Rich Burridge <rich.burridge@sun.com>
+
+    * Simple change to fixup the List.addItem() depracated warning 
+      message for the SoundUser.java class in the sound example.
+    * Removed references to SOUND_CLASSES in the top-level README
+      and the Makefile.defs and Makefile.config files as the Java 
+      sound classes are now a standard part of the JRE/JDK.
+
+2004-04-15  Rich Burridge <rich.burridge@sun.com>
+
+    * Changes to fixup the two remaining deprecated method warnings in
+      .../socket/Registry.java. The fix involved the creation of a new
+      .../impl/TargetableThread.java class that provides the ability to
+      associate a Runnable target with a newly created Thread.
+
+2004-04-11  Rich Burridge <rich.burridge@sun.com>
+
+    * Adjusted the protection level of the various setShutdown methods.
+      They should not be public. 
+
+2004-03-29, Manfred N. Riem <mriem@win.tue.nl>
+    * Removal of deprecated methods.
+        - Changed ConnectionThread to use the interrupt method instead of the
+          deprecated stop method.
+        - Changed NamingProxy to use the interrupt method instead of the 
+          deprecated stop method.
+
+2004-03-27, Manfred N. Riem <mriem@win.tue.nl>
+    * Preparation for building irrespective of the build platform and
+      removal of deprecated methods.
+        - Added preliminary ANT build file.
+        - Changed getManagerId in com.sun.media.jsdt.http.ManageableServer
+          to public to make the HTTP protocol version compiling again.
+        - Moved MAINAINERS to MAINTAINERS.
+        - Changed com.sun.media.jsdt.http.SessionServer to use interrupt method
+          instead of the deprecated stop method (needed some changes to 
+          SessionServer.java and CleanupConnections.java).
+        - Changed com.sun.media.jsdt.http.TCPSocketServer to use shutdown 
+          mechanism instead of deprecated stop method. Note that this is also
+          using the close method on the ServerSocket.
+
+2004-01-06  Rich Burridge <rich.burridge@sun.com>
+
+    * Preparation for the first release to javadesktop.org:
+      - Moved the CHANGES file to top-level directory, dividing it up
+       into ChangeLog-1997, ChangeLog-1998, ChangeLog-1999 and ChangeLog.
+      - Fixed up the README file.
+      - Fixed up all the copyright messages.
+      - Added a COPYING file to the top-level directory.
+      - Added other files (AUTHORS, MAINTAINERS, NEWS, TODO) to the 
+        top-level directory.
+      - Adjusted the User Guide and Implementation Guide, replacing all
+        occurances of "Java Shared Data Toolkit" with "Shared Data Toolkit
+        for Java Technology".
+
+====

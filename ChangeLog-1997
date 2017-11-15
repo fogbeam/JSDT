@@ -1,0 +1,642 @@
+
+/*
+ * $Header: /cvs/jsdt/ChangeLog-1997,v 1.2 2005/04/05 21:44:13 richburridge Exp $
+ *
+ * Copyright (c) 1996-2005 Sun Microsystems, Inc.
+ * All Rights Reserved.
+ *
+ */
+
+JSDT Change History - 1997.
+===========================
+
+v1.0 - 22nd December 1997.
+
+* Implemented an alternate sort method.
+
+----
+
+v1.0 - 19th December 1997.
+
+* If you tried to do a listClientNames() on a Session, Channel, ByteArray
+  or Token that had no Clients, then you would hang. Fix for to call
+  message.thread.finishReply() for this special case.
+
+* Backed out the following changes from 4th December 1997:
+
+  "Changed Naming.java to just connect to the Registry, perform the requested
+   operation then close the connection. Removed the RegistryServerThread.java
+   cleanupConnection() method; it's no longer needed."
+
+  Original change also included calls to proxyThread.cleanupConnection() in 
+  various methods in NamingProxy.java, which also have now been backed out.
+
+----
+
+v1.0 - 17th December 1997.
+
+* Removed the .../socket/Message.java startsWith() method. No longer used.
+
+* Added more of the destroySession() method in SessionServer.java. It now
+  sends a valid reply back, but still need to terminate the Session though.
+
+* Changes requested by Vicki Shipkowitz:
+  - changed copyright date on .../solaris/JSDT-1.0/html/setup.html to be
+    1996-97. Similar change for .../win32/JSDT-1.0/html/setup.html.
+  - re: HotJava browser: changed "JavaSoft" to "Sun Microsystems" in
+    .../[solaris,win32]/JSDT-1.0/html/setup.html.
+  - changed "includes the full installation" to "includes the full 100% Pure
+    installation" in .../JSDT-1.0/html/welcome.html.
+  - added "This toolkit is a development project. We do not guarantee that 
+    this will turn into a supported product at any time in the future." to 
+    .../JSDT-1.0/html/welcome.html.
+
+----
+
+v1.0 - 9th December 1997.
+
+* The following methods now sort the names before returning them:
+  Session.listByteArrayNames()
+  Session.listChannelNames()
+  Session.listTokenNames()
+  [ByteArray, Channel, Session, Token].listClientNames()
+
+----
+
+v1.0 - 5th December 1997.
+
+* Fixed problem with the Stock Viewer example application not displaying
+  properly on a PC when a stocked was added/removed, but adding a
+  ComponentListener to the frame, and then calling validate() inside the
+  componentResized() method.
+
+----
+
+v1.0 - 4th December 1997.
+
+* From: Rolande Kendal <kendal@interlog.com>
+  The createChannel() method in SessionProxy.java needed to be returned the
+  reliable and ordered state of the channel it was either creating or being
+  given a handle to.
+
+  There was no need to return the ordered/reliable boolean values in
+  ChannelServer.join().
+
+* From: Rolande Kendal <kendal@interlog.com>
+  Problem with browser not exiting cleanly because JSDT applet thread for
+  still running.
+
+  Changed several proxy threads to be daemons so they will be reaped when
+  the application terminates. This affected the threads created in
+  NamingProxy.java, SessionProxy.java, Registry.java, ManageableProxy.java,
+  ChannelProxy.java and ClientProxy.java.
+
+  Changed Naming.java to just connect to the Registry, perform the requested
+  operation then close the connection. Removed the RegistryServerThread.java
+  cleanupConnection() method; it's no longer needed.
+
+----
+
+v1.0 - 2nd December 1997.
+
+* Package name changed to com.sun.media.jsdt (and sub-packages: event, impl
+  and socket).:
+  - Adjusted all package name and import lines in all the source files. 
+  - Fixed up all the Makefiles that used this package. 
+  - Changed javax_media_jsdt.jmk to com_sun_media_jsdt.jmk.
+  - Regenerated the JavaDoc.
+  - Fixed up all occurances of javax in the overview.html document.
+  - Adjusted release/getfiles to package up the com directory into jsdt.jar.
+
+* Removed all references to "Early Access":
+  - Changed the setup.bmp image used by the win32 InstallShield, to remove the
+    reference to "Early Access".
+  - Removed reference in the release notes.
+  - Removed reference in the overview.html document.
+  - Removed the "Early Access" part of JSDT1.0/html/title.gif
+  - Fixed up release/solaris/script.txt
+  - Fixed up release/win32/license.txt
+  - Changes to various files under JSDT-1.0/html
+  - Changes to various InstallShield files.
+
+* Generated self-extracting executables are now called jsdt-1.0.[bin,exe]:
+  - Changed the three JSDT-EA directories to JSDT-1.0
+  - Changed RELDIR in release/getfiles to JSDT-1.0
+  - Fixed up all the symbolic links under release/solaris and release/win32.
+
+----
+
+v1.0 (Early Access) - 26th November 1997.
+
+* Various changes to try to fix the lockup problem reported by Bo and Phil 
+  at Virginia Tech:
+  - Added a new state (FOUND_REPLY) to the state engine in SocketThread.java
+  - Three of the wait() commands now do a wait(WAIT_PERIOD) where WAIT_PERIOD
+    is currently set at 10 milliseconds. 
+  - Added a finishReply() method that is called (instead of finishMessage())
+    when we've finished processing a reply from the server. All such methods
+    in the proxy classes that needed this were so changed.
+  - Changed the getId() method to return a unique id that is now calculated
+    using a random number (seeded from the current time), rather than an
+    object hash code.
+  - Added a "new Buffered[Input,Output]Stream()" around the streams derived
+    from the second constructor in TCPSocketThread.
+  - Synchronized a large portion of the writeMessageHeader() method.
+  - The priority of the SessionProxyThread was set to 9.
+
+----
+
+v1.0 (Early Access) - 19th November 1997.
+
+* All occurances of JSDA changed to JSDT (Java Shared Data Toolkit).
+  Package names changed to javax.media.jsdt, javax.media.jsdt.event etc...
+
+----
+
+v1.0 (Early Access) - 18th November 1997.
+
+* Changed packages to javax.media.jsda, javax.media.jsda.event etc...
+
+* Created a binary distribution for Solaris based on the JMF one. Self
+  extracting, and web-documented and runnable.
+
+* Changes to the stock example:
+  - adjusted the server code to display "Setup and bound Stock server".
+  - adjusted the getting of the images to use getDocumentBase() when run
+    as an applet.
+  - after adding or removing a stock, validate() is called to relayout the
+    components.
+  - if running as an applet, the Quit button is not display.
+
+* Changes to the whiteboard example:
+  - adjusted the server so that it doesn't exit if the last user program 
+    connected to the whiteboard session terminates.
+  - adjusted the getting of the images to use getDocumentBase() when run
+    as an applet.
+  - adjusted the code in redraw() in DrawingArea.java, for LINE and CIRCLE
+    commands to default to brush 0 if one hadn't already been selected.
+
+* Changes to the sound example:
+  - UI for the sound player has changed. There is now a scrolling list of
+    available selections. The artwork for the track is displayed when one
+    of the entries is selected.
+  - each audio file has a separate Channel.
+  - controls are now Play, Stop, Next (and Quit for the Application).
+  - using three audio files from Sun promo movies.
+
+* The resource name for Session events wasn't being passed onto the Session
+  listeners. Changes to SessionProxyMessage.java and ListenerMessage.java.
+
+* Added a check in the addConsumer() method in ChannelServer.java to check
+  if the client was found, and return JSDAException.NO_SUCH_CLIENT if it
+  wasn't.
+
+  Similar change made to the removeConsumer() method in ChannelServer.java.
+
+* Added a cleanupByteArrayListeners() method in SessionServer.java. This is
+  called from the leave() method, and cleans up the byte array listeners for
+  a given thread, that were automatically assigned to each byte array when
+  it was created, so that the proxy-side could be informed of changes in 
+  the byte arrays value (thus making getting the value of the byte array, 
+  a local operation on the proxy-side).
+
+* Rolande Kendal <kendal@interlog.com>
+  Creation of ByteArrayImpl, ChannelImpl and TokenImpl now pass in an
+  "isServer" flag that determines whether proxy or server objects should
+  be created.
+
+* Changed the [solaris,win32]/JSDA-alpha directories to now be
+  [solaris,win32]/JSDA-EA and fixed up all files to use these new names.
+
+* Adjusted the Solaris JSDA-EA/bin/JSDAConfig script to check for just one 
+  additional command line argument and echo a usage message is otherwise.
+
+* Adjusted the InstallShield configuration files to remove all references to
+  "Alpha" and replace them with "Early Access" or "EA".
+
+* Got new jsdamenu.gif from Deborah Adair. Changed the "samples" directory 
+  to be "examples", and fixed up all the references to it.
+
+* Mentioned the jsda-interest mailing list in the release notes.
+
+----
+
+v0.35 - 6th November 1997.
+
+* Created a new .../jsda/proposed directory, in order to flesh out the
+  JavaDoc for the proposed API, and to start creating a socket implementation.
+  Put the gnumake build environment in place.
+
+* Removed the top-level Makefile. Makefiles are now under .../build/$(PLATFORM).
+  Created the build hierarchy for Solaris and Win32 platforms using Gnu make.
+
+* Generated JavaDoc for all the public classes/methods.
+
+* Updated the .../doc/overview.html document.
+
+* Session and Client URL's now start with "jsda://" rather than "coll://".
+
+* The following classes were made into interfaces:
+  > ByteArray.java
+  > Channel.java
+  > Manageable.java
+  > Session.java
+
+* Changes to ByteArray.java:
+  > Three constructors removed.
+  > Removed five "constants" from start of file.
+  > Removed give(), grab(), request(), release() and test() methods.
+
+* Changes to Channel.java:
+  > Constructor removed.
+  > Removed uniformSendToAll() and uniformSendToOthers() methods. The ordered
+    and reliable characteristics are determined when the Channel is created 
+    with the Session.createChannel() method.
+  > Added a join(Client client, int mode) method. This allows the ability to
+    join a Channel in READ_ONLY or WRITE_ONLY mode. Using the join() method
+    in Manageable.java, would join the Client in READ_WRITE mode.
+  > Added back:
+        public void
+        addConsumer(Client client, ChannelConsumer consumer)
+                throws NoSuchChannelException, NoSuchConsumerException,
+                       PermissionDeniedException;
+        public void
+        removeConsumer(Client client, ChannelConsumer consumer)
+                throws NoSuchChannelException, NoSuchConsumerException,
+                       PermissionDeniedException;
+   Need to have consumption of data separate from other channel "events",
+   because you need to be able to associate a Client with a Consumer.
+
+* Changes to Manageable.java:
+  > Added NoSuchTokenException to the set of exceptions that nearly all the
+    methods in this interface throw.
+  > Added a destroy() method.
+  > Added a join() method.
+
+* Changes to Session.java:
+  > Removed the destroyByteArray() and destroyChannel() methods.
+  > Removed the joinByteArray(), joinChannel() and joinSession() methods.
+  > Added a Client parameter to the getByteArraysJoined(), getChannelsJoined()
+    and getTokensJoined() methods.
+  > Adjusted the two current createByteArray() methods to also pass in an
+    offset parameter indicating where the part of the byte array we are
+    interested in, starts within the byte[].
+  > Added two more createByteArray() methods, that just pass in a byte[],
+    and assume all of it's going to be used.
+  > Added two createToken() methods.
+  > Added a listTokenNames() method.
+  > The createByteArray() method now return a ByteArray. If a ByteArray of
+    this name, in this Session did not already exist, then it's created,
+    otherwise a handle to the existing ByteArray of this name is returned.
+  > Similar changes for the createChannel() and createToken() methods.
+  > Added a getTokensJoined() method.
+  > Added three new methods:
+        public boolean byteArrayExists(String channelName);
+        public boolean channelExists(String channelName);
+        public boolean tokenExists(String channelName);
+
+* Created a Token.java interface. Made the following changes:
+  > Added give(), grab(), request(), release() and test() methods.
+  > Added addTokenListener() and removeTokenListener() methods.
+
+* Created a TokenManager interface file.
+
+* Added CREATE_BYTEARRAY and DESTROY_BYTEARRAY "constants" to the
+  AuthenticationInfo.java class.
+
+* Client.java no longer extends ClientListener. Only socket.socketClients
+  implements ClientListener. ByteArray/Channel/Session/Token invite/expel 
+  events can be seen by any listeners on that object. Only classes that 
+  have extended socketClient can get invited to Sessions (they would be 
+  the only ones who would be able to receive such events anyhow). As well 
+  as the ByteArray/ Channel/Session/Token listeners, any class which
+  implements the ClientListener interface will also be notified of 
+  ByteArray/Channel/Session/Token invites/expels too.
+
+* Changes to the various JSDA exceptions:
+  > Moved all the exception classes into the javax.jsda package.
+  > Removed the middle-level exception classes (ByteArrayException, 
+    ChannelException, ClientException, ListenerException, ManagerException,
+    NamingException, SessionException).
+  > All top-level exception classes now extend from JSDAException.
+  > Added NO_SUCH_BYTEARRAY and BYTEARRAY_EXISTS "constants" to 
+    JSDAException.java. Reorganised set of "constants".
+  > Added NoSuchTokenException and TokenExistsException classes.
+  > Added a NoSuchHostException for when a Session or Client URL contains a
+    host name that doesn't exist.
+  > Added a NoSuchConsumerException class.
+  > Added an UnknownException class.
+
+* Changes to the jsda.event package:
+  > Added a TokenAdaptor abstract class.
+  > Added a TokenEvent class.
+  > Added a TokenListener interface.
+  > Removed byteArrayGiven(), byteArrayRequested(), byteArrayGrabbed(),
+    byteArrayReleased() methods from ByteArrayAdaptor.java
+  > Removed GIVEN and REQUESTED "constants" from ByteArrayEvent.java.
+  > The ByteArrayEvent.getByteArray() method should return a ByteArray for
+    consistency.
+  > Removed byteArrayGiven(), byteArrayRequested(), byteArrayGrabbed(),
+    byteArrayReleased() methods from ByteArrayListener.java
+  > The getResourceName() method in SessionEvent.java is now called
+    getResource(), and returns an Object (rather than a String), which
+    needs to be cast to a ByteArray, Channel, or Token, depending upon
+    which SessionAdaptor/SessionListener method was called.
+
+* Added a getProtocol() method to the impl/URLString.java class. Tightened
+  up the various methods in Naming.java to check that not only was the URL
+  String successfully unpacked but that the protocol string for the given 
+  URL is "jsda", throwing an InvalidURLException() if this is not the case.
+
+* Fixed up the sound example to correctly exit if the user was currently
+  disconnected from the audio channel/session.
+
+* Fixed up a bug with the whiteboard example. If you started the server 
+  and two whiteboard users, and draw a red line in one whiteboard, then 
+  just click in the drawing area of the other, there was a 
+  NullPointerException. Fix was to check that in the redraw() method in
+  DrawingArea.java, selectedbrush was not null, creating a brushes entry
+  if it was.
+
+----
+
+v0.34 - 22nd August 1997.
+
+* Adjusted the JSDA "current" and "proposed" API's to reflect the changes 
+  integrated into version 1.05 of JSDA. These are:
+
+  > "current" API changes:
+    - Removed Channel.getConsumer() and Channel.setConsumer().
+    - Added Channel.addConsumer() and Channel.deleteConsumer().
+    - New SharedData class called AuthenticationInfo.
+    - Changed Client.authenticate().
+    - Changed SessionManager.sessionRequest().
+    - Changed ChannelManager.channelRequest().
+    - Changed TokenManager.tokenRequest().
+    - Changed Session.createChannel().
+    - Changed Session.createToken().
+    - Added Session.destroyChannel().
+    - Added Session.destroyToken().
+    - Event names have changed.
+    - Lots of new Session/Channel/Token events for the observers to observe.
+    - Added Manageable.enableObserverEvents().
+    - Added Manageable.disableObserverEvents().
+
+  > "proposed" API changes:
+    - New class called AuthenticationInfo.
+    - Changed Client.authenticate() to include an AuthenticationInfo parameter.
+    - Added an AuthenticationInfo parameter to the sessionRequest()
+      method in the SessionManager class.
+    - Added an AuthenticationInfo parameter to the channelRequest()
+      method in the ChannelManager class.
+    - Added an AuthenticationInfo parameter to the byteArrayRequest()
+      method in the ByteArrayManager class.
+    - Added a Client parameter to the createByteArray() and createChannel() 
+      methods in Session.java.
+    - Added destroyChannel() and destroyByteArray() methods to the Session
+      class.
+    - Removed the destroy() method from the Manageable class.
+    - Changed enableEvents() to enableListenerEvents() in Manageable.java.
+      Added an EventListener parameter to this method.
+    - Changed disableEvents() to disableListenerEvents() in Manageable.java.
+      Added an EventListener parameter to this method.
+
+* "proposed" API change:
+  Added ClientEvent, ClientAdaptor and ClientListener classes to the jsda.event
+  package. Adjusted the Client interface so that it extends ClientListener.
+
+  This is needed because there is no guarantee that an application has created
+  a SessionListener and added it to a Session, therefore the Client needs to
+  notified some other way, that it has been invited to join a Session, Channel
+  or ByteArray or expelled from same.
+
+* Java extensions are derived from "javax", not "java". Adjusted all 
+  directory names and package and import lines accordingly.
+
+----
+
+v0.33 - 14th July 1997.
+
+* Under the jsda-api directory thereare now two directories:
+  current  - the current state of the JSDA API.
+  proposed - the JSDA API after all the PROPOSALS have been applied.
+
+* Applied the following adjustments to PROPOSAL #1 in the proposed directory:
+  > use JSDAException rather than SharedDataException.
+  > all Token exceptions now become ByteArray exceptions.
+  > all Consumer exceptions go away. Channel Listeners are now by default
+    automatically consumers of Data over that Channel.
+  > all Observer exceptions now become Listener exceptions.
+  > 1 exception class now becomes 24 exception classes.
+  > The Naming methods need to throw NoRegistryException.
+  > The Manageable methods no longer need to throw NoSuchTokenException.
+  > No need to enumerate the exception changes for Token.java.
+  > No longer any need to enumerate the exception changes for the
+    listTokenNames() method and the two createToken() methods.
+  > The two createSession() methods in the SessionFactory class need to
+    throw the NoRegistryException.
+  > Added exception signatures for enableEvents() and disableEvents() in
+    Manageable.java.
+  > Removed the addObserver() and deleteObserver() entries in Manageable.java.
+
+* Applied the following adjustments to PROPOSAL #2 in the proposed directory:
+  > All references to Token* classes and methods have been removed.
+  > Added GIVEN and REQUESTED event types to ByteArrayEvent.java.
+  > Added the following methods to ByteArrayListener.java:
+        public void byteArrayGiven(ByteArrayEvent event);
+        public void byteArrayRequested(ByteArrayEvent event);
+        public void byteArrayGrabbed(ByteArrayEvent event);
+        public void byteArrayReleased(ByteArrayEvent event);
+  > Added default implementations of those four new methods to 
+    ByteArrayAdaptor.java.
+  > The *Event.java classes no longer need the getType() method as each
+    individual event type is now going to a separately delegated method.
+  > Indicated that the addByteArrayObserver() and deleteByteArrayObserver()
+    methods need to be removed from Session.java.
+
+* Applied the following adjustments to PROPOSAL #3 in the proposed directory:
+  > added a note to indicate that the static int's for the various byte
+    array states (as returned by the test() method), will need to be tuned.
+  > Adjusted the VALUE_CHANGED event type to 0x00000010.
+  > Indicated that the destroyByteArray() and updateByteArray()
+    methods need to be removed from Session.java.
+
+* Applied the following adjustments to PROPOSAL #4 in the proposed directory: 
+  > The two createByteArray() methods should return a String indicating the
+    name of the byte array created.
+  > Added in the exception types that the joinSession() method in Session.java
+    could throw.
+
+* Applied the following adjustments to PROPOSAL #5 in the proposed directory:
+  > Added in the exception types that the destroy() method in Manageable.java
+    could throw.
+
+* Removed the leave() method from Channel.java. There is a leave() method
+  in Manageable.java that all managed objects use. The one in Channel.java
+  was an implementation defect that shouldn't have been there.
+
+* Removed the SharedDataManager interface file (and with it the need for the
+  getName() method which was an implementation defect). All of the Manager 
+  classes no longer extend from it.
+
+* Created all the .java files under the jsda-api/proposed directory. They
+  currently have no JavaDoc comments. If/when they get accepted, and moved
+  into the jsda-api/current directory, then JavaDoc comments can be added.
+
+  Exceptions classes are in a separate (java.jsda.exception) package.
+  Event classes are in a separate (java.jsda.event) package.
+
+----
+
+v0.32 - 11th July 1997.
+
+* Generated PROPOSAL #5 - destroying Sessions/Channels/ByteArrays.
+
+* Generated PROPOSAL #4 - creating/joining Sessions/Channels/ByteArrays.
+
+* Generated PROPOSAL #3 - move Token functionality into the ByteArray class,
+  and remove the Token class.
+
+* Made a couple changes to PROPOSAL #1:
+  > Added a note to suggest that the JSDA exception classes could be in their 
+    own separate (jsda.exception) package.
+
+  > Removed the IncorrectLengthException. This was only previously appropriate
+    to Shared* Classes in the SharedData.primitive package which should never
+    have their length changed (SharedInteger, SharedFloat, SharedBoolean ...).
+
+* Generated two more versions of PROPOSAL #2. The second version incorporate
+  feedback from Craig Struble and Bo Begole, which includes:
+
+  > Consistent tense for event names (SESSION_JOINED rather than SESSION_JOIN
+    to be consistent with CHANNEL_CREATED ...).
+
+  > Removed the name of the class from the event names in each of the *Event
+    classes (ie. CHANNEL_JOINED in ChannelEvent.java becomes JOINED).
+
+  > Changed CHANNEL_CONSUME to DATA_RECEIVED
+
+  > Changed TOKEN_PLEASE to REQUESTED
+
+  > Moved the INVITE/EXPEL events into the SessionEvent class (except for
+    the Session INVITE event). Fixed up the values for CHANNEL_INVITED and
+    CHANNEL_EXPELLED to be single bit settings.
+
+    ClientEvents and ClientListeners now go away.
+ 
+    The problem of how to enable/disable Client events goes away.
+ 
+  > Added the following method to the SessionEvent class to return the name of
+    the Channel/Token/ByteArray that has been created/destroyed:
+ 
+      public String
+      getResourceName();
+ 
+  > Added a second constructor to the ChannelEvent class for creating channel
+    events containing Data.
+ 
+  > The names of the methods in the various Listener interface files are lengthy
+    for uniqueness, in case a user wishes to implement more than one interface 
+    in one class file.
+ 
+  > The note describing how to enable/disable multiple events should show
+    an example where the different components of the event mask are or'ed
+    together rather than added together.
+
+  > It looks like a special event for late joiners isn't needed. Monitoring
+    of JOIN events should be sufficient, and it would be up to the application
+    to define what should be done in this case.
+
+  > Each type of event now invokes a different method in it's Listener.
+
+  > Have added in some new types of events that should be generated. These are:
+
+    TokenEvent.GRABBED       ByteArrayEvent.VALUECHANGED
+    TokenEvent.RELEASED
+
+    There may be more that I haven't thought of.
+
+  > Included in Adaptor classes for each of the objects that generate events.
+    This makes it much simpler to just cater for those events you are interested
+    in.
+
+* Every occurance of java.util.Listener in PROPOSAL #2 should have been
+  java.util.EventListener.
+
+----
+
+v0.31 - 7th July 1997.
+
+* Added .../doc/API.proposals; the list of potential API changes we might
+  wish to make.
+
+* Added a .../doc/proposals directory. It currently has:
+  - README - an overview of the proposals proposed so far.
+  - 1      - proposal on exceptions.
+  - 2      - proposal on using the Java Beans event model.
+
+* Removed .../doc/Exceptions file. This information is now in 
+  .../doc/proposals/1.
+
+* The getToken() method in TokenEvent.java actually returns the Token
+  associated with this Token event. Fixed up the JavaDoc comments to
+  reflect this.
+
+* The setSenderName() method in Data.java should have been "package" protected.
+
+----
+
+v0.30 - 2nd July 1997.
+
+* This distribution now just contains the JSDA API definition (no 
+  implementation details). Where a return type is need by a method, then
+  it's typically null, 0 or true (objects and arrays, integers, booleans). 
+  This is just to satisfy the compiler.
+
+  There is a top-level Makefile which has the following useful targets:
+
+  all     - does both "package" and "javadoc" (the default).
+  package - compile the .class files from the .java files.
+  javadoc - generate .html JavaDoc files from the .java files.
+
+* Changed package name to "java.jsda" to distinguish it from the SharedData
+  package.
+
+* Added in SharedByteArray.java, SharedByteArrayEvent.java and
+  SharedByteArrayObserver.java from the SharedData.primitive package.
+
+  SharedByteArray now extends Manageable.
+  SharedByteArrayEvent now extends SharedDataEvent.
+
+* Create a SharedByteArrayManager interface file (similar to the *Manager
+  interface files for Sessions, Channels and Tokens).
+
+  This has one method defined:
+
+    public boolean
+    sharedByteArrayRequest(SharedByteArray byteArray, Client client);
+
+* Removed the Abstract* interface files. These are not part of the API
+  definition.
+
+* Removed SharedDataObject.java, SharedDataDebugFlags.java and URLString.java.
+  These were implementation files.
+
+* Removed all references to names not being able to contain '\u0001' or 
+  newline characters. This was an implementation defect of the String based
+  token implementation.
+
+* Changed the _setChannel() to setChannel() in Data.java and set "package" 
+  protected (rather than public). This was the way it originally was. Only 
+  the JSDA package should be able to set a channel in a Data object. It had
+  been made public for the dynamically loadable "transport" implementation,
+  but as this is an implementation detail, it shouldn't influence the
+  original intent of the API.
+
+  A similar change for the _setSenderName() (it's now setSenderName() and is
+  "package" protected).
+
+* Removed the setName() method in Session.java. This was an implementation
+  specific method used by the dynamically loading implementations.
+
+====

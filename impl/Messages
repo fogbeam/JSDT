@@ -1,0 +1,1148 @@
+
+/*
+ *  Copyright (c) 1996-2005 Sun Microsystems, Inc.
+ *  All Rights Reserved.
+ *
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU Library General Public License as
+ *  published by the Free Software Foundation; either version 2, or (at
+ *  your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful, but
+ *  WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ *  General Public License for more details.
+ *
+ *  You should have received a copy of the GNU Library General Public
+ *  License along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+ *  02111-1307, USA.
+ */
+
+/* JSDT messages and replies. */
+
+There are several different messages sent between the user applications
+and the sessions server. This document describes them in more detail.
+
+These notes are applicable to the socket implementation of JSDT.
+
+Message fields enclosed in <> characters signify that these are variable.
+Message fields starting with T_ are defined from a standard set of character
+and String based tokens. These are:
+
+    char T_Session_No         : '\u00A0'
+    char T_Version            : '\u00A1'
+
+    char T_Manager            : '\u00A2'
+    char T_Registry           : '\u00A3'
+
+    char T_AddConnection      : '\u00D3'
+    char T_AddConsumer        : '\u00A4'
+    char T_AddListener        : '\u00A5'
+    char T_Authenticate       : '\u00A6'
+    char T_ByteArrayExists    : '\u00A7'
+    char T_ByteArraysJoined   : '\u00A8'
+    char T_Challenge          : '\u00A9'
+    char T_ChangeManagerMask  : '\u00D0'
+    char T_ChannelExists      : '\u00AA'
+    char T_ChannelsJoined     : '\u00AB'
+    char T_Close              : '\u00CB'
+    char T_CreateByteArray    : '\u00AC'
+    char T_CreateChannel      : '\u00AD'
+    char T_CreateToken        : '\u00AE'
+    char T_DataReceived       : '\u00AF'
+    char T_DestroyByteArray   : '\u00B2'
+    char T_DestroyChannel     : '\u00B3'
+    char T_DestroyClient      : '\u00D1'
+    char T_DestroySession     : '\u00B4'
+    char T_DestroyToken       : '\u00B5'
+    char T_Expel              : '\u00B6'
+    char T_GetMessage         : '\u00B7'
+    char T_Give               : '\u00B8'
+    char T_Grab               : '\u00B9'
+    char T_InformListener     : '\u00BA'
+    char T_Invite             : '\u00BB'
+    char T_IsAlive            : '\u00D2'
+    char T_IsManaged          : '\u00CE'
+    char T_Join               : '\u00BC'
+    char T_Leave              : '\u00BD'
+    char T_ListByteArrayNames : '\u00BE'
+    char T_ListChannelNames   : '\u00BF'
+    char T_ListClientNames    : '\u00C0'
+    char T_ListConsumerNames  : '\u00CC'
+    char T_ListHolderNames    : '\u00CD'
+    char T_ListTokenNames     : '\u00C1'
+    char T_Permanent          : '\u00EF'
+    char T_Release            : '\u00C2'
+    char T_RemoveConnection   : '\u00D4'
+    char T_RemoveConsumer     : '\u00B0'
+    char T_RemoveListener     : '\u00B1'
+    char T_Request            : '\u00C3'
+    char T_Send               : '\u00C4'
+    char T_SetValue           : '\u00C5'
+    char T_Test               : '\u00C6'
+    char T_TokenExists        : '\u00C7'
+    char T_TokenGiven         : '\u00CF'
+    char T_TokensJoined       : '\u00C8'
+    char T_ValueChanged       : '\u00C9'
+    char T__Manager           : '\u00CA'
+
+    char T_Bind               : '\u00D7'
+    char T_Unbind             : '\u00D9'
+    char T_Lookup             : '\u00DA'
+    char T_List               : '\u00DB'
+    char T_Exists             : '\u00DC'
+    char T_Stop               : '\u00DD'
+
+
+Each of the different JSDT objects types has a unique identifier. These are:
+
+    char ByteArrayImpl.M_ByteArray : '\u00F6'
+    char ChannelImpl.M_Channel     : '\u00F1'
+    char ClientImpl.M_Client       : '\u00F5'
+    char SessionImpl.M_Session     : '\u00F0'
+    char TokenImpl.M_Token         : '\u00F4'
+
+The ChannelImpl class also defines three sending types:
+
+    char D_All                     : '\u00F2'
+    char D_Others                  : '\u00F3'
+    char D_Client                  : '\u00F4'
+
+Every message has a standard message header consisting of:
+
+	T_Version
+	<version>          char       : '\u0006'
+	T_Session_No
+	<sessionNo>        short
+	<id>               int
+	<type>             char
+	<action>           char
+
+The <sessionNo> field is a unique number which identifies each Session.
+The <id> field uniquely identifies the sender of the message.  The <type>
+and <action> fields will be different for each message, and are given below.
+
+----
+
+File:    AuthenticateClient.java
+
+Method:  authenticate(String challenge)
+Message: <type>       ClientImpl.M_Client
+         <action>     T_Authenticate
+         <objectType> char
+         <objectName> String
+         <name>       String
+         <action>     int
+	 <challenge>  Object
+Wait?:   yes
+
+
+Method:  run()
+Message: <type>       ClientImpl.M_Client
+         <action>     T_Join
+         <objectType> char
+         <objectName> String
+         <name>       String
+         <admitted>   boolean
+Wait?:   no
+
+----
+
+File:    ByteArrayProxy.java
+
+Method:  setValue(Client client, byte value[], int offset, int length)
+Message: <type>       ByteArrayImpl.M_ByteArray
+         <action>     T_SetValue
+         <name>       String
+         <clientName> String
+         <length>     int
+         <data>       byte array
+Wait?:   yes
+
+----
+
+File:    ByteArrayServer.java
+
+Method:  informByteArrayListeners(int id, ByteArrayImpl sba, String clientName,
+                                  String byteArrayName, byte[] value)
+Message: <type>          ByteArrayImpl.M_ByteArray
+         <action>        T_ValueChanged
+         <name>          String
+         <clientName>    String
+         <byteArrayName> String
+         <length>        int
+         <data>          byte array
+Wait?:   no
+
+
+Method:  join(Message message)
+Message: <type>         ByteArrayImpl.M_ByteArray
+         <action>       T_Join
+         <return value> int
+Wait?:   no
+
+----
+
+File:    ChannelProxy.java
+
+Method:  addConsumer(Client client, ChannelConsumer consumer)
+Message: <type>                ChannelImpl.M_Channel
+         <action>              T_AddConsumer
+         <name>                String
+         <clientName>          String
+         <consumerName>        String
+         <local proxy address> String    // if channel is unreliable
+	 <local proxy port>    int       // if channel is unreliable
+Wait?:   yes
+
+
+Method:  removeConsumer(Client client, ChannelConsumer consumer)
+Message: <type>                ChannelImpl.M_Channel
+         <action>              T_RemoveConsumer
+         <name>                String
+         <clientName>          String
+         <consumerName>        String
+Wait?:   yes
+
+
+Method:  listConsumerNames()
+Message: <type>                ChannelImpl.M_Channel
+         <action>              T_ListConsumerNames
+         <name>                String
+Wait?:   yes
+
+
+Method:  join(Client client, boolean authenticate, int mode)
+Message: <type>                ChannelImpl.M_Channel
+         <action>              T_Join
+         <channelName>         String
+         <clientName>          String
+         <mode>                int
+Wait?:   yes
+
+
+Method:  send(Client sendingClient, char recipient, String receivingClientName,
+              Data data, boolean uniform)
+Message: <type>                ChannelImpl.M_Channel
+         <action>              T_Send
+         <channelName>         String
+         <sendingClientName>   String
+	 <recipient>           char (D_All, D_Others or D_Client)
+         <receivingClientName> String (only present if <recipient> is D_Client)
+         <priority>            int
+         <uniform>             boolean
+         <length>              int
+	 <data>                byte array
+Wait?:   yes
+
+----
+
+File:    ChannelServer.java
+
+Method:  addConsumer(Message message)
+Message: <type>                ChannelImpl.M_Channel
+         <action>              T_AddConsumer
+         <return value         int
+Wait?:   no
+
+
+Method:  join(Message message)
+Message: <type>                ChannelImpl.M_Channel
+         <action>              T_Join
+         <return value>        int
+Wait?:   no
+
+
+Method:  removeConsumer(Message message)
+Message: <type>                ChannelImpl.M_Channel
+         <action>              T_RemoveConsumer
+         <return value>        int
+Wait?:   no
+
+
+Method:  listConsumerNames(Message message)
+Message: <type>                ChannelImpl.M_Channel
+         <action>              T_ListConsumerNames
+         <return value>        int
+         <size>                int
+         <names>               String's
+Wait?:   no
+
+
+Method:  send(Message message, String channelName)
+Message: <type>                ChannelImpl.M_Channel
+         <action>              T_DataReceived
+         <channelName>         String
+         <senderName>          String
+	 <clientName>          String
+         <priority>            int
+         <length>              int
+         <data>                byte array
+Wait?:   no
+
+Method:  send(Message message, String channelName)
+Message: <type>                ChannelImpl.M_Channel
+         <action>              T_Send
+         <return value>        int
+Wait?:   no
+
+----
+
+File:    ConnectionThread.java
+
+Method:  checkConnections()
+Message: <type>                SessionImpl.M_Session
+         <action>              T_IsAlive
+Wait?:   yes
+
+----
+
+File:    JSDTMessage.java
+
+Method:  clientChallenge(Message message)
+Message: <type>                ClientImpl.M_Client
+         <action>              T_Challenge
+         <objectType>          char (ByteArrayImpl.M_ByteArray or
+				     SessionImpl.M_Session or
+                                     ChannelImpl.M_Channel or
+                                     TokenImpl.M_Token)
+         <objectName>          String
+         <clientName>          String
+         <action>              int
+         <response>            Object
+Wait?:   no
+
+----
+
+File:    ManageableProxy.java
+
+Method:
+Message: <type>         (ByteArrayImpl.M_ByteArray or
+                         SessionImpl.M_Session or
+                         ChannelImpl.M_Channel or
+                         TokenImpl.M_Token)
+         <action>       T_ChangeManagerMask
+         <name>         String
+         <event mask>   int
+         <disable?>     boolean
+Wait?    yes
+
+
+Method:  destroy(Client client, char objectType)
+Message: <type>                (ByteArrayImpl.M_ByteArray or
+				SessionImpl.M_Session or
+                                ChannelImpl.M_Channel or
+                                TokenImpl.M_Token)
+         <action>              (T_DestroyByteArray or
+                                T_DestroyChannel or
+                                T_DestroySession or
+                                T_DestroyToken)
+         <name>                String
+         <clientName>          String
+Wait?:   yes
+
+
+Method:  isManaged(char objectType)
+Message: <type>                (ByteArrayImpl.M_ByteArray or
+                                SessionImpl.M_Session or
+                                ChannelImpl.M_Channel or
+                                TokenImpl.M_Token)
+         <action>              T_IsManaged
+         <name>                String
+Wait?:   yes
+
+
+Method:  join(Client client, boolean authenticate, char objectType)
+Message: <type>                (ByteArrayImpl.M_ByteArray or
+                                SessionImpl.M_Session or
+                                ChannelImpl.M_Channel or
+                                TokenImpl.M_Token)
+         <action>              T_Join
+         <name>                String
+         <clientName>          String
+Wait?:   yes
+
+
+Method:  leave(Client client, char objectType)
+Message: <type>                (ByteArrayImpl.M_ByteArray or
+				SessionImpl.M_Session or
+                                ChannelImpl.M_Channel or
+                                TokenImpl.M_Token)
+         <action>              T_Leave
+         <name>                String
+         <clientName>          String
+Wait?:   yes
+
+
+Method:  listClientNames(char objectType)
+Message: <type>                (ByteArrayImpl.M_ByteArray or
+				SessionImpl.M_Session or
+                                ChannelImpl.M_Channel or
+                                TokenImpl.M_Token)
+         <action>              T_ListClientNames
+         <name>                String
+Wait?:   yes
+
+
+Method:  addListener(EventListener listener, char listenerType)
+Message: <type>                (ByteArrayImpl.M_ByteArray or
+				SessionImpl.M_Session or
+                                ChannelImpl.M_Channel or
+                                TokenImpl.M_Token)
+         <action>              T_AddListener
+         <name>                String
+         <listenerName>        String
+Wait?:   yes
+
+
+Method:  attachManager(JSDTManager manager, char managerType,
+                  Manageable manageable)
+Message: <type>                (ByteArrayImpl.M_ByteArray or
+				SessionImpl.M_Session or
+                                ChannelImpl.M_Channel or
+                                TokenImpl.M_Token)
+         <action>              T__Manager
+         <name>                String
+         <managerName>         String
+Wait?:   yes
+
+
+Method:  authenticateClient(int id, AuthenticationInfo info, String clientName)
+Message: <type>                (ByteArrayImpl.M_ByteArray or
+				SessionImpl.M_Session or
+                                ChannelImpl.M_Channel or
+                                TokenImpl.M_Token)
+         <action>              T_Authenticate
+         <auth. name>          String
+         <clientName>          String
+         <auth. action>        int
+Wait?:   yes
+
+
+Method:  expelInvite(char messageType, Client[] clients, char objectType)
+Message: <type>                (ByteArrayImpl.M_ByteArray or
+				SessionImpl.M_Session or
+                                ChannelImpl.M_Channel or
+                                TokenImpl.M_Token)
+         <action>              T_Expel or T_Invite
+         <name>                String
+         <length>              int
+         <clients>             String's
+Wait?:   yes
+
+
+Method:  removeListener(EventListener listener, char listenerType)
+Message: <type>                (ByteArrayImpl.M_ByteArray or
+				SessionImpl.M_Session or
+                                ChannelImpl.M_Channel or
+                                TokenImpl.M_Token)
+         <action>              T_RemoveListener
+         <name>                String
+         <listenerName>        String
+Wait?:   yes
+
+----
+
+File:    ManageableServer.java
+
+Method:  addListener(Message message)
+Message: <type>                (ByteArrayImpl.M_ByteArray or
+				SessionImpl.M_Session or
+                                ChannelImpl.M_Channel or
+                                TokenImpl.M_Token)
+         <action>              T_AddListener
+         <return value>        int
+Wait?:   no
+
+
+Method:  attachManager(Message message)
+Message: <type>                (ByteArrayImpl.M_ByteArray or
+				SessionImpl.M_Session or
+                                ChannelImpl.M_Channel or
+                                TokenImpl.M_Token)
+         <action>              T__Manager
+         <return value>        int
+Wait?:   no
+
+
+Method:  authenticateClient(Message message, String objectName)
+Message: <type>                T_Manager
+         <action>              T_Authenticate
+         <objectType>          (ByteArrayImpl.M_ByteArray or
+				SessionImpl.M_Session or
+                                ChannelImpl.M_Channel or
+                                TokenImpl.M_Token)
+         <objectName>          String
+         <clientName>          String
+         <object action>       int
+Wait?:   no
+
+
+Method:  authenticateClient(Message message, String objectName)
+Message: <type>                (ByteArrayImpl.M_ByteArray or
+				SessionImpl.M_Session or
+                                ChannelImpl.M_Channel or
+                                TokenImpl.M_Token)
+         <action>              T_Authenticate
+         0  <return value>     int
+         false <isManaged>     boolean
+         true  <admitted>      boolean
+Wait?:   no
+
+
+Method:  clientChallenge(Message message)
+Message: <type>                ClientImpl.M_Client
+         <action>              T_Challenge
+         <objectType>          (ByteArrayImpl.M_ByteArray or
+				SessionImpl.M_Session or
+                                ChannelImpl.M_Channel or
+                                TokenImpl.M_Token)
+         <objectName>          String
+         <clientName>          String
+         <action>              int
+         <length>              int
+         <challenge>           byte array
+Wait?:   no
+
+
+Method:  clientResponse(Message message)
+Message: <type>                ClientImpl.M_Client
+         <action>              T_Authenticate
+         <objectType>          (ByteArrayImpl.M_ByteArray or
+				SessionImpl.M_Session or
+                                ChannelImpl.M_Channel or
+                                TokenImpl.M_Token)
+         <objectName>          String
+         <clientName>          String
+         <action>              int
+         <return value>        int
+         <length>              int
+         <response>            byte array
+Wait?:   no
+
+
+Method:  expelClient(Message message, String sessionName, String clientName,
+                     char objectType, ManageableServer server
+Message: <type>                ClientImpl.M_Client
+         <action>              T_Expel
+         <objectType>          (ByteArrayImpl.M_ByteArray or
+                                SessionImpl.M_Session or
+                                ChannelImpl.M_Channel or
+                                TokenImpl.M_Token)
+	 <name>                String
+         <clientName>          String
+Wait?:   no
+
+
+Method:  expel(Message message, char expelType, ManageableServer server)
+Message: <type>                (ByteArrayImpl.M_ByteArray or
+                                SessionImpl.M_Session or
+                                ChannelImpl.M_Channel or
+                                TokenImpl.M_Token)
+         <action>              T_Expel
+         <return value>        int
+Wait?:   no
+
+
+Method:  informListeners(String sessionName, String clientName,
+                    String resourceName, int type, char listenerType)
+Message: <type>                (ByteArrayImpl.M_ByteArray or
+				SessionImpl.M_Session or
+                                ChannelImpl.M_Channel or
+                                TokenImpl.M_Token)
+         <action>              T_InformListener
+         <resourceName>        String
+         <clientName>          String
+         <type>                int
+Wait?:   no
+
+
+Method:  invite(Message message, char inviteType)
+Message: <type>                Client.M_Client
+         <action>              T_Invite
+	 <objectType>          (ByteArrayImpl.M_ByteArray or
+                                SessionImpl.M_Session or
+                                ChannelImpl.M_Channel or
+                                TokenImpl.M_Token)
+         <name>                String
+         <clientName>          String
+Wait?:   no
+
+
+Method:  invite(Message message, char inviteType)
+Message: <type>                (ByteArrayImpl.M_ByteArray or
+                                SessionImpl.M_Session or
+                                ChannelImpl.M_Channel or
+                                TokenImpl.M_Token)
+         <action>              T_Invite
+         <return value>        int
+Wait?:   no
+
+
+Method:  isManaged(Message message)
+Message: <type>                (ByteArrayImpl.M_ByteArray or
+                                SessionImpl.M_Session or
+                                ChannelImpl.M_Channel or
+                                TokenImpl.M_Token)
+         <action>              T_IsManaged
+         <return value>        int
+	 <is managed>          boolean
+Wait?:   no
+
+
+Method:  leave(Message message, String sessionName,
+          char objectType, String clientName)
+Message: <type>                (ByteArrayImpl.M_ByteArray or
+                                SessionImpl.M_Session or
+                                ChannelImpl.M_Channel or
+                                TokenImpl.M_Token)
+         <action>              T_Leave
+         <return value>        int
+Wait?:   no
+
+
+Method:  listClientNames(Message message)
+Message: <type>                (ByteArrayImpl.M_ByteArray or
+                                SessionImpl.M_Session or
+                                ChannelImpl.M_Channel or
+                                TokenImpl.M_Token)
+         <action>              T_ListClientNames
+         <return value>        int
+         <size>                int
+         <names>               String's
+Wait?:   no
+
+
+Method:  removeListener(Message message)
+Message: <type>                (ByteArrayImpl.M_ByteArray or
+                                SessionImpl.M_Session or
+                                ChannelImpl.M_Channel or
+                                TokenImpl.M_Token)
+         <action>              T_RemoveListener
+         <return value>        int
+Wait?:   no
+
+----
+
+File:    NamingProxy.java
+
+Method:  cleanupClient(String name, Client client, int id)
+Message: <type>                ClientImpl.M_Client
+         <action>              T_DestroyClient
+Wait?    no
+
+
+Method:  bind(URLString urlString, Object object, Client client)
+Message: <type>                  T_Registry
+         <action>                T_Bind
+         <name>                  String
+         <address>               String
+	 <client name>           String
+         <authentication action> int
+Wait?:   yes
+
+
+Method:  (URLString urlString, Object object, Client client)
+Message: <type>                  T_Registry
+         <action>                T_Unbind
+         <name>                  String
+         <address>               String
+         <client name>           String
+         <authentication action> int
+Wait?:   yes
+
+
+Method:  lookup(URLString urlString)
+Message: <type>                T_Registry
+         <action>              T_Lookup
+         <name>                String
+         <address>             String
+Wait?:   yes
+
+
+Method:  addRegistryListener(RegistryListener listener)
+Message: <type>           T_Registry
+         <action>         T_AddListener
+         <listener name>  String
+Wait?    yes
+
+
+Method:  removeRegistryListener(RegistryListener listener)
+Message: <type>           T_Registry
+         <action>         T_RemoveListener
+         <listener name>  String
+Wait?    yes
+
+
+Method:  authenticateClient(URLString urlString, int action, Client client)
+Message: <type>                  T_Registry
+         <action>                T_Authenticate
+         <client name>           String
+	 <url>                   String
+         <authentication action> int
+         <challenge>             Object
+Wait?    yes
+
+
+Method:  authenticateClient(URLString urlString, int action, Client client)
+Message: <type>                  T_Registry
+         <action>                T_Challenge
+         <client name>           String
+	 <url>                   String
+         <authentication action> int
+         <response>              Object
+Wait?    yes
+
+
+Method:  isManaged()
+Message: <type>                  T_Registry
+         <action>                T_IsManaged
+Wait?    yes
+
+
+Method:  list()
+Message: <type>                T_Registry
+         <action>              T_List
+Wait?:   yes
+
+----
+
+File:    Registry.java
+
+Method:  stopRegistry(String registryType, int port)
+Message: <type>                T_Registry
+         <action>              T_Stop
+Wait?    yes
+
+
+Method:  addListener(Message message)
+Message: <type>                T_Registry
+         <action>              T_AddListener
+         <return value>        int
+Wait?    no
+
+
+Method:  removeListener(Message message)
+Message: <type>                T_Registry
+         <action>              T_RemoveListener
+         <return value>        int
+Wait?    no
+
+
+Method:  informListeners(String clientName, String resourceName, int type)
+Message: <type>                T_Registry
+         <action>              T_InformListener
+         <resource name>       String
+         <client name>         String
+         <event type>          int
+Wait?    no
+
+
+Method:  isManaged(Message message)
+Message: <type>                T_Registry
+         <action>              T_IsManaged
+         <return value>        int
+	 <is managed?>         boolean
+Wait?:   no
+
+
+Method:  stop(Message message)
+Message: <type>                T_Registry
+         <action>              T_Stop
+         <return value>        int
+Wait?    no
+
+
+Method:  registryExists(String registryType, int port)
+Message: <type>                T_Registry
+         <action>              T_Exists
+Wait?    yes
+
+
+Method:  exists(Message message)
+Message: <type>                T_Registry
+         <action>              T_Exists
+         <return value>        int
+Wait?    no
+
+
+Method:  bind(Message message)
+Message: <type>                T_Registry
+         <action>              T_Bind
+         <return value>        int
+Wait?:   no
+
+
+Method:  unbind(Message message)
+Message: <type>                T_Registry
+         <action>              T_Unbind
+         <return value>        int
+Wait?:   no
+
+
+Method:  lookup(Message message)
+Message: <type>                T_Registry
+         <action>              T_Lookup
+         <return value>        int
+Wait?:   no
+
+
+Method:  list(Message message)
+Message: <type>                T_Registry
+         <action>              T_Lookup
+         <size>                int
+	 <names>               String's
+Wait?:   no
+
+----
+
+File:    SessionProxy.java
+
+Method:  createByteArray(Client client, String byteArrayName,
+                         byte[] value, int offset, int length, boolean autoJoin)
+Message: <type>                SessionImpl.M_Session
+         <action>              T_CreateByteArray
+         <byteArrayName>       String
+         <clientName>          String
+         <length>              int
+         <value>               byte array
+Wait?:   yes
+
+
+Method:  createChannel(Client client, String channelName,
+                  boolean reliable, boolean ordered, boolean autoJoin)
+Message: <type>                SessionImpl.M_Session
+         <action>              T_CreateChannel
+         <channelName>         String
+         <clientName>          String
+         <reliable>            boolean
+         <ordered>             boolean
+Wait?:   yes
+
+
+Method:  createToken(Client client, String tokenName, boolean autoJoin)
+Message: <type>                SessionImpl.M_Session
+         <action>              T_CreateToken
+         <tokenName>           String
+         <clientName>          String
+Wait?:   yes
+
+
+Method:  objectExists(char objectType, String objectName)
+Message: <type>                SessionImpl.M_Session
+         <action>              (T_ByteArrayExists or
+				T_ChannelExists or
+				T_TokenExists)
+         <objectName>           String
+Wait?:   yes
+
+
+Method:  objectsJoined(char objectType, Client client)
+Message: <type>                SessionImpl.M_Session
+         <action>              (T_ByteArraysJoined or
+                                T_ChannelsJoined or
+                                T_TokensJoined)
+         <clientName>           String
+Wait?:   yes
+
+
+Method:  listNames(char nameType)
+Message: <type>                SessionImpl.M_Session
+         <action>              T_ListChannelNames or
+                               T_ListTokenNames or
+                               T_ListByteArrayNames
+         <name>                String
+Wait?:   yes
+
+
+Method:  invite(Client[] clients)
+Message: <type>                SessionImpl.M_Session
+         <action>              T_Invite
+	 <url>                 String
+Wait?:   no
+
+
+Method:  close()
+Message: <type>                SessionImpl.M_Session
+         <action>              T_Close
+Wait?:   no
+
+----
+
+File:    SessionServer.java
+
+Method:  clientAuthenticate(Message message)
+Message: <type>                ByteArrayImpl.M_ByteArray or
+			       SessionImpl.M_Session or
+                               ChannelImpl.M_Channel or
+                               TokenImpl.M_Token
+         <action>              T_Authenticate
+         <return value>        int
+         true  <isManaged>     boolean
+         <admitted>            boolean
+Wait?:   no
+
+
+Method:  close(Message message)
+Message: <type>                SessionImpl.M_Session
+         <action>              T_Close
+         <return value>        int
+Wait?:   no
+
+
+Method:  createByteArray(Message message)
+Message: <type>                 SessionImpl.M_Session
+         <action>               T_CreateByteArray
+         <return value>         int
+         <length>               int
+         <current value>        byte array
+Wait?:   no
+
+
+Method:  createChannel(Message message)
+Message: <type>                SessionImpl.M_Session
+         <action>              T_CreateChannel
+         <return value>        int
+         <ordered>             boolean
+         <reliable>            boolean
+Wait?:   no
+
+
+Method:  createToken(Message message)
+Message: <type>                SessionImpl.M_Session
+         <action>              T_CreateToken
+         <return value>        int
+Wait?:   no
+
+
+Method:  destroyByteArray(Message message)
+Message: <type>                SessionImpl.M_Session
+         <action>              T_DestroyByteArray
+         <return value>        int
+Wait?:   no
+
+
+Method:  destroyChannel(Message message)
+Message: <type>                SessionImpl.M_Session
+         <action>              T_DestroyChannel
+         <return value>        int
+Wait?:   no
+
+
+Method:  destroySession(Message message)
+Message: <type>                SessionImpl.M_Session
+         <action>              T_DestroySession
+         <return value>        int
+Wait?:   no
+
+
+Method:  destroyToken(Message message)
+Message: <type>                SessionImpl.M_Session
+         <action>              T_DestroyToken
+         <return value>        int
+Wait?:   no
+
+
+Method:  isAlive(Message message)
+Message: <type>                SessionImpl.M_Session
+         <action>              T_IsAlive
+         <return value>        int
+Wait?:   no
+
+
+Method:  join(Message message)
+Message: <type>                SessionImpl.M_Session
+         <action>              T_Join
+         <return value>        int
+Wait?:   no
+
+
+Method:  listNames(Message message)
+Message: <type>                SessionImpl.M_Session
+         <action>              T_ListByteArrayNames or
+			       T_ListChannelNames or
+                               T_ListTokenNames)
+         <return value>        int
+	 <size>                int
+         <names>               String's
+Wait?:   no
+
+----
+
+File:    SessionServerMessage.java
+
+Method:  parseProxyByteArrayMessage(Message message)
+Message: <type>                ByteArrayImpl.M_ByteArray
+         <action>              various
+         <return value>        int       (JSDTException.NO_SUCH_BYTEARRAY)
+Wait?:   no
+
+
+Method:  parseProxySessionMessage(Message message)
+Message: <type>                Session.M_Session
+         <action>              various
+         <return value>        int       (JSDTException.NO_SUCH_SESSION)
+Wait?:   no
+
+
+Method:  parseProxyChannelMessage(Message message)
+Message: <type>                Channel.M_Channel
+         <action>              various
+         <return value>        int       (JSDTException.NO_SUCH_CHANNEL)
+Wait?:   no
+
+
+Method:  parseProxyTokenMessage(Message message)
+Message: <type>                Token.M_Token
+         <action>              various
+         <return value>        int       (JSDTException.NO_SUCH_TOKEN)
+Wait?:   no
+
+----
+
+File:    TokenProxy.java
+
+Method:  give(Client client, String receivingClientName)
+Message: <type>                TokenImpl.M_Token
+         <action>              T_Give
+         <name>                String
+         <clientName>          String
+         <receivingClientName> String
+Wait?:   yes
+
+
+Method:  grab(Client client, boolean exclusive)
+Message: <type>                TokenImpl.M_Token
+         <action>              T_Grab
+         <name>                String
+         <clientName>          String
+         <exclusive>           boolean
+Wait?:   yes
+
+
+Method:  listHolderNames()
+Message: <type>                TokenImpl.M_Token
+         <action>              T_ListHolderNames
+         <name>                String
+Wait?:   yes
+
+
+Method:  request(Client client)
+Message: <type>                TokenImpl.M_Token
+         <action>              T_Request
+         <name>                String
+         <clientName>          String
+Wait?:   yes
+
+
+Method:  release(Client client)
+Message: <type>                TokenImpl.M_Token
+         <action>              T_Release
+         <name>                String
+         <clientName>          String
+Wait?:   yes
+
+
+Method:  test()
+Message: <type>                TokenImpl.M_Token
+         <action>              T_Test
+         <name>                String
+Wait?:   yes
+
+----
+
+File:    TokenServer.java
+
+Method:  give(Message message)
+Message: <type>                TokenImpl.M_Token
+         <action>              T_InformListener
+         <name>                String
+         <givingClientName>    String
+	 TokenEvent.GIVEN      int
+Wait?:   no
+
+
+Method:  give(Message message)
+Message: <type>                TokenImpl.M_Token
+         <action>              T_Give
+         <return value>        int
+         <status>              int
+Wait?:   no
+
+
+Method:  give(Message message)
+Message: <type>                  ClientImpl.M_Client
+         <action>                T_TokenGiven
+         <name>                  String
+         <receiving client name> String
+Wait?:   no
+
+
+Method:  grab(Message message)
+Message: <type>                TokenImpl.M_Token
+         <action>              T_Grab
+         <return value>        int
+	 <status>              int
+Wait?:   no
+
+
+Method:  join(Message message)
+Message: <type>                TokenImpl.M_Token
+         <action>              T_Join
+         <return value>        int
+Wait?:   no
+
+
+Method:  listHolderNames(Message message)
+Message: <type>                TokenImpl.M_Token
+         <action>              T_ListHolderNames
+         <return value>        int
+         <size>                int
+         <names>               String's
+Wait?:   no
+
+
+Method:  release(Message message)
+Message: <type>                TokenImpl.M_Token
+         <action>              T_Release
+         <return value>        int
+         <status>              int
+Wait?:   no
+
+
+Method:  request(Message message)
+Message: <type>                    TokenImpl.M_Token
+         <action>                  T_InformListener
+         <name>                    String
+         <requestingClientName>    String
+         TokenEvent.REQUESTED      int
+Wait?:   no
+
+
+Method:  request(Message message)
+Message: <type>                TokenImpl.M_Token
+         <action>              T_Request
+         <return value>        int
+         <status>              int
+Wait?:   no
+
+
+Method:  test(Message message)
+Message: <type>                TokenImpl.M_Token
+         <action>              T_Test
+         <return value>        int
+         <status>              int
+Wait?:   no
+
+----
+
+File:    UDPChannelServerMessage.java
+
+Method:  parseProxyChannelMessage(Message message)
+Message: <type>                Channel.M_Channel
+         <action>              T_Send or T_AddConsumer or T_RemoveConsumer
+         <return value>        int    (JSDTException.NO_SUCH_CHANNEL)
+Wait?:   no
+
+----

@@ -1,0 +1,15 @@
+com.sun.media.jsdt
+com.sun.media.jsdt.event
+com.sun.media.jsdt.http
+com.sun.media.jsdt.impl
+com.sun.media.jsdt.impl.locale
+com.sun.media.jsdt.socket
+com.sun.media.jsdt.template
+examples.browser
+examples.chat
+examples.phone
+examples.ppong
+examples.sound
+examples.stock
+examples.synth
+examples.whiteboard
