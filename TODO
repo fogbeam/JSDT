@@ -47,6 +47,11 @@
   web page.
 - Get the sound demo working.
 - Get the phone demo working.
+- the test TestUser currently hangs in:
+  ******test6******
+  ...
+  Client: Giver gives the token to: Receiver
+
 
 - Current compilation warnings to fixup:
   Information:javac 1.8.0_131 was used to compile java sources

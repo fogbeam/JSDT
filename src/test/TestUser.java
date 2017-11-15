@@ -45,13 +45,13 @@ TestUser extends Applet implements TestDebugFlags {
     protected String name;
 
     // The machine running the test server application.
-    private String serverHost = "stard";
+    private String serverHost = "localhost";
 
     // The port number to use on that server machine.
     private static int serverPort = 4467;
 
     // Machine name of the client to invite to join this session.
-    private String clientHost = "stard";
+    private String clientHost = "localhost";
 
     // The port number to use on that machine.
     private static int clientPort = 4567;

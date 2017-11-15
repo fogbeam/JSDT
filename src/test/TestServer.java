@@ -172,7 +172,7 @@ TestServer implements TestDebugFlags {
 
     private static String
     getHost(String args[], boolean isServer) {
-        String defHost = "stard";  /* Default host name for connections. */
+        String defHost = "localhost";  /* Default host name for connections. */
         int length     = args.length;
         String arg     = (isServer) ? "-serverHost" : "-clientHost";
 
@@ -235,7 +235,7 @@ TestServer implements TestDebugFlags {
     private void
     run(TestClient client) {
         System.err.println("******testStart******");
-        testStart(client, "TestSession", sessionType);
+        testStart(client, "TempSession", sessionType);
         System.err.println("******test1******");
         test1(client);
         System.err.println("******test2******");
@@ -554,6 +554,19 @@ TestServer implements TestDebugFlags {
                            " server host name: "    + server.serverHost +
                            " server port: "         + server.serverPort +
                            " session/client type: " + server.sessionType);
+
+// Registry running?  Start it if it isn't.
+
+        try {
+            if (!RegistryFactory.registryExists(server.sessionType)) {
+               RegistryFactory.startRegistry(server.sessionType);
+            }
+        } catch (JSDTException e) {
+            System.err.println("TestServer: main: shared data exception: " + e);
+            if (TestServer_Debug) {
+                e.printStackTrace();
+            }
+        }
 
         server.run(client);
         System.err.println("Setup and bound Test server.");

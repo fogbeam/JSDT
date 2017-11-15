@@ -526,16 +526,20 @@ selecting different instruments, keyboard notes etc...
 #### Running the test environment.
 -----------------------------------
 
-You need to start one copy of the test environment server. This is done with:
+You need to start one copy of the test environment server. This is by:
 
-	% cd $(TOP_DIR)/run/$(PLATFORM)
-	% gnumake run-test-server
+* Selecting the src/test/TestServer item from the Project menu on the left
+  side of the IntelliJ IDEA window.
+* Right mouse clicking on this item and select "Run TestServer.main()"
+  from the menu (Ctrl-Shift-F10).
 
 You can have multiple copies of the test environment user applications
-running. To launch a single instance, type:
+running. To launch a single instance:
 
-	% cd $(TOP_DIR)/run/$(PLATFORM)
-	% gnumake run-test-user
+* Select the src/test/TestUser item from the Project menu on the left side
+  of the IntelliJ IDEA window.
+* Right mouse clicking on this item and select "Run TestUser.main()"
+  from the menu (Ctrl-Shift-F10).
 
 The test environment will perform a variety of method calls that are designed
 to exercise the majority of the JSDT implementation.
