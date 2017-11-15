@@ -49,7 +49,7 @@ MAINTAINERS		- the people who maintain JSDT.
 NEWS			- the main changes with each new JSDT release.  
 README.md		- the file you are reading now.  
 ChangeLog		- description of changes made to JSDT.  
-ChangeLog-199<n>	- description of changes made to JSDT in previous years.  
+ChangeLog-199\<n>	- description of changes made to JSDT in previous years.  
 TODO			- the list of (old) known problems, bugs and suggested enhancements.
 
 doc/			- the JSDT documentation.  
@@ -110,25 +110,25 @@ Each of the examples is setup to recognise certain command line options:
 
 The example servers use the following command line options:
 
-  -server <string>  - the host name where the server is running.  
-  -port   <integer> - the port number the server is using.  
-  -type   <string>  - the type of JSDT implementation (socket).  
+  -server \<string>  - the host name where the server is running.  
+  -port   \<integer> - the port number the server is using.  
+  -type   \<string>  - the type of JSDT implementation (socket).  
 
 The example user applets use the following param attributes:
 
-  width  <integer> - the width of the example user applet.  
-  height <integer> - the height of the example user applet.  
-  server <string>  - the host name where the server is running.  
-  port   <integer> - the port number the server is using.  
-  type   <string>  - the type of JSDT implementation (socket).  
+  width  \<integer> - the width of the example user applet.  
+  height \<integer> - the height of the example user applet.  
+  server \<string>  - the host name where the server is running.  
+  port   \<integer> - the port number the server is using.  
+  type   \<string>  - the type of JSDT implementation (socket).  
 
 The example user applications recognize the following command line options:
 
-  -width  <integer> - the width of the example user applet.  
-  -height <integer> - the height of the example user applet.  
-  -server <string>  - the host name where the server is running.  
-  -port   <integer> - the port number the server is using.  
-  -type   <string>  - the type of JSDT implementation (socket).  
+  -width  \<integer> - the width of the example user applet.  
+  -height \<integer> - the height of the example user applet.  
+  -server \<string>  - the host name where the server is running.  
+  -port   \<integer> - the port number the server is using.  
+  -type   \<string>  - the type of JSDT implementation (socket).  
 
 
 The examples are setup to use the socket based implementation of JSDT.
@@ -550,16 +550,16 @@ to exercise the majority of the JSDT implementation.
 The type of the Session is dynamically loaded depending upon the URL
 given. The URL definition for JSDT now looks like this:
 
-  Session:     jsdt://<host>:<port>/<type>/Session/<sessionName>  
-  Client:      jsdt://<host>:<port>/<type>/Client/<clientName>
+  Session:     jsdt://\<host>:\<port>/\<type>/Session/\<sessionName>  
+  Client:      jsdt://\<host>:\<port>/\<type>/Client/\<clientName>
 
-where <type> currently can be:
+where \<type> currently can be:
 
   socket    - TCP socket based.  
   http      - HTTP based.
 
 The class files associated with a particular implementation are now found
-in the <type> subdirectory under the $(TOP_DIR)/src/share/com/sun/media/jsdt
+in the \<type> subdirectory under the $(TOP_DIR)/src/share/com/sun/media/jsdt
 directory.
 
 
