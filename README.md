@@ -91,7 +91,7 @@ src/test/	- a test application that exercises the various JSDT methods.
 
 You will need Java 8 (or later) in order to build JSDT.
 
-The build environment is setup to use Intellij IDEA. See their documentation
+The build environment is setup to use IntelliJ IDEA. See their documentation
 at:
 
   https://www.jetbrains.com/idea/documentation/
@@ -99,6 +99,9 @@ at:
 In particular the section on working with git repositories:
 
   https://www.jetbrains.com/help/idea/using-git-integration.html
+
+To build JSDT with the IntelliJ IDEA select Build -> Build Project from the
+main window menubar.
 
 
 ### Running the example programs.
