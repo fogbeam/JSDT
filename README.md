@@ -44,63 +44,61 @@ It is:
 
 The JSDT source distribution consists of the following:
 
-AUTHORS                         - the people who wrote JSDT.
-MAINTAINERS                     - the people who maintain JSDT.
-NEWS                            - the main changes with each new JSDT release.
-README.md                       - the file you are reading now.
-ChangeLog                       - description of changes made to JSDT.
-ChangeLog-199<n>                - description of changes made to JSDT in
-                                  previous years.
-TODO                            - the list of (old) known problems, bugs and
-                                  suggested enhancements.
+AUTHORS                         - the people who wrote JSDT.  
+MAINTAINERS                     - the people who maintain JSDT.  
+NEWS                            - the main changes with each new JSDT release.  
+README.md                       - the file you are reading now.  
+ChangeLog                       - description of changes made to JSDT.  
+ChangeLog-199<n>                - description of changes made to JSDT in  
+                                  previous years.  
+TODO                            - the list of (old) known problems, bugs and  
+                                  suggested enhancements.  
 
-doc/                            - the JSDT documentation.
-doc/api                         - the generated JavaDoc for all the JSDT
-                                  classes.
-doc/userguide                   - the User Guide in LibreOffice and PDF format.
-doc/implguide                   - the Implementers Guide in LibreOffice and
+doc/                            - the JSDT documentation.  
+doc/api                         - the generated JavaDoc for all the JSDT  
+                                  classes.  
+doc/userguide                   - the User Guide in LibreOffice and PDF format.  
+doc/implguide                   - the Implementers Guide in LibreOffice and  
                                   PDF format.
 
+impl/                           - various files to help JSDT implementors.  
+impl/Authentication             - describes the various messages passed  
+                                  between a client trying to join a managed  
+                                  session and the server and manager for that  
+                                  session.  
+impl/Messages                   - a description of the messages between the  
+                                  proxies and the server.  
+impl/NOTES                      - more detailed notes for some of the entries  
+                                  in the TODO file.  
 
-impl/                           - various files to help JSDT implementors.
-impl/Authentication             - describes the various messages passed
-                                  between a client trying to join a managed
-                                  session and the server and manager for that
-                                  session.
-impl/Messages                   - a description of the messages between the
-                                  proxies and the server.
-impl/NOTES                      - more detailed notes for some of the entries
-                                 in the TODO file.
+out/production/JSDT/            - the JSDT class files and examples.  
 
+src                             - the various JSDT source files.  
+src/com/sun/media/jsdt/         - the JSDT API classes and interfaces.  
+src/com/sun/media/jsdt/event    - the event/listener JSDT API classes and  
+                                  interfaces.  
+src/com/sun/media/jsdt/impl     - the implementation independent JSDT  
+                                  classes and interfaces.  
+src/com/sun/media/jsdt/socket   - a socket based implementation of JSDT.  
+src/com/sun/media/jsdt/http     - an HTTP implementation of JSDT.  
+src/com/sun/media/jsdt/template - JSDT template files to use, to start to  
+                                  create a new transpoirt implementation.  
 
-out/production/JSDT/            - the JSDT class files and examples.
+src/examples/                   - simple examples using JSDT.  
+src/examples/chat/              - a chat applet.  
+src/examples/whiteboard         - a shared whiteboard applet.  
+src/examples/ppong              - two player networked game based on Atari  
+                                  Pong  
+src/examples/sound              - a audio file server and receiver applet.  
+src/examples/stock              - a stock quote server and viewer.  
+src/examples/browser            - a collaborative web browser and server.  
+src/examples/phone              - an Internet phone and server.  
+src/examples/synth              - a midi keyboard "jam" player and server.  
+src/images                      - the various images used by the examples.  
+src/sounds                      - the various sounds used by the examples.  
 
-
-src                             - the various JSDT source files.
-src/com/sun/media/jsdt/         - the JSDT API classes and interfaces.
-src/com/sun/media/jsdt/event    - the event/listener JSDT API classes and
-                                  interfaces.
-src/com/sun/media/jsdt/impl     - the implementation independent JSDT
-                                  classes and interfaces.
-src/com/sun/media/jsdt/socket   - a socket based implementation of JSDT.
-src/com/sun/media/jsdt/http     - an HTTP implementation of JSDT.
-src/com/sun/media/jsdt/template - JSDT template files to use, to start to
-                                  create a new transpoirt implementation.
-
-src/examples/                   - simple examples using JSDT.
-src/examples/chat/              - a chat applet.
-src/examples/whiteboard         - a shared whiteboard applet.
-src/examples/ppong              - two player networked game based on Atari Pong
-src/examples/sound              - a audio file server and receiver applet.
-src/examples/stock              - a stock quote server and viewer.
-src/examples/browser            - a collaborative web browser and server.
-src/examples/phone              - an Internet phone and server.
-src/examples/synth              - a midi keyboard "jam" player and server.
-src/images                      - the various images used by the examples.
-src/sounds                      - the various sounds used by the examples.
-
-src/test/                       - a test application that exercises the various
-                                  JSDT methods.
+src/test/                       - a test application that exercises the  
+                                  various JSDT methods.
 
 
 ### Building and configuring the distribution.
@@ -112,7 +110,7 @@ at:
 
   https://www.jetbrains.com/idea/documentation/
 
-In particular the section of working with git repositories:
+In particular the section on working with git repositories:
 
   https://www.jetbrains.com/help/idea/using-git-integration.html
 
@@ -123,25 +121,25 @@ Each of the examples is setup to recognise certain command line options:
 
 The example servers use the following command line options:
 
-  -server <string>  - the host name where the server is running.
-  -port   <integer> - the port number the server is using.
-  -type   <string>  - the type of JSDT implementation (socket).
+  -server <string>  - the host name where the server is running.  
+  -port   <integer> - the port number the server is using.  
+  -type   <string>  - the type of JSDT implementation (socket).  
 
 The example user applets use the following param attributes:
 
-  width  <integer> - the width of the example user applet.
-  height <integer> - the height of the example user applet.
-  server <string>  - the host name where the server is running.
-  port   <integer> - the port number the server is using.
-  type   <string>  - the type of JSDT implementation (socket).
+  width  <integer> - the width of the example user applet.  
+  height <integer> - the height of the example user applet.  
+  server <string>  - the host name where the server is running.  
+  port   <integer> - the port number the server is using.  
+  type   <string>  - the type of JSDT implementation (socket).  
 
 The example user applications recognize the following command line options:
 
-  -width  <integer> - the width of the example user applet.
-  -height <integer> - the height of the example user applet.
-  -server <string>  - the host name where the server is running.
-  -port   <integer> - the port number the server is using.
-  -type   <string>  - the type of JSDT implementation (socket).
+  -width  <integer> - the width of the example user applet.  
+  -height <integer> - the height of the example user applet.  
+  -server <string>  - the host name where the server is running.  
+  -port   <integer> - the port number the server is using.  
+  -type   <string>  - the type of JSDT implementation (socket).  
 
 
 The examples are setup to use the socket based implementation of JSDT.
@@ -156,36 +154,36 @@ port numbers. You should change these. These definitions are in
 $(TOPDIR)/run/minclude/Makefile.run, where $(TOPDIR) is the root of your
 JSDT distribution. They are:
 
-CHAT_SERVER_HOST       = localhost
-CHAT_SERVER_PORT       = 4461
+CHAT_SERVER_HOST       = localhost  
+CHAT_SERVER_PORT       = 4461  
 
-PPONG_SERVER_HOST      = localhost
-PPONG_SERVER_PORT      = 4462
+PPONG_SERVER_HOST      = localhost  
+PPONG_SERVER_PORT      = 4462  
 
-SOUND_SERVER_HOST      = localhost
-SOUND_SERVER_PORT      = 4463
+SOUND_SERVER_HOST      = localhost  
+SOUND_SERVER_PORT      = 4463  
 
-STOCK_SERVER_HOST      = localhost
-STOCK_SERVER_PORT      = 4464
+STOCK_SERVER_HOST      = localhost  
+STOCK_SERVER_PORT      = 4464  
 
-WHITEBOARD_SERVER_HOST = localhost
-WHITEBOARD_SERVER_PORT = 4466
+WHITEBOARD_SERVER_HOST = localhost  
+WHITEBOARD_SERVER_PORT = 4466  
 
-TEST_SERVER_HOST       = localhost
-TEST_SERVER_PORT       = 4467
-TEST_CLIENT_HOST       = localhost
-TEST_CLIENT_PORT       = 4567
+TEST_SERVER_HOST       = localhost  
+TEST_SERVER_PORT       = 4467  
+TEST_CLIENT_HOST       = localhost  
+TEST_CLIENT_PORT       = 4567  
 
-BROWSER_SERVER_HOST    = localhost
-BROWSER_SERVER_PORT    = 4468
+BROWSER_SERVER_HOST    = localhost  
+BROWSER_SERVER_PORT    = 4468  
 
-PHONE_SERVER_HOST      = localhost
-PHONE_SERVER_PORT      = 4469
+PHONE_SERVER_HOST      = localhost  
+PHONE_SERVER_PORT      = 4469  
 
-SYNTH_SERVER_HOST      = localhost
-SYNTH_SERVER_PORT      = 4470
+SYNTH_SERVER_HOST      = localhost  
+SYNTH_SERVER_PORT      = 4470  
 
-REGISTRY_PORT          = 4561
+REGISTRY_PORT          = 4561  
 
 #### Running the JSDT registry.
 
@@ -214,7 +212,7 @@ To launch a single instance of the applet, type:
 
 To launch a single instance of the application, type:
 
-        % cd $(TOP_DIR)/run/$(PLATFORM)
+	% cd $(TOP_DIR)/run/$(PLATFORM)
 	% gnumake run-chat-user-app
 
 
@@ -344,19 +342,19 @@ and suggested enhancements for this example.
 
 You need to start one copy of the sound server. This is done with:
 
-        % cd $(TOP_DIR)/run/$(PLATFORM)
+	% cd $(TOP_DIR)/run/$(PLATFORM)
 	% gnumake run-sound-server
 
 You can have multiple copies of the sound user applet/application running.
 
 To launch a single instance of the applet, type:
 
-        % cd $(TOP_DIR)/run/$(PLATFORM)
+	% cd $(TOP_DIR)/run/$(PLATFORM)
 	% gnumake run-sound-user
 
 To launch a single instance of the application, type:
 
-        % cd $(TOP_DIR)/run/$(PLATFORM)
+	% cd $(TOP_DIR)/run/$(PLATFORM)
 	% gnumake run-sound-user-app
 
 
@@ -537,13 +535,13 @@ selecting different instruments, keyboard notes etc...
 
 You need to start one copy of the test environment server. This is done with:
 
-        % cd $(TOP_DIR)/run/$(PLATFORM)
+	% cd $(TOP_DIR)/run/$(PLATFORM)
 	% gnumake run-test-server
 
 You can have multiple copies of the test environment user applications
 running. To launch a single instance, type:
 
-        % cd $(TOP_DIR)/run/$(PLATFORM)
+	% cd $(TOP_DIR)/run/$(PLATFORM)
 	% gnumake run-test-user
 
 The test environment will perform a variety of method calls that are designed
@@ -555,12 +553,12 @@ to exercise the majority of the JSDT implementation.
 The type of the Session is dynamically loaded depending upon the URL
 given. The URL definition for JSDT now looks like this:
 
-  Session:     jsdt://<host>:<port>/<type>/Session/<sessionName>
+  Session:     jsdt://<host>:<port>/<type>/Session/<sessionName>  
   Client:      jsdt://<host>:<port>/<type>/Client/<clientName>
 
 where <type> currently can be:
 
-  socket    - TCP socket based.
+  socket    - TCP socket based.  
   http      - HTTP based.
 
 The class files associated with a particular implementation are now found
