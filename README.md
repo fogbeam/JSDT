@@ -1,9 +1,6 @@
 
 # README for JSDT (Java Shared Data Toolkit).
 
-  Copyright (c) 1996-2005 Sun Microsystems, Inc.
-  All Rights Reserved.
-
 ![](https://github.com/richburridge/JSDT/blob/master/Duke.JSDT.gif)
 
 ## CONTENTS:
