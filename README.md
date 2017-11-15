@@ -176,32 +176,35 @@ REGISTRY_PORT          = 4561
 The first thing you need to do before you run any of the example programs
 is to launch the JSDT registry of the appropriate type.
 
-This can be achieved with:
+This can be achieved by:
 
-* Select the src/com.sun.media.jsdt/socket/Registry item from the Project
+* Selecting the src/com.sun.media.jsdt/socket/Registry item from the Project
   menu on the left side of the IntelliJ IDEA window.
-* Right mouse click on this item and select "Run Registry.main()" from the
+* Right mouse clicking on this item and select "Run Registry.main()" from the
   menu (Ctrl-Shift-F10).
 
 #### Running the chat example.
 
-You need to start one copy of the chat server. This is done with:
+You need to start one copy of the chat server. This is done by:
 
-	% cd $(TOP_DIR)/run/$(PLATFORM)
-	% gnumake run-chat-server
+* Selecting the src/examples/chat/ChatServer item from the Project
+  menu on the left side of the IntelliJ IDEA window.
+* Right mouse clicking on this item and select "Run ChatServer.main()" from
+  the menu (Ctrl-Shift-F10).
 
 You can have multiple copies of the chat user applet/application running.
+
+To launch a single instance of the application:
+
+* Select the src/examples/chat/ChatUser.java item from the Project
+  menu on the left side of the IntelliJ IDEA window.
+* Right mouse clicking on this item and select "Run ChatUser.main()" from
+  the menu (Ctrl-Shift-F10).
 
 To launch a single instance of the applet, type:
 
 	% cd $(TOP_DIR)/run/$(PLATFORM)
 	% gnumake run-chat-user
-
-To launch a single instance of the application, type:
-
-	% cd $(TOP_DIR)/run/$(PLATFORM)
-	% gnumake run-chat-user-app
-
 
 #### Using the chat example.
 
@@ -226,23 +229,26 @@ and suggested enhancements for this example.
 
 #### Running the ppong example.
 
-You need to start one copy of the ppong server. This is done with:
+You need to start one copy of the ppong server. This is done by:
 
-        % cd $(TOP_DIR)/run/$(PLATFORM)
-        % gnumake run-ppong-server
+* Selecting the src/examples/ppong/PpongServer.java item from the Project
+  menu on the left side of the IntelliJ IDEA window.
+* Right mouse clicking on this item and select "Run PpongServer.main()" from
+  the menu (Ctrl-Shift-F10).
 
-You can two copies of the ppong user applet/application running.
+You can have two copies of the ppong user applet/application running.
+
+To launch a single instance of the application:
+
+* Select the src/examples/ppong/Ppong.java item from the Project
+  menu on the left side of the IntelliJ IDEA window.
+* Right mouse clicking on this item and select "Run Ppong.main()" from
+  the menu (Ctrl-Shift-F10).
 
 To launch a single instance of the applet, type:
 
         % cd $(TOP_DIR)/run/$(PLATFORM)
         % gnumake run-ppong-user
-
-To launch a single instance of the application, type:
-
-        % cd $(TOP_DIR)/run/$(PLATFORM)
-        % gnumake run-ppong-user-app
-
 
 #### Using the ppong example.
 
@@ -263,23 +269,26 @@ move your mouse up and down the screen and it will follow.
 
 #### Running the whiteboard example.
 
-You need to start one copy of the whiteboard server. This is done with:
+You need to start one copy of the whiteboard server. This is done by:
 
-	% cd $(TOP_DIR)/run/$(PLATFORM)
-	% gnumake run-whiteboard-server
+* Selecting the src/examples/whiteboard/WhiteBoardServer.java item from
+  the Project menu on the left side of the IntelliJ IDEA window.
+* Right mouse clicking on this item and select "Run WhiteBoardServer.main()"
+  from the menu (Ctrl-Shift-F10).
 
 You can have multiple copies of the whiteboard user applet/application running.
+
+To launch a single instance of the application:
+
+* Select the src/examples/whiteboard/WhiteBoardUser.java item from the Project
+  menu on the left side of the IntelliJ IDEA window.
+* Right mouse clicking on this item and select "Run WhiteBoardUser.main()"
+  from the menu (Ctrl-Shift-F10).
 
 To launch a single instance of the applet, type:
 
 	% cd $(TOP_DIR)/run/$(PLATFORM)
 	% gnumake run-whiteboard-user
-
-To launch a single instance of the application, type:
-
-	% cd $(TOP_DIR)/run/$(PLATFORM)
-	% gnumake run-whiteboard-user-app
-
 
 #### Using the whiteboard example.
 
@@ -327,23 +336,26 @@ and suggested enhancements for this example.
 
 #### Running the sound example.
 
-You need to start one copy of the sound server. This is done with:
+You need to start one copy of the sound server. This is done by:
 
-	% cd $(TOP_DIR)/run/$(PLATFORM)
-	% gnumake run-sound-server
+* Selecting the src/examples/sound/SoundServer.java item from
+  the Project menu on the left side of the IntelliJ IDEA window.
+* Right mouse clicking on this item and select "Run SoundServer.main()"
+  from the menu (Ctrl-Shift-F10).
 
 You can have multiple copies of the sound user applet/application running.
+
+To launch a single instance of the application:
+
+* Select the src/examples/sound/SoundUser.java item from the Project menu
+  on the left side of the IntelliJ IDEA window.
+* Right mouse clicking on this item and select "Run SoundUser.main()"
+  from the menu (Ctrl-Shift-F10).
 
 To launch a single instance of the applet, type:
 
 	% cd $(TOP_DIR)/run/$(PLATFORM)
 	% gnumake run-sound-user
-
-To launch a single instance of the application, type:
-
-	% cd $(TOP_DIR)/run/$(PLATFORM)
-	% gnumake run-sound-user-app
-
 
 #### Using the sound example.
 
@@ -369,30 +381,26 @@ The sound example uses an unreliable (UDP) channel to send out the audio data.
 
 #### Running the stock example.
 
-You need to make sure that you have run HotJava or AppletViewer before, and
-that there is a ~/.hotjava/properties file containing the line:
+You need to start one copy of the stock server. This is done by:
 
-http.proxyHost=<hostname>
-
-where <hostname> is the name of the machine which is your http proxy host.
-
-You need to start one copy of the stock server. This is done with:
-
-        % cd $(TOP_DIR)/run/$(PLATFORM)
-        % gnumake run-stock-server
+* Selecting the src/examples/stock/StockServer.java item from
+  the Project menu on the left side of the IntelliJ IDEA window.
+* Right mouse clicking on this item and select "Run StockServer.main()"
+  from the menu (Ctrl-Shift-F10).
 
 You can have multiple copies of the stock user applet/application running.
+
+To launch a single instance of the application:
+
+* Select the src/examples/stock/StockViewer.java item from the Project menu
+  on the left side of the IntelliJ IDEA window.
+* Right mouse clicking on this item and select "Run StockViewer.main()"
+  from the menu (Ctrl-Shift-F10).
 
 To launch a single instance of the applet, type:
 
         % cd $(TOP_DIR)/run/$(PLATFORM)
         % gnumake run-stock-user
-
-To launch a single instance of the application, type:
-
-        % cd $(TOP_DIR)/run/$(PLATFORM)
-        % gnumake run-stock-user-app
-
 
 #### Using the stock example.
 
@@ -421,19 +429,21 @@ The stock viewer applet has a similar "stocks" parameter.
 
 #### Running the browser example.
 
-You need to start one copy of the Teacher (server) application. This is
-done with:
+You need to start one copy of the Teacher (server) application. This is by:
 
-        % cd $(TOP_DIR)/run/$(PLATFORM)
-        % gnumake run-browser-server
+* Selecting the src/examples/browser/Teacher item from the Project menu on
+  the left side of the IntelliJ IDEA window.
+* Right mouse clicking on this item and select "Run Teacher.main()"
+  from the menu (Ctrl-Shift-F10).
 
 You can have multiple copies of the Student user application running.
 
-To launch a single instance of the application, type:
+To launch a single instance of the application:
 
-        % cd $(TOP_DIR)/run/$(PLATFORM)
-        % gnumake run-browser-user-app
-
+* Select the src/examples/browser/Student item from the Project menu on the
+  left side of the IntelliJ IDEA window.
+* Right mouse clicking on this item and select "Run Student.main()"
+  from the menu (Ctrl-Shift-F10).
 
 #### Using the browser example.
 
@@ -449,27 +459,24 @@ are recognised.
 
 #### Running the phone example.
 
-You will need to have JavaSound installed on your computer in order to run
-this example. JavaSound for Solaris and Windows platforms can be downloaded
-from:
+You need to start one copy of the phone server. This is done by:
 
-   http://java.sun.com/products/java-media/sound/index.html
-
-You need to start one copy of the phone server. This is done with:
-
-        % cd $(TOP_DIR)/run/$(PLATFORM)
-        % gnumake run-phone-server
+* Selecting the src/examples/phone/PhoneServer item from the Project menu on
+  the left side of the IntelliJ IDEA window.
+* Right mouse clicking on this item and select "Run PhoneServer.main()"
+  from the menu (Ctrl-Shift-F10).
 
 You can have multiple copies of the phone user application running.
 
-To launch a single instance of the application, type:
+To launch a single instance of the application:
 
-        % cd $(TOP_DIR)/run/$(PLATFORM)
-        % gnumake run-phone-user-app
+* Select the src/examples/phone/PhoneUser.java item from the Project menu
+  on the left side of the IntelliJ IDEA window.
+* Right mouse clicking on this item and select "Run PhoneUser.main()"
+  from the menu (Ctrl-Shift-F10).
 
 Note that each instance must be on a different machine. JavaSound can
 only open the Mixer once per machine.
-
 
 #### Using the phone example.
 
@@ -486,25 +493,21 @@ output channel (ie. speakers) and you can start your phone call.
 
 #### Running the synth example.
 
-You will need to have JavaSound installed on your computer in order to run
-this example. JavaSound for Solaris and Windows platforms can be downloaded
-from:
+You need to start one copy of the MidiServer server. This is done by:
 
-   http://java.sun.com/products/java-media/sound/index.html
-
-You will also need JDK 1.2 or later (requires Swing and Java 2D).
-
-You need to start one copy of the MidiServer server. This is done with:
-
-        % cd $(TOP_DIR)/run/$(PLATFORM)
-        % gnumake run-synth-server
+* Selecting the src/examples/synth/MidiServer item from the Project menu on
+  the left side of the IntelliJ IDEA window.
+* Right mouse clicking on this item and select "Run MidiServer.main()"
+  from the menu (Ctrl-Shift-F10).
 
 You can have multiple copies of the MidiSynth user application running.
 
-To launch a single instance of the application, type:
+To launch a single instance of the application:
 
-        % cd $(TOP_DIR)/run/$(PLATFORM)
-        % gnumake run-synth-user-app
+* Select the src/examples/synth/MidiSynth.java item from the Project menu
+  on the left side of the IntelliJ IDEA window.
+* Right mouse clicking on this item and select "Run MidiSynth.main()"
+  from the menu (Ctrl-Shift-F10).
 
 Note that each instance must be on a different machine. JavaSound can
 only open the Mixer once per machine.

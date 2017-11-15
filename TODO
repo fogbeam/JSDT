@@ -35,7 +35,6 @@
 - fixup all the "Dereference of '<whatever>' may produce
   'java.lang.NullPointerException' ..." warnings.
 - fixup all non-Javadoc related comments that start with "/** ...".
-- update the User Guide.
 - make sure each of the examples still works.
 - test the "http" implementation to make sure it work.
 - equivalent of readFully() when fixing the deprecated readLine().
