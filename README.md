@@ -52,7 +52,7 @@ NEWS			- the main changes with each new JSDT release.
 README.md		- the file you are reading now.  
 ChangeLog		- description of changes made to JSDT.  
 ChangeLog-199\<n>	- description of changes made to JSDT in previous years.  
-TODO			- the list of (old) known problems, bugs and suggested enhancements.
+TODO			- the list of known problems, bugs and suggested enhancements.
 
 doc/			- the JSDT documentation.  
 doc/api			- the generated JavaDoc for all the JSDT classes.  
@@ -133,17 +133,12 @@ The example user applications recognize the following command line options:
   -type   \<string>  - the type of JSDT implementation (socket).  
 
 
-The examples are setup to use the socket based implementation of JSDT.
-When there are other implementations, and should you want to try one, then
-you will need to adjust the TYPE definition in
-$(TOPDIR)/build/$(PLATFORM)/makefiles/Makefile.conf, where $(TOPDIR) is
-the root of your JSDT distribution and $(PLATFORM) is the platform you are
-running on ("solaris" or "win32").
+The examples are setup to use the socket based implementation of JSDT on
+the localhost. Should you want something different you will need to adjust
+the parameters passed to the server and user applications at startup time.
 
 By default, the servers are setup to run on host "localhost" and use various
-port numbers. You should change these. These definitions are in
-$(TOPDIR)/run/minclude/Makefile.run, where $(TOPDIR) is the root of your
-JSDT distribution. They are:
+port numbers:
 
 CHAT_SERVER_HOST       = localhost  
 CHAT_SERVER_PORT       = 4461  
@@ -267,7 +262,7 @@ a partner.
 You can also fire up another instance of your browser and play against
 yourself. Not as easy as you think!
 
-The game plays to 7 or until one of you presses &quot;End Game&quot;.
+The game plays to 7 or until one of you presses "End Game".
 The paddle on the left is your paddle.  To control your paddle, just
 move your mouse up and down the screen and it will follow.
 
@@ -427,7 +422,7 @@ The "Quit" button terminates the stock viewer.
 
 A stock viewer application can be started with a -stocks command line option
 with a set of quotes that should be initially displayed
-(eg: -stocks SUNW+INTC+MSFT)
+(eg: -stocks AAPL+GOOGL+MSFT)
 
 The stock viewer applet has a similar "stocks" parameter.
 

@@ -21,33 +21,30 @@
 
 /* Things to fixup / improve in the new version. */
 
-- finish work on the README.md file.
-- fixup all the warnings if possible - (see below).
-- Work out what needs to be done w.r.t. the "synchronized on non-final field"
-  warnings.
-- add description to all @param tags (where missing).
-- add description to all @return tags (where missing).
-- fixup all "Can be replaced with single 'Map.putIfAbsent' method call ...".
-- fixup all places where we are getting "implicit call to toString()".
-- fixup all the Thread stop(), suspend() and resume() calls. See:
+- Fixup the applet example instructions in the READMe.md file.
+- Fixup all the warnings if possible - (see below).
+- Fixup the the "synchronized on non-final field" warnings (if possible).
+- Add description to all @param tags (where missing).
+- Add description to all @return tags (where missing).
+- Fixup all "Can be replaced with single 'Map.putIfAbsent' method call ...".
+- Fixup all places where we are getting "implicit call to toString()".
+- Fixup all the Thread stop(), suspend() and resume() calls. See:
   https://docs.oracle.com/javase/1.5.0/docs/guide/misc/threadPrimitiveDeprecation.html
   for more details.
-- fixup all the "Dereference of '<whatever>' may produce
+- Fixup all the "Dereference of '<whatever>' may produce
   'java.lang.NullPointerException' ..." warnings.
-- fixup all non-Javadoc related comments that start with "/** ...".
-- make sure each of the examples still works.
-- test the "http" implementation to make sure it work.
-- equivalent of readFully() when fixing the deprecated readLine().
+- Test the "http" implementation to make sure it still works.
+- Equivalent of readFully() when fixing the deprecated readLine().
   https://stackoverflow.com/questions/20782164/c-java-datainputstream-readfully-equivalent
 - first player in ppong game "locks up" after a while with debug messages on.
-- test synth demo on two different machines.
-- synth demo doesn't seem to play the second instance of the client application
+- Test synth demo on two different machines.
+- Synth demo doesn't seem to play the second instance of the client application
   when running on the same machine.
-- Need to finish fixing up the stock demo server parsing of the marketwatch
-  web page.
+- Get the stock demo working again (need to finish fixing up the server parsing
+  to use the marketwatch web page).
 - Get the sound demo working.
 - Get the phone demo working.
-- the test TestUser currently hangs in:
+- The test TestUser currently hangs in:
   ******test6******
   ...
   Client: Giver gives the token to: Receiver
@@ -116,8 +113,8 @@
 
 /* Older entries (from 2004 and earlier). */
 
-Things to do for JSDT 2.4.
---------------------------
+Things to do for a future version of JSDT.
+------------------------------------------
 * Fixup the various warnings displayed when generating the javadoc with
   JDK 1.5.0.
 * Fixup the new depreciated warnings when compiling with JDK 1.5.0.
