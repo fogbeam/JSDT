@@ -178,9 +178,10 @@ is to launch the JSDT registry of the appropriate type.
 
 This can be achieved with:
 
-	% cd $(TOP_DIR)/run/$(PLATFORM)
-	% gnumake run-registry
-
+* Select the src/com.sun.media.jsdt/socket/Registry item from the Project
+  menu on the left side of the IntelliJ IDEA window.
+* Right mouse click on this item and select "Run Registry.main()" from the
+  menu (Ctrl-Shift-F10).
 
 #### Running the chat example.
 
@@ -276,7 +277,7 @@ To launch a single instance of the applet, type:
 
 To launch a single instance of the application, type:
 
-        % cd $(TOP_DIR)/run/$(PLATFORM)
+	% cd $(TOP_DIR)/run/$(PLATFORM)
 	% gnumake run-whiteboard-user-app
 
 
