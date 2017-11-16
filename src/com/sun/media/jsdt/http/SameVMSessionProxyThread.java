@@ -21,15 +21,13 @@
 
 package com.sun.media.jsdt.http;
 
-import com.sun.media.jsdt.Connection;
 import com.sun.media.jsdt.TimedOutException;
 import com.sun.media.jsdt.impl.*;
-import java.io.IOException;
 
 /**
  * JSDT Same VM Session proxy thread class (HTTP implementation).
  *
- * @version     2.3 - 28th October 2017
+ * @version     2.3 - 16th November 2017
  * @author      Rich Burridge
  */
 

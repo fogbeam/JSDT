@@ -70,10 +70,8 @@ Naming extends JSDTObject {
 
             po = (AbstractNamingProxy) Class.forName(className).newInstance();
             po.initProxy(connections, host, port);
-        } catch (NoRegistryException nre) {
-            throw nre;
-        } catch (NoSuchHostException nsh) {
-            throw nsh;
+        } catch (NoRegistryException | NoSuchHostException ne) {
+            throw ne;
         } catch (ClassNotFoundException cnfe) {
             throw new InvalidURLException();
         } catch (Exception e) {

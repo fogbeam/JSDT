@@ -54,7 +54,7 @@ import com.sun.media.jsdt.event.RegistryListener;
  * defined by the <CODE>registryPort</CODE> property, which by default, is
  * 4561, irrespective of the implementation type.
  *
- * @version     2.3 - 26th October 2017
+ * @version     2.3 - 16th November 2017
  * @author      Rich Burridge
  * @since       JSDT 1.1
  *
@@ -127,8 +127,7 @@ RegistryFactory extends JSDTObject {
 
         try {
             startRegistry(registryType, port, null);
-        } catch (ManagerExistsException mee) {
-        } catch (PermissionDeniedException pde) {
+        } catch (ManagerExistsException | PermissionDeniedException e) {
         }
     }
 
@@ -246,7 +245,7 @@ RegistryFactory extends JSDTObject {
 
 /**
  * <A NAME="SD_REGISTRYEXISTS"></A>
- * <EMregistryExists</EM> is a class method that checks if a Registry,
+ * <EM>registryExists</EM> is a class method that checks if a Registry,
  * of the given registry type, is already running. It uses the current
  * setting of the <CODE>registryPort</CODE> variable to determine the
  * port number it is running on.
@@ -273,7 +272,7 @@ RegistryFactory extends JSDTObject {
 
 /**
  * <A NAME="SD_REGISTRYEXISTS"></A>
- * <EMregistryExists</EM> is a class method that checks if a Registry,
+ * <EMregistryExists></EM> is a class method that checks if a Registry,
  * of the given registry type, is already running on the given port.
  *
  * <P>The property <CODE>registryPort</CODE> will be set to the given port

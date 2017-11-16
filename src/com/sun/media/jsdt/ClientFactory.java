@@ -36,7 +36,7 @@ import java.util.Vector;
  * See the JSDT User Guide for examples of using both a normal Client and
  * the ClientFactory.
  *
- * @version     2.3 - 26th October 2017
+ * @version     2.3 - 16th November 2017
  * @author      Rich Burridge
  * @since       JSDT 1.3
  */
@@ -209,7 +209,7 @@ ClientFactory extends JSDTObject {
 
 /**
  * <A NAME="SD_CLIENTEXISTS"></A>
- * <EMclientExists</EM> is a class method that checks if a Client with
+ * <EM>clientExists</EM> is a class method that checks if a Client with
  * the given url string already exists.
  *
  * @param urlString the Client URLString to check.

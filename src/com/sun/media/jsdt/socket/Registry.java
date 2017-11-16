@@ -42,7 +42,7 @@ import java.util.*;
  *
  * Based on the RMI Registry class.
  *
- * @version     2.3 - 7th November 2017
+ * @version     2.3 - 16th November 2017
  * @author      Rich Burridge
  */
 
@@ -683,7 +683,7 @@ Registry extends JSDTObject
 
 /**
  * <A NAME="SD_REGISTRYEXISTS"></A>
- * <EMregistryExists</EM> checks if a Registry, of the given registry
+ * <EM>registryExists</EM> checks if a Registry, of the given registry
  * type, is already running on the given port.  If the registry was
  * started in this VM, then return true, otherwise get a proxy-side
  * connection to the running registry, and send it a T_Exists message,

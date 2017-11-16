@@ -22,14 +22,13 @@
 package com.sun.media.jsdt.http;
 
 import com.sun.media.jsdt.impl.Message;
-import com.sun.media.jsdt.impl.SessionImpl;
 import java.io.*;
 import java.net.*;
 
 /**
  * JSDT Naming proxy permanent thread class (HTTP implementation).
  *
- * @version     2.3 - 28th October 2017
+ * @version     2.3 - 16th November 2017
  * @author      Rich Burridge
  */
 

@@ -30,7 +30,7 @@ import java.util.*;
 /**
  * JSDT Channel Server-side class.
  *
- * @version     2.3 - 6th November 2017
+ * @version     2.3 - 16th November 2017
  * @author      Rich Burridge
  */
 
@@ -246,7 +246,7 @@ ChannelServer extends ManageableServer implements AbstractChannelServer {
         }
 
         if (retval == 0) {
-            clientDataDirections.put(client, new Integer(mode));
+            clientDataDirections.put(client, mode);
 
             informListeners(message.thread, session.getName(),
                             clientName, name, ChannelEvent.JOINED,

@@ -32,7 +32,7 @@ import com.sun.media.jsdt.*;
  * to prefix the name of the service by a package name (although this is not
  * required), to reduce name collisions in the Registry.
  *
- * @version     2.3 - 28th October 2017
+ * @version     2.3 - 16th November 2017
  * @author      Rich Burridge
  */
 
@@ -103,7 +103,7 @@ AbstractRegistry {
 
 /**
  * <A NAME="SD_REGISTRYEXISTS"></A>
- * <EMregistryExists</EM> is a class method that checks if a Registry,
+ * <EM>registryExists</EM> is a class method that checks if a Registry,
  * of the given registry type, is already running on the given port.
  *
  * @param registryType the type of Registry to check on.

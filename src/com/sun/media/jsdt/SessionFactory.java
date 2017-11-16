@@ -32,7 +32,7 @@ import java.util.Vector;
  * The session would then be published by the naming service, and tied
  * to a specific URL.
  *
- * @version     2.3 - 26th October 2017
+ * @version     2.3 - 16th November 2017
  * @author      Rich Burridge
  * @since       JSDT 1.0
  */
@@ -378,7 +378,7 @@ SessionFactory extends JSDTObject {
 
 /**
  * <A NAME="SD_SESSIONMANAGED"></A>
- * <EMsessionManaged</EM> is a class method that checks if the Session with
+ * <EM>sessionManaged</EM> is a class method that checks if the Session with
  * the given url is managed.
  *
  * @param urlString the Session URLString to check.
