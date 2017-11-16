@@ -30,7 +30,7 @@ import java.util.*;
 /**
  * JSDT client-side proxy parent class (HTTP implementation).
  *
- * @version     2.3 - 6th November 2017
+ * @version     2.3 - 16th November 2017
  * @author      Rich Burridge
  */
 
@@ -114,7 +114,7 @@ ManageableProxy extends JSDTObject
  * <A NAME="SD_GETPROXY"></A>
  * <EM>getProxy</EM>
  *
- * @return
+ * @return a handle to the ManageableProxy for this manageable object.
  */
 
     public Object

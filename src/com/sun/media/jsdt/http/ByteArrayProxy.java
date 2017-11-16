@@ -30,7 +30,7 @@ import java.util.*;
 /**
  * JSDT Byte Array client-side proxy class.
  *
- * @version     2.3 - 6th November 2017
+ * @version     2.3 - 16th November 2017
  * @author      Rich Burridge
  */
 
@@ -45,7 +45,7 @@ ByteArrayProxy extends ManageableProxy implements AbstractByteArrayProxy {
  * <A NAME="SD_GETPROXY"></A>
  * <EM>getProxy</EM>
  *
- * @return
+ * @return a handle to this byte array client-side proxy.
  */
 
     public Object

@@ -30,7 +30,7 @@ import java.util.*;
 /**
  * JSDT Token Server-side class.
  *
- * @version     2.3 - 7th November 2017
+ * @version     2.3 - 16th November 2017
  * @author      Rich Burridge
  */
 
@@ -84,7 +84,7 @@ TokenServer extends ManageableServer implements AbstractTokenServer {
  * <A NAME="SD_GETSERVER"></A>
  * <EM>getServer</EM>
  *
- * @return
+ * @return a handle to this token server-side class.
  */
 
     public Object

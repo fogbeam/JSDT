@@ -30,7 +30,7 @@ import java.util.*;
 /**
  * JSDT server-side manageable parent class.
  *
- * @version     2.3 - 6th November 2017
+ * @version     2.3 - 16th November 2017
  * @author      Rich Burridge
  */
 
@@ -112,7 +112,7 @@ ManageableServer extends JSDTObject
  * <A NAME="SD_GETSERVER"></A>
  * <EM>getServer</EM>
  *
- * @return
+ * @return always return null (calling this is an error).
  */
 
     public Object
@@ -675,9 +675,9 @@ ManageableServer extends JSDTObject
  * <A NAME="SD_GETCLIENTBYNAME"></A>
  * <EM>getClientByName</EM>
  *
- * @param clientName
+ * @param clientName the name of the client to look for.
  *
- * @return
+ * @return a handle to the named client attached to this manageable object.
  */
 
     protected final ClientImpl
@@ -695,7 +695,7 @@ ManageableServer extends JSDTObject
  * <A NAME="SD_GETMANAGER"></A>
  * <EM>getManager</EM>
  *
- * @return
+ * @return a handle to the server-side manager (if any).
  */
 
     private JSDTManagerImpl
@@ -712,7 +712,7 @@ ManageableServer extends JSDTObject
  * <A NAME="SD_GETMANAGERID"></A>
  * <EM>getManagerId</EM>
  *
- * @return
+ * @return the id of the proxy running the manager.
  */
 
     protected final int
@@ -729,7 +729,7 @@ ManageableServer extends JSDTObject
  * <A NAME="SD_GETMANAGERTHREAD"></A>
  * <EM>getManagerThread</EM>
  *
- * @return
+ * @return the thread connection back to the proxy running the manager.
  */
 
     protected JSDTThread

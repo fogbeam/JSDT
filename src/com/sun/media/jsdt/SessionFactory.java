@@ -319,7 +319,7 @@ SessionFactory extends JSDTObject {
 
 /**
  * <A NAME="SD_SESSIONEXISTS"></A>
- * <EMsessionExists</EM> is a class method that checks if a Session with
+ * <EM>sessionExists</EM> is a class method that checks if a Session with
  * the given url string, already exists.
  *
  * @param urlString the Session URLString to check.

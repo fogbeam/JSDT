@@ -30,7 +30,7 @@ import java.util.*;
 /**
  * JSDT HTTP thread class.
  *
- * @version     2.3 - 6th November 2017
+ * @version     2.3 - 16th November 2017
  * @author      Rich Burridge
  */
 
@@ -664,7 +664,7 @@ HttpThread extends JSDTThread implements Runnable, httpDebugFlags {
  * @exception TimedOutException if no reply was received for this operation
  * in the given timeout period.
  *
- * @return
+ * @return the current message that was being waited for.
  */
 
     public Message

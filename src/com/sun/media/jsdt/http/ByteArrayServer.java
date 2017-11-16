@@ -31,7 +31,7 @@ import java.util.*;
 /**
  * JSDT Byte Array Server-side class.
  *
- * @version     2.3 - 30th October 2017
+ * @version     2.3 - 16th November 2017
  * @author      Rich Burridge
  */
 
@@ -77,6 +77,8 @@ ByteArrayServer extends ManageableServer implements AbstractByteArrayServer {
 /**
  * <A NAME="SD_GETSERVER"></A>
  * <EM>getServer</EM>
+ *
+ * @return a handle to this byte array server-side class.
  */
 
     public Object

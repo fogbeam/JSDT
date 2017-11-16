@@ -28,7 +28,7 @@ import java.io.*;
 /**
  * JSDT Token client-side proxy class.
  *
- * @version     2.3 - 7th November 2017
+ * @version     2.3 - 16th November 2017
  * @author      Rich Burridge
  */
 
@@ -39,7 +39,7 @@ TokenProxy extends ManageableProxy implements AbstractTokenProxy {
  * <A NAME="SD_GETPROXY"></A>
  * <EM>getProxy</EM>
  *
- * @return
+ * @return a handle to this token client-side proxy.
  */
 
     public Object

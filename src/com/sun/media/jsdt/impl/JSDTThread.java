@@ -28,7 +28,7 @@ import java.util.*;
 /**
  * JSDT Thread interface.
  *
- * @version     2.3 - 6th November 2017
+ * @version     2.3 - 16th November 2017
  * @author      Rich Burridge
  */
 
@@ -191,7 +191,7 @@ JSDTThread extends JSDTObject implements JSDTDebugFlags {
  *
  * @param length
  *
- * @return
+ * @return the data read in an array of bytes.
  *
  * @exception IOException if an IO exception has occured.
  */
@@ -241,9 +241,9 @@ JSDTThread extends JSDTObject implements JSDTDebugFlags {
 
 /**
  * <A NAME="SD_GETSOCKETMESSAGE"></A>
- * <EM>getSocketMessage</EM>
+ * <EM>getSocketMessage</EM> gets the next message off the socket.
  *
- * @return
+ * @return true if there is a valid message to be processed.
  */
 
     public abstract boolean
@@ -254,7 +254,7 @@ JSDTThread extends JSDTObject implements JSDTDebugFlags {
  * <A NAME="SD_GETADDRESS"></A>
  * <EM>getAddress</EM>
  *
- * @return
+ * @return the address of the server machine.
  */
 
     public final String
@@ -271,7 +271,7 @@ JSDTThread extends JSDTObject implements JSDTDebugFlags {
  * <A NAME="SD_GETPORT"></A>
  * <EM>getPort</EM>
  *
- * @return
+ * @return the port number to communicate on.
  */
 
     public final int
@@ -307,13 +307,13 @@ JSDTThread extends JSDTObject implements JSDTDebugFlags {
  * @exception TimedOutException if no reply was received for this operation
  * in the given timeout period.
  *
- * @return
+ * @return the current message that was being waited for.
  */
 
     public Message
     waitForReply() throws TimedOutException {
-        long startTime    = System.currentTimeMillis();
         long currentTime, period;
+        long startTime    = System.currentTimeMillis();
         long timeoutValue = Util.getLongProperty("timeoutPeriod",
                                                   timeoutPeriod);
 
