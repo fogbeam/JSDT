@@ -24,7 +24,6 @@
 - Fixup all the warnings if possible - (see below).
 - Fixup the the "synchronized on non-final field" warnings (if possible).
 - Add description to all @param tags (where missing).
-- Add description to all @return tags (where missing).
 - Fixup all "Can be replaced with single 'Map.putIfAbsent' method call ...".
 - Fixup all places where we are getting "implicit call to toString()".
 - Fixup all the Thread stop(), suspend() and resume() calls. See:
