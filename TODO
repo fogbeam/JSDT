@@ -21,7 +21,6 @@
 
 /* Things to fixup / improve in the new version. */
 
-- Fixup the applet example instructions in the READMe.md file.
 - Fixup all the warnings if possible - (see below).
 - Fixup the the "synchronized on non-final field" warnings (if possible).
 - Add description to all @param tags (where missing).
@@ -36,7 +35,7 @@
 - Test the "http" implementation to make sure it still works.
 - Equivalent of readFully() when fixing the deprecated readLine().
   https://stackoverflow.com/questions/20782164/c-java-datainputstream-readfully-equivalent
-- first player in ppong game "locks up" after a while with debug messages on.
+- First player in ppong game "locks up" after a while with debug messages on.
 - Test synth demo on two different machines.
 - Synth demo doesn't seem to play the second instance of the client application
   when running on the same machine.

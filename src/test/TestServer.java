@@ -172,7 +172,7 @@ TestServer implements TestDebugFlags {
 
     private static String
     getHost(String args[], boolean isServer) {
-        String defHost = "localhost";  /* Default host name for connections. */
+        String defHost = "localhost";  // Default host name for connections.
         int length     = args.length;
         String arg     = (isServer) ? "-serverHost" : "-clientHost";
 
@@ -193,7 +193,7 @@ TestServer implements TestDebugFlags {
 
     private static int
     getPort(String args[], boolean isServer) {
-        int defPort = 4465;        /* Default port number for connections. */
+        int defPort = 4465;        // Default port number for connections.
         int length  = args.length;
         String arg  = (isServer) ? "-serverPort" : "-clientPort";
 
@@ -214,7 +214,7 @@ TestServer implements TestDebugFlags {
 
     private static String
     getType(String args[]) {
-        String defType = "socket";   /* Default Session type. */
+        String defType = "socket";   // Default Session type.
         int length = args.length;
 
         if (TestServer_Debug) {

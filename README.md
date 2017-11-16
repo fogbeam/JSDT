@@ -198,10 +198,11 @@ To launch a single instance of the application:
 * Right mouse clicking on this item and select "Run ChatUser.main()" from
   the menu (Ctrl-Shift-F10).
 
-To launch a single instance of the applet, type:
+To launch a single instance of the applet:
 
-	% cd $(TOP_DIR)/run/$(PLATFORM)
-	% gnumake run-chat-user
+* Click on the Run -> Run... menu item from the main menubar at the top of
+  the IntelliJ IDEA window and then select the 'ChatUser-Applet' menu item
+  from the popup window that is displayed.
 
 #### Using the chat example.
 
@@ -242,10 +243,11 @@ To launch a single instance of the application:
 * Right mouse clicking on this item and select "Run Ppong.main()" from
   the menu (Ctrl-Shift-F10).
 
-To launch a single instance of the applet, type:
+To launch a single instance of the applet:
 
-        % cd $(TOP_DIR)/run/$(PLATFORM)
-        % gnumake run-ppong-user
+* Click on the Run -> Run... menu item from the main menubar at the top of
+  the IntelliJ IDEA window and then select the 'Ppong-Applet' menu item
+  from the popup window that is displayed.
 
 #### Using the ppong example.
 
@@ -282,10 +284,11 @@ To launch a single instance of the application:
 * Right mouse clicking on this item and select "Run WhiteBoardUser.main()"
   from the menu (Ctrl-Shift-F10).
 
-To launch a single instance of the applet, type:
+To launch a single instance of the applet:
 
-	% cd $(TOP_DIR)/run/$(PLATFORM)
-	% gnumake run-whiteboard-user
+* Click on the Run -> Run... menu item from the main menubar at the top of
+  the IntelliJ IDEA window and then select the 'WhiteBoard-Applet' menu item
+  from the popup window that is displayed.
 
 #### Using the whiteboard example.
 
@@ -351,8 +354,9 @@ To launch a single instance of the application:
 
 To launch a single instance of the applet, type:
 
-	% cd $(TOP_DIR)/run/$(PLATFORM)
-	% gnumake run-sound-user
+* Click on the Run -> Run... menu item from the main menubar at the top of
+  the IntelliJ IDEA window and then select the 'Sound-Applet' menu item
+  from the popup window that is displayed.
 
 #### Using the sound example.
 
@@ -394,10 +398,10 @@ To launch a single instance of the application:
 * Right mouse clicking on this item and select "Run StockViewer.main()"
   from the menu (Ctrl-Shift-F10).
 
-To launch a single instance of the applet, type:
+To launch a single instance of the applet:
 
-        % cd $(TOP_DIR)/run/$(PLATFORM)
-        % gnumake run-stock-user
+* Click on the "Run 'Stock-Applet'" menu item from the Run menu in the
+  main menubar at the top of the IntelliJ IDEA window.
 
 #### Using the stock example.
 
@@ -435,7 +439,7 @@ You need to start one copy of the Teacher (server) application. This is by:
 
 You can have multiple copies of the Student user application running.
 
-To launch a single instance of the application:
+To launch a single instance of the user application:
 
 * Select the src/examples/browser/Student item from the Project menu on the
   left side of the IntelliJ IDEA window.
@@ -551,10 +555,6 @@ where \<type> currently can be:
 
   socket    - TCP socket based.  
   http      - HTTP based.
-
-The class files associated with a particular implementation are now found
-in the \<type> subdirectory under the $(TOP_DIR)/src/share/com/sun/media/jsdt
-directory.
 
 
 ### Known problems and limitations.
