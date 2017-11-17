@@ -28,9 +28,9 @@ import java.util.*;
 /**
  * JSDT Channel client-side data received thread class.
  *
- * @version     2.3 - 28th October 2017
+ * @version     2.3 - 16th November 2017
  * @author      Rich Burridge
- * @author        Andrea Colpo
+ * @author      Andrea Colpo
  */
 
 public final class
@@ -76,7 +76,7 @@ DataReceivedThread extends JSDTObject implements Runnable, httpDebugFlags {
         String       receiverName = message.getReceiverName();
         Data         data         = message.getData();
         ChannelProxy cp           = message.getChannelProxy();
-        Client       client       = (Client) cp.clients.get(receiverName);
+        Client       client       = cp.clients.get(receiverName);
 
         if (DataReceivedThread_Debug) {
             debug("DataReceivedThread: handleMessage:" +
@@ -131,7 +131,7 @@ DataReceivedThread extends JSDTObject implements Runnable, httpDebugFlags {
 
         try {
             while (!queue.finished) {
-                DataReceivedMessage message = null;
+                DataReceivedMessage message;
 
                 if ((message = queue.getMessage()) != null) {
                     handleMessage(message);

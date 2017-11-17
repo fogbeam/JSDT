@@ -31,7 +31,7 @@ import java.util.*;
 /**
  * JSDT Check connections thread class.
  *
- * @version     2.3 - 5th November 2017
+ * @version     2.3 - 16th November 2017
  * @author      Rich Burridge
  * @author      Manfred N. Riem
  */
@@ -187,7 +187,6 @@ ConnectionThread extends JSDTObject implements Runnable, socketDebugFlags {
                 t         = sp.proxyThread;
                 sessionNo = sp.getSessionNo();
                 id        = t.getId();
-                in        = null;
 
                 try {
                     t.writeMessageHeader(t.dataOut, sessionNo, id,

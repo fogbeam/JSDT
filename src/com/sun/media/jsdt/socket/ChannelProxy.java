@@ -29,7 +29,7 @@ import java.util.Hashtable;
 /**
  * JSDT Session client-side proxy class.
  *
- * @version     2.3 - 4th November 2017
+ * @version     2.3 - 16th November 2017
  * @author      Rich Burridge
  * @author      Andrea Colpo
  */
@@ -735,7 +735,7 @@ ChannelProxy extends ManageableProxy implements AbstractChannelProxy {
             throw new NoSuchSessionException();
         }
 
-        if ((direction = (Integer) clientDataDirections.get(client)) != null) {
+        if ((direction = clientDataDirections.get(client)) != null) {
             if (direction == Channel.WRITEONLY) {
                 throw new PermissionDeniedException();
             }

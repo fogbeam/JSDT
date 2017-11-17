@@ -24,34 +24,34 @@ package test;
 /**
  * Test environment debug flags interface.
  *
- * @version     2.3 - 15th November 2017
+ * @version     2.3 - 16th November 2017
  * @author      Rich Burridge
  */
 
 public
 interface TestDebugFlags {
 
-    static final boolean ExpelClient_Debug            = false;
-    static final boolean ExpelManagerListener_Debug   = false;
-    static final boolean ExpelUserListener_Debug      = false;
+    boolean ExpelClient_Debug            = false;
+    boolean ExpelManagerListener_Debug   = false;
+    boolean ExpelUserListener_Debug      = false;
 
-    static final boolean GiverClient_Debug            = false;
+    boolean GiverClient_Debug            = false;
 
-    static final boolean HolderClient_Debug           = false;
+    boolean HolderClient_Debug           = false;
 
-    static final boolean InviteClient_Debug           = false;
-    static final boolean InviteManagerListener_Debug  = false;
-    static final boolean InviteUserListener_Debug     = false;
+    boolean InviteClient_Debug           = false;
+    boolean InviteManagerListener_Debug  = false;
+    boolean InviteUserListener_Debug     = false;
 
-    static final boolean ReceiveManager_Debug         = false;
-    static final boolean ReceiverClient_Debug         = false;
-    static final boolean RequesterClient_Debug        = false;
+    boolean ReceiveManager_Debug         = false;
+    boolean ReceiverClient_Debug         = false;
+    boolean RequesterClient_Debug        = false;
 
-    static final boolean SendData_Debug               = false;
+    boolean SendData_Debug               = false;
 
-    static final boolean TestChannelConsumer_Debug    = false;
-    static final boolean TestClient_Debug             = false;
-    static final boolean TestManagerListener_Debug    = false;
-    static final boolean TestServer_Debug             = false;
-    static final boolean TestUser_Debug               = false;
+    boolean TestChannelConsumer_Debug    = false;
+    boolean TestClient_Debug             = false;
+    boolean TestManagerListener_Debug    = false;
+    boolean TestServer_Debug             = false;
+    boolean TestUser_Debug               = false;
 }

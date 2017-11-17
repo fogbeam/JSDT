@@ -29,7 +29,7 @@ import java.util.*;
 /**
  * JSDT Session Proxy "ping for message" thread class.
  *
- * @version     2.3 - 6th November 2017
+ * @version     2.3 - 16th November 2017
  * @author      Rich Burridge
  */
 
@@ -82,7 +82,7 @@ PingThread extends HttpThread {
                                      k.hasMoreElements();) {
                         Integer     id      = (Integer)     k.nextElement();
                         SessionImpl session = (SessionImpl) sessionsById.get(id);
-                        HttpThread  thread  = (HttpThread)  threadsById.get(id);
+                        HttpThread  thread  = threadsById.get(id);
 
                         try {
                             pingForMessage(session, thread, id);

@@ -30,7 +30,7 @@ import java.util.*;
 /**
  * JSDT Session Client-side class (socket implementation).
  *
- * @version     2.3 - 6th November 2017
+ * @version     2.3 - i6th November 2017
  * @author      Rich Burridge
  */
 
@@ -1394,7 +1394,7 @@ SessionProxy extends ManageableProxy implements AbstractSessionProxy {
     close(boolean closeConnection)
         throws ConnectionException, NoSuchSessionException {
         int         id;
-        NamingProxy namingProxy  = null;
+        NamingProxy namingProxy;
         boolean     gotException = false;
         char        type         = SessionImpl.M_Session;
 

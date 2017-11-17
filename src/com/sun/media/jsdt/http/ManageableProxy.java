@@ -920,9 +920,6 @@ ManageableProxy extends JSDTObject
                 throws ConnectionException, ManagerExistsException,
                        NoSuchHostException, NoSuchSessionException,
                        TimedOutException {
-        // The thread handle to the permanent managerthread connection.
-        Thread mpThread;
-
         DataInputStream in;
         Message         message;
         int             retval;
@@ -979,8 +976,8 @@ ManageableProxy extends JSDTObject
         setManagerThread(managerThread);
 
         if (!managerThread.mustPing()) {
-            mpThread = Util.startThread(permManagerThread,
-                           "ManagerPermThread:" + manageable.getName(), true);
+            Util.startThread(permManagerThread,
+                             "ManagerPermThread:" + manageable.getName(), true);
         }
 
         Util.startThread(managerThread,

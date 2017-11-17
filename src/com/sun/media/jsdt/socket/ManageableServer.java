@@ -662,7 +662,7 @@ ManageableServer extends JSDTObject
  * @return a handle to the server-side manager (if any).
  */
 
-    private final JSDTManagerImpl
+    private JSDTManagerImpl
     getManager() {
         if (ManageableServer_Debug) {
             debug("ManageableServer: getManager.");
