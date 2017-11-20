@@ -29,7 +29,7 @@ import java.util.Vector;
 /**
  * Various JSDT utility methods.
  *
- * @version     2.3 - 6th November 2017
+ * @version     2.3 - 20th December 2017
  * @author      Rich Burridge
  */
 
@@ -73,7 +73,7 @@ Util extends JSDTObject implements JSDTDebugFlags, Serializable {
  * <EM>DefragmentBuffer</EM> concatenates smaller fragments into entire
  * buffers.
  *
- * Code kindly supplied by Bela Ban <bba@CS.Cornell.EDU>
+ * Code kindly supplied by Bela Ban &lt;bba@CS.Cornell.EDU&gt;
  *
  * @param fragments a vector of byte buffers (<code>byte[]</code>)
  *
@@ -104,7 +104,7 @@ Util extends JSDTObject implements JSDTDebugFlags, Serializable {
  * Example: a byte buffer of 1024 bytes and a frag_size of 248 gives 4
  *          fragments of 248 bytes each and 1 fragment of 32 bytes.
  *
- * Code kindly supplied by Bela Ban <bba@CS.Cornell.EDU>
+ * Code kindly supplied by Bela Ban &lt;bba@CS.Cornell.EDU&gt;
  *
  * @param buf the byte buffer to fragment.
  * @param fragSize the maximum size for a fragment.

@@ -30,7 +30,7 @@ import java.io.Serializable;
  * having to catch them individually. It provides convenience methods to
  * determine what type of exception has been thrown.
  *
- * @version     2.3 - 26th October 2017
+ * @version     2.3 - 20th November 2017
  * @author      Rich Burridge
  * @since       JSDT 1.0
  */
@@ -115,7 +115,7 @@ JSDTException extends Exception implements JSDTDebugFlags, Serializable {
      *
      *  @serial
      */
-    int type;
+    final int type;
 
 
 /**

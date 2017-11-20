@@ -27,7 +27,7 @@ import com.sun.media.jsdt.event.ChannelListener;
 /**
  * JSDT Channel (implementation) class.
  *
- * @version     2.3 - 6th November 2017
+ * @version     2.3 - 20th November 2017
  * @author      Rich Burridge
  */
 
@@ -50,7 +50,7 @@ ChannelImpl extends ManageableImpl implements Channel {
      *
      *  @serial
      */
-    protected SessionImpl session;
+    protected final SessionImpl session;
 
     /** Handle to client-side proxy.
      *

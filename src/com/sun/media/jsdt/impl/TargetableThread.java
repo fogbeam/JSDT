@@ -29,7 +29,7 @@ import java.lang.Thread;
  * a handle to the Runnable object that was used to create it. This is so
  * that that thread can be shutdown gracefully.
  *
- * @version     2.3 - 28th October 2017
+ * @version     2.3 - 20th November 2017
  * @author      Rich Burridge
  * @since       JSDT 2.2
  */
@@ -38,7 +38,7 @@ public class
 TargetableThread extends Thread implements JSDTDebugFlags, Serializable {
 
     /** Handle to runnaqble target associated with this thread. */
-    private Runnable target;
+    private final Runnable target;
 
 /**
  * <A NAME="SD_TARGETABLETHREAD"></A>

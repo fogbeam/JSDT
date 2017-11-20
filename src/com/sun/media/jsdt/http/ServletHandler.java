@@ -33,7 +33,7 @@ import javax.servlet.*;
  *
  * (Based on the RMI servlet handler class in the rmiservlethandler package).
  *
- * @version     2.3 - 16th November 2017
+ * @version     2.3 - 20th November 2017
  *
  * When a JSDT client initiates contact with a remote server, it attempts to
  * establish a connection using each of the following protocols in turn,
@@ -57,7 +57,7 @@ import javax.servlet.*;
  * the ServletHandler only supports the <code>doPost</code>
  * <code>HttpServlet</code> method.  The <code>doPost</code> method of this
  * class interprets a servlet request's query string as a command of the form
- * "<command>=<parameters>".  These commands are represented by the
+ * "&lt;command&gt;=&lt;parameters&gt;".  These commands are represented by the
  * abstract interface, <code>CommandHandler</code>.  Once the
  * <code>doPost</code> method has parsed the requested command, it
  * calls the execute method on one of several command handlers in the

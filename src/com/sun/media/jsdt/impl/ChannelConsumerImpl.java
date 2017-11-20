@@ -26,7 +26,7 @@ import com.sun.media.jsdt.*;
 /**
  * JSDT Channel Consumer interface.
  *
- * @version     2.3 - 28th October 2017
+ * @version     2.3 - 20th November 2017
  * @author      Rich Burridge
  */
 
@@ -37,7 +37,7 @@ ChannelConsumerImpl extends JSDTObject implements ChannelConsumer {
      *
      *  @serial
      */
-    protected String name;
+    protected final String name;
 
 
 /**

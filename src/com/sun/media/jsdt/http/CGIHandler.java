@@ -30,7 +30,7 @@ import java.util.Hashtable;
  *
  * (Based on the CGIHandler class in the sun.rmi.transport.proxy package).
  *
- * @version     2.3 - 6th November 2017
+ * @version     2.3 - 20th November 2017
  */
 
 /**
@@ -88,7 +88,7 @@ interface CGICommandHandler {
 /**
  * The CGIHandler class contains methods for executing as a CGI program.
  * The main function interprets the query string as a command of the form
- * "<command>=<parameters>".
+ * "&lt;command&gt;=&lt;parameters&gt;".
  *
  * This class depends on the CGI 1.0 environment variables being set as
  * properties of the same name in this Java VM.

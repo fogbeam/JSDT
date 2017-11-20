@@ -272,7 +272,7 @@ RegistryFactory extends JSDTObject {
 
 /**
  * <A NAME="SD_REGISTRYEXISTS"></A>
- * <EMregistryExists></EM> is a class method that checks if a Registry,
+ * <EM>registryExists></EM> is a class method that checks if a Registry,
  * of the given registry type, is already running on the given port.
  *
  * <P>The property <CODE>registryPort</CODE> will be set to the given port

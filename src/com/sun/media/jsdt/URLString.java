@@ -29,9 +29,9 @@ import java.util.StringTokenizer;
  * JSDT URL String parsing class. A JSDT URL is of the form:
  *
  * <PRE>
- *     jsdt://&#60host&#62:&#60port&#62/&#60connection type&#62/&#60object type&#62/&#60object name&#62
+ *     jsdt://&lt;host&gt;:&lt;port&gt;/&lt;connection type&gt;/&lt;object type&gt;/&lt;object name&gt;
  *
- * where <connection type> is the connection (or implementation) type
+ * where &lt;connection type&gt; is the connection (or implementation) type
  * (eg. "socket", "multicast" or "http"),
  * and where valid object types are "Session" and "Client".
  *
@@ -44,7 +44,7 @@ import java.util.StringTokenizer;
  * Static convenience methods are provided to create Session and Client
  * URLStrings
  *
- * @version     2.3 - 27th October 2017
+ * @version     2.3 - 20th November 2017
  * @author      Rich Burridge
  * @since       JSDT 1.5
  */
@@ -130,18 +130,18 @@ URLString extends JSDTObject {
             String          hostport;
             StringTokenizer st;
 
-            protocol    = tok.nextToken();                        /* "jsdt". */
+            protocol    = tok.nextToken();                        // "jsdt".
 
-            hostport    = tok.nextToken();              /* Server host:port. */
+            hostport    = tok.nextToken();              // Server host:port.
             st = new StringTokenizer(hostport, ":");
-            hostName    = st.nextToken();                    /* Server host. */
+            hostName    = st.nextToken();                    // Server host.
             address     = InetAddress.getByName(hostName);
-            hostAddress = address.getHostAddress();    /* Server IP address. */
-            port        = Integer.parseInt(st.nextToken());         /* Port. */
+            hostAddress = address.getHostAddress();    // Server IP address.
+            port        = Integer.parseInt(st.nextToken());         // Port.
 
-            connectType = tok.nextToken();               /* Connection type. */
-            objectType  = tok.nextToken();                   /* Object type. */
-            objectName  = tok.nextToken();                   /* Object name. */
+            connectType = tok.nextToken();               // Connection type.
+            objectType  = tok.nextToken();                   // Object type.
+            objectName  = tok.nextToken();                   // Object name.
             valid       = true;
 
             if (URLString_Debug) {

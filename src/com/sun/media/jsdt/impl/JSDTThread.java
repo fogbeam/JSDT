@@ -28,7 +28,7 @@ import java.util.*;
 /**
  * JSDT Thread interface.
  *
- * @version     2.3 - 16th November 2017
+ * @version     2.3 - 20th November 2017
  * @author      Rich Burridge
  */
 
@@ -54,7 +54,7 @@ JSDTThread extends JSDTObject implements JSDTDebugFlags {
     protected volatile long waitValue = 0;
 
     // Object used with waitValue for synchronization purposes.
-    protected Object waitValueLock = new Object();
+    protected final Object waitValueLock = new Object();
 
     // The address of the server machine.
     protected String address;
@@ -66,7 +66,7 @@ JSDTThread extends JSDTObject implements JSDTDebugFlags {
     private static Vector<Integer> ids = null;
 
     // A unique id for this JSDT thread.
-    public int id = createId();
+    public final int id = createId();
 
     // Indicates whether this JSDT thread should be running.
     protected boolean running = true;

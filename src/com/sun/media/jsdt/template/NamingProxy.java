@@ -30,7 +30,7 @@ import java.util.Hashtable;
 /**
  * JSDT Naming proxy class.
  *
- * @version     2.3 - 28th October 2017
+ * @version     2.3 - 20th November 2017
  * @author      Rich Burridge
  */
 
@@ -84,7 +84,7 @@ NamingProxy extends JSDTObject
  * <EM>bind</EM> binds the name to the specified JSDT object.
  *
  * The name should be of the form:
- *     jsdt://<machine>[:<port>]/<impl type>/<objecttype>/<objectname>
+ *     jsdt://&lt;machine&gt;[:&lt;port&gt;]/&lt;impl type&gt;/&lt;objecttype&gt;/&lt;objectname&gt;
  *
  * where valid impl types are "multicast", "http" and "socket".
  * where valid object types are "Session" and "Client".
@@ -168,7 +168,7 @@ NamingProxy extends JSDTObject
  * <EM>lookup</EM> returns the JSDT object for the given name.
  *
  * The name should be of the form:
- *     jsdt://<machine>[:<port>]/<connectType>/<objectType>/<objectName>
+ *     jsdt://&lt;machine&gt;[:&lt;port&gt;]/&lt;connectType&gt;/&lt;objectType&gt;/&lt;objectName&gt;
  *
  * where valid object types are "Session" and "Client".
  *

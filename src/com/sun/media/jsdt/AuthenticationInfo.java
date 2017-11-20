@@ -36,7 +36,7 @@ import com.sun.media.jsdt.impl.JSDTDebugFlags;
  * joined to a managed Session, and wishes to create or destroy a ByteArray,
  * Channel or Token, the same authentication process takes place.
  *
- * @version     2.3 - 25th October 2017
+ * @version     2.3 - 20th November 2017
  * @author      Rich Burridge
  * @since       JSDT 1.0
  */
@@ -98,7 +98,7 @@ AuthenticationInfo extends JSDTObject implements JSDTDebugFlags {
      *
      *  @serial
      */
-    private Session session;
+    private final Session session;
 
     /** The type of manageable object.
      *

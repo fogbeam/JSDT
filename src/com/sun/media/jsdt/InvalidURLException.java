@@ -30,15 +30,15 @@ import com.sun.media.jsdt.impl.JSDTObject;
  * <PRE>
  * JSDT URL's have the following format:
  *
- *     jsdt://<host>:<port>/<impl type>/<object type>/<objectname>
+ *     jsdt://&lt;host&gt;:&lt;port&gt;/&lt;impl type&gt;/&lt;object type&gt;/&lt;objectname&gt;
  *
  * where:
  *
- * <host> is the name of the machine serving this JSDT object.
- * <port> is the port number to use on that machine.
- * <impl type> is the implementation type (eg. "socket"),
- * <object type> is either "Session" or "Client".
- * <objectName> is the name of the JSDT object.
+ * &lt;host&gt; is the name of the machine serving this JSDT object.
+ * &lt;port&gt; is the port number to use on that machine.
+ * &lt;impl type&gt; is the implementation type (eg. "socket"),
+ * &lt;object type&gt; is either "Session" or "Client".
+ * &lt;objectName&gt; is the name of the JSDT object.
  *
  * For example:
  *     jsdt://stard:3355/socket/Session/chatSession
@@ -46,7 +46,7 @@ import com.sun.media.jsdt.impl.JSDTObject;
  *     jsdt://stard:4386/socket/Client/fredClient
  * </PRE>
  *
- * @version     2.3 - 26th October 2017
+ * @version     2.3 - 20th November 2017
  * @author      Rich Burridge
  * @since       JSDT 1.0
  */
