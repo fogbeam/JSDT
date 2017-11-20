@@ -740,8 +740,11 @@ TestUser extends Applet implements TestDebugFlags {
             receiverClient.setToken(receiverToken);
 
             while (receiverToken.listClientNames().length == 2) {
+                System.err.println("Client: " + receiverName +
+                               " waiting for giver to leave the token.");
                 TestUser.rsleep(1, 2);
             }
+            System.err.println("TestUser: test6: completing.");
         } catch (Exception e) {
             System.err.println("TestUser: test6: exception " + e);
             e.printStackTrace();

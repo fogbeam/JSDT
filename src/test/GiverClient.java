@@ -27,7 +27,7 @@ import com.sun.media.jsdt.event.*;
 /**
  * The giver client for the test environment for JSDT.
  *
- * @version     2.3 - 15th November 2017
+ * @version     2.3 - 20th November 2017
  * @author      Rich Burridge
  */
 
@@ -90,6 +90,12 @@ GiverClient extends TokenAdaptor implements Client, TestDebugFlags {
                 System.err.println("Client: " + this.getName() +
                                    " gives the token to: " + clientName);
                 token.give(this, clientName);
+
+                TestUser.rsleep(4, 6);
+                System.err.println("Client: " + this.getName() +
+                                   " leaves the token.");
+                token.leave(this);
+
             } catch (Exception e) {
                 System.err.println("GiverClient: tokenJoined:" +
                                    " exception " + e);
