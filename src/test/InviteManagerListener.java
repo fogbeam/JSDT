@@ -28,7 +28,7 @@ import com.sun.media.jsdt.event.*;
  * The invite bytearray/channel/session/token manager/listener for the
  * test environment for JSDT.
  *
- * @version     2.3 - 15th November 2017
+ * @version     2.3 - 21st November 2017
  * @author      Rich Burridge
  */
 
@@ -49,7 +49,7 @@ InviteManagerListener extends SessionAdaptor
     private boolean tokenInvited = false;
 
     // The name of this channel manager.
-    protected String name;
+    protected final String name;
 
     // Machine name of the client to invite to join this session.
     private String clientHost = null;

@@ -30,7 +30,7 @@ import java.util.*;
 /**
  * JSDT Session Client-side class (HTTP implementation).
  *
- * @version     2.3 - 7th November 2017
+ * @version     2.3 - 21st November 2017
  * @author      Rich Burridge
  */
 
@@ -38,10 +38,10 @@ final class
 SessionProxy extends ManageableProxy implements AbstractSessionProxy {
 
     // The unique session number for this session.
-    private short sessionNo;
+    private final short sessionNo;
 
     // The JSDT URL string associated with this session.
-    String url;
+    String final url;
 
     // The shared bytes arrays currently created in this session.
     private Hashtable<String, ByteArray> byteArrays = null;

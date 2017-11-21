@@ -28,7 +28,7 @@ import com.sun.media.jsdt.event.*;
  * The expel bytearray/channel/session/token manager/listener for the
  * test environment for JSDT.
  *
- * @version     2.3 - 15th November 2017
+ * @version     2.3 - 21st November 2017
  * @author      Rich Burridge
  */
 
@@ -36,11 +36,11 @@ public class
 ExpelManagerListener implements ByteArrayManager, ByteArrayListener,
                                 ChannelManager, ChannelListener,
                                 SessionManager, SessionListener,
-                                TestDebugFlags, TokenManager,
-                                TokenListener {
+                                TestDebugFlags,
+                                TokenManager, TokenListener {
 
     // The name of this channel/session/token listener.
-    protected String name;
+    protected final String name;
 
     // The channel that is being managed/observed.
     private Channel channel = null;

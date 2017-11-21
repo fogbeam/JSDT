@@ -28,7 +28,7 @@ import java.io.*;
 /**
  * JSDT registry authentication client class.
  *
- * @version     2.3 - 7th November 2017
+ * @version     2.3 - 21st November 2017
  * @author      Rich Burridge
  */
 
@@ -62,7 +62,7 @@ RegistryClient extends JSDTObject implements Client, Runnable, httpDebugFlags {
     private Message message;
 
     // The manager for the registry.
-    private RegistryManager manager;
+    private final RegistryManager manager;
 
 
 /**

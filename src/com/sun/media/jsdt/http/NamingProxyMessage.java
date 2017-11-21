@@ -28,7 +28,7 @@ import java.io.*;
 /**
  * JSDT Naming proxy message class.
  *
- * @version     2.3 - 6th November 2017
+ * @version     2.3 - 21st November 2017
  * @author      Rich Burridge
  */
 
@@ -41,7 +41,7 @@ NamingProxyMessage extends JSDTObject implements httpDebugFlags {
     private static Object proxyLock = null;
 
     // Handle to the NamingProxy object for this message.
-    private NamingProxy np;
+    private final NamingProxy np;
 
 
 /**

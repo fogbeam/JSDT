@@ -34,10 +34,10 @@ class
 SendData extends Thread implements TestDebugFlags {
 
     // The session to join.
-    protected Session session;
+    protected final Session session;
 
     // The name of the channel to join and send data over.
-    protected String channelName;
+    protected final String channelName;
 
 
 /**

@@ -28,7 +28,7 @@ import java.io.*;
 /**
  * JSDT proxy authentication client class.
  *
- * @version     2.3 - 6th November 2017
+ * @version     2.3 - 21st November 2017
  * @author      Rich Burridge
  */
 
@@ -37,7 +37,7 @@ AuthenticateClient extends JSDTObject
                    implements Client, Runnable, httpDebugFlags {
 
     // The client-side session associated with this authentication client.
-    private SessionImpl session;
+    private final SessionImpl session;
 
     /* The kind of managed object, the client is trying to perform the
      * priviledged operation on: Session, ByteArray, Channel or Token.
@@ -59,13 +59,13 @@ AuthenticateClient extends JSDTObject
     private String name;
 
     // The client-side proxy associated with the Session for this object.
-    private SessionProxy sp;
+    private final SessionProxy sp;
 
     // The client-side managable object.
-    private Manageable manageable;
+    private final Manageable manageable;
 
     // The client-side manager associated with this manageable object.
-    private JSDTManager manager;
+    private final JSDTManager manager;
 
 
 /**

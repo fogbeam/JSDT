@@ -27,14 +27,14 @@ import com.sun.media.jsdt.event.*;
 /**
  * The giver client for the test environment for JSDT.
  *
- * @version     2.3 - 20th November 2017
+ * @version     2.3 - 21st November 2017
  * @author      Rich Burridge
  */
 
 public class
 GiverClient extends TokenAdaptor implements Client, TestDebugFlags {
 
-    protected String name;
+    protected final String name;
 
 
     public

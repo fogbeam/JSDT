@@ -37,7 +37,7 @@ import java.util.*;
  *
  * Based on the sun.rmi.transport.proxy.RMIMasterSocketFactory class.
  *
- * @version     2.3 - 6th November 2017
+ * @version     2.3 - 21st November 2017
  * @author      Rich Burridge
  */
 
@@ -46,22 +46,22 @@ JSDTMasterSocketFactory extends JSDTObject
                         implements JSDTSocketFactory, httpDebugFlags {
 
     // Table of hosts successfully connected to and the factory used.
-    private Hashtable<String, JSDTSocketFactory>
+    private final Hashtable<String, JSDTSocketFactory>
                                        successTable = new Hashtable<>();
 
     // Maximum number of hosts to remember successful connection to.
     private static final int MaxRememberedHosts = 64;
 
     // List of the hosts in successTable in initial connection order.
-    private Vector<String> hostList = new Vector<>(MaxRememberedHosts);
+    private final Vector<String> hostList = new Vector<>(MaxRememberedHosts);
 
     // Default factory to initally use for direct socket connection.
-    private JSDTSocketFactory initialFactory = new TCPSocketFactory();
+    private final JSDTSocketFactory initialFactory = new TCPSocketFactory();
 
     /* Ordered list of factories to try as alternate connection
      * mechanisms if a direct socket connections fails.
      */
-    private Vector<JSDTObject> altFactoryList = new Vector<>(2);
+    private final Vector<JSDTObject> altFactoryList = new Vector<>(2);
 
 
 /**
@@ -349,25 +349,25 @@ JSDTMasterSocketFactory extends JSDTObject
 class
 AsyncConnector implements Runnable {
 
-    /** The JSDTMasterSocketFactory that created this. */
-    private JSDTMasterSocketFactory master;
+    // The JSDTMasterSocketFactory that created this.
+    private final JSDTMasterSocketFactory master;
 
-    /** What factory to use to attempt connection. */
-    protected JSDTSocketFactory factory;
+    // What factory to use to attempt connection.
+    protected final JSDTSocketFactory factory;
 
-    /** The host to connect to. */
-    protected String host;
+    // The host to connect to.
+    protected final String host;
 
-    /** The port to connect to. */
-    protected int port;
+    // The port to connect to.
+    protected final int port;
 
-    /** IOException that occurred during connection, if any. */
+    // IOException that occurred during connection, if any.
     protected IOException exception = null;
 
-    /** The connected socket, if successful. */
+    // The connected socket, if successful.
     protected Socket socket = null;
 
-    /** Socket should be closed after created, if ever. */
+    // Socket should be closed after created, if ever.
     private boolean cleanUp = false;
 
 

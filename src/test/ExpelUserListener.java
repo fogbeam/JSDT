@@ -27,7 +27,7 @@ import com.sun.media.jsdt.event.*;
  * The expel channel/session/token user listener for the test environment
  * for JSDT.
  *
- * @version     2.3 - 15th November 2017
+ * @version     2.3 - 21st November 2017
  * @author      Rich Burridge
  */
 
@@ -36,7 +36,7 @@ ExpelUserListener extends SessionAdaptor
                   implements ChannelListener, TestDebugFlags, TokenListener {
 
     // The name of this channel/session/token listener.
-    protected String name;
+    protected final String name;
 
 
     public

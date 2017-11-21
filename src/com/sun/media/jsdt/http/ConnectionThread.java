@@ -31,7 +31,7 @@ import java.util.*;
 /**
  * JSDT Check connections thread class.
  *
- * @version     2.3 - 6th November 2017
+ * @version     2.3 - 21st November 2017
  * @author      Rich Burridge
  */
 
@@ -39,13 +39,13 @@ final class
 ConnectionThread extends JSDTObject implements Runnable, httpDebugFlags {
 
     // The sessions currently bound.
-    private Hashtable sessions;
+    private final Hashtable sessions;
 
     // The listeners (and event masks), observing connection failures.
     private Hashtable<ConnectionListener, Integer> listeners = null;
 
     // The thread running this ConnectionThread object.
-    private Thread thread;
+    private final Thread thread;
 
     // Set true if we haven't received a ping reply and have timed out.
     private boolean maybeFailure = false;

@@ -28,7 +28,7 @@ import java.util.Vector;
 /**
  * JSDT Same VM thread parent class (HTTP implementation).
  *
- * @version     2.3 - 7th November 2017
+ * @version     2.3 - 21st November 2017
  * @author      Rich Burridge
  */
 
@@ -53,7 +53,7 @@ SameVMThread extends HttpThread {
     private int currentId = 0;
 
     // The byte array input stream associated with this thread.
-    JSDTByteArrayInputStream in;
+    final JSDTByteArrayInputStream in;
 
     // The byte array output stream associated with this thread.
     ByteArrayOutputStream out;

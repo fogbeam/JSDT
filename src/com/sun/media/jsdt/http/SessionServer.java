@@ -30,7 +30,7 @@ import java.util.*;
 /**
  * JSDT Session Server-side class.
  *
- * @version     2.3 - 7th November 2017
+ * @version     2.3 - 21st November 2017
  * @author      Rich Burridge
  */
 
@@ -41,7 +41,7 @@ SessionServer extends ManageableServer implements AbstractSessionServer {
     String url = null;
 
     // The unique session number for this session.
-    private short sessionNo;
+    private final short sessionNo;
 
     // The server-side session associated with this session server.
     protected SessionImpl session;

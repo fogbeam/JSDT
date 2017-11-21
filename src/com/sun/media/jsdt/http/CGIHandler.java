@@ -30,7 +30,7 @@ import java.util.Hashtable;
  *
  * (Based on the CGIHandler class in the sun.rmi.transport.proxy package).
  *
- * @version     2.3 - 20th November 2017
+ * @version     2.3 - 21st November 2017
  */
 
 /**
@@ -101,14 +101,14 @@ public final class
 CGIHandler {
 
     // Get CGI parameters that we need.
-    static int    ContentLength = Integer.getInteger("CONTENT_LENGTH", 0);
-    private static String QueryString = System.getProperty("QUERY_STRING", "");
-    static String RequestMethod = System.getProperty("REQUEST_METHOD", "");
-    static String ServerName = System.getProperty("SERVER_NAME", "");
-    static int    ServerPort = Integer.getInteger("SERVER_PORT", 0);
+    static ContentLength = Integer.getInteger("CONTENT_LENGTH", 0);
+    private static QueryString = System.getProperty("QUERY_STRING", "");
+    static RequestMethod = System.getProperty("REQUEST_METHOD", "");
+    static ServerName = System.getProperty("SERVER_NAME", "");
+    static final int ServerPort = Integer.getInteger("SERVER_PORT", 0);
 
     // List of handlers for supported commands.
-    private static CGICommandHandler commands[] = {
+    private static final CGICommandHandler commands[] = {
         new CGIForwardCommand(),
         new CGIGethostnameCommand(),
         new CGIPingCommand(),
@@ -116,7 +116,7 @@ CGIHandler {
     };
 
     // Construct table mapping command strings to handlers.
-    private static Hashtable<String, CGICommandHandler> commandLookup;
+    private static final Hashtable<String, CGICommandHandler> commandLookup;
     static {
         commandLookup = new Hashtable<>();
         for (int i = 0; i < commands.length; i++) {

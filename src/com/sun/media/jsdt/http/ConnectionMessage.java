@@ -28,18 +28,18 @@ import com.sun.media.jsdt.impl.Message;
 /**
  * JSDT connection failed message thread class.
  *
- * @version     2.3 - 28th October 2017
+ * @version     2.3 - 21st November 2017
  * @author      Rich Burridge
  */
 
 final class
 ConnectionMessage extends JSDTMessage implements Runnable {
 
-    /** The listener to inform of the connection failure. */
-    private ConnectionListener listener;
+    // The listener to inform of the connection failure.
+    private final ConnectionListener listener;
 
-    /** The Connection failure event. */
-    private ConnectionEvent event;
+    // The Connection failure event.
+    private final ConnectionEvent event;
 
 
 /**

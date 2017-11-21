@@ -27,7 +27,7 @@ import com.sun.media.jsdt.impl.*;
 /**
  * JSDT Check token status class.
  *
- * @version     2.3 - 6th November 2017
+ * @version     2.3 - 21st November 2017
  * @author      Rich Burridge
  */
 
@@ -35,10 +35,10 @@ final class
 CheckToken extends JSDTObject implements Runnable, httpDebugFlags {
 
     /* The token whose status needs checking. */
-    private TokenImpl token;
+    private final TokenImpl token;
 
     /* The previous token status value for this token. */
-    private int previousStatus;
+    private final int previousStatus;
 
 
 /**

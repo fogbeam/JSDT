@@ -30,7 +30,7 @@ import java.util.*;
 /**
  * JSDT HTTP thread class.
  *
- * @version     2.3 - 16th November 2017
+ * @version     2.3 - 21st November 2017
  * @author      Rich Burridge
  */
 
@@ -90,10 +90,10 @@ HttpThread extends JSDTThread implements Runnable, httpDebugFlags {
     protected boolean permanent = false;
 
     // Hashtable of client authentication id keys for thread values.
-    protected Hashtable<Integer, Thread> idThreads = new Hashtable<>();
+    protected final Hashtable<Integer, Thread> idThreads = new Hashtable<>();
 
     // Object used to synchronized client thread suspension.
-    static Object clientResponseLock = new Object();
+    static final Object clientResponseLock = new Object();
 
     // Set true when we have a permanent connection with server.
     boolean havePermanent = false;

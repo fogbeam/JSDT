@@ -33,7 +33,7 @@ import javax.servlet.*;
  *
  * (Based on the RMI servlet handler class in the rmiservlethandler package).
  *
- * @version     2.3 - 20th November 2017
+ * @version     2.3 - 21st November 2017
  *
  * When a JSDT client initiates contact with a remote server, it attempts to
  * establish a connection using each of the following protocols in turn,
@@ -116,7 +116,7 @@ ServletHandler extends HttpServlet {
      * created for every service request.
      */
 
-    private static CommandHandler commands[] = new CommandHandler [] {
+    private static final CommandHandler commands[] = new CommandHandler [] {
         new ServletForwardCommand(),
         new ServletGethostnameCommand(),
         new ServletPingCommand(),
@@ -125,7 +125,7 @@ ServletHandler extends HttpServlet {
 
     // Construct table mapping command strings to handlers.
 
-    private static Hashtable<String, ServletHandler.CommandHandler> commandLookup;
+    private static final Hashtable<String, ServletHandler.CommandHandler> commandLookup;
     static {
         commandLookup = new Hashtable<>();
         for (int i = 0; i < commands.length; ++ i) {

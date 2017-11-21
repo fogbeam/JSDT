@@ -27,7 +27,7 @@ import java.util.*;
 /**
  * JSDT cleanup connections thread class.
  *
- * @version     2.3 - 6th November 2017
+ * @version     2.3 - 21st November 2017
  * @author      Rich Burridge
  */
 
@@ -35,10 +35,10 @@ final class
 CleanupConnections extends JSDTObject implements Runnable, httpDebugFlags {
 
     // The session server that started this thread.
-    private SessionServer sessionServer;
+    private final SessionServer sessionServer;
 
     // The ids currently pinging, and their last ping times.
-    private Hashtable pingIds;
+    private final Hashtable pingIds;
 
 
 /**

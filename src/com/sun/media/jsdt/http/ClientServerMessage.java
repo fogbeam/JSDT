@@ -27,15 +27,15 @@ import com.sun.media.jsdt.impl.*;
 /**
  * JSDT client server message class.
  *
- * @version     2.3 - 28th October 2017
+ * @version     2.3 - 21st November 2017
  * @author      Rich Burridge
  */
 
 final class
 ClientServerMessage extends JSDTMessage {
 
-    /** The client associated with this client server message. */
-    private Client client;
+    // The client associated with this client server message.
+    private final Client client;
 
 
 /**

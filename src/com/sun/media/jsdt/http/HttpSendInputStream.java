@@ -32,7 +32,7 @@ import java.io.*;
  *
  * Based on the sun.rmi.transport.proxy.HttpSendInputStream class.
  *
- * @version     2.3 - 6th November 2017
+ * @version     2.3 - 21st November 2017
  * @author      Rich Burridge
  */
 
@@ -40,7 +40,7 @@ class
 HttpSendInputStream extends FilterInputStream implements httpDebugFlags {
 
     // The HttpSendSocket object that is providing this stream.
-    private HttpSendSocket owner;
+    private final HttpSendSocket owner;
 
 
 /**

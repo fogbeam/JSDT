@@ -28,7 +28,7 @@ import java.io.*;
 /**
  * JSDT Client Server-side class.
  *
- * @version     2.3 - 28th October 2017
+ * @version     2.3 - 21st November 2017
  * @author      Rich Burridge
  */
 
@@ -39,7 +39,7 @@ ClientServer extends JSDTObject implements httpDebugFlags {
     protected String name = null;
 
     // The server-side client associated with this client server.
-    protected Client client;
+    protected final Client client;
 
     // Server socket instance for this client.
     private TCPSocketServer socketServer;

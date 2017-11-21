@@ -32,7 +32,7 @@ import java.io.*;
  *
  * Based on the sun.rmi.transport.proxy.HttpOutputStream class.
  *
- * @version     2.3 - 28th October 2017
+ * @version     2.3 - 21st November 2017
  * @author      Rich Burridge
  */
 
@@ -40,13 +40,13 @@ class
 HttpOutputStream extends ByteArrayOutputStream implements httpDebugFlags {
 
     // Data to send if the response would otherwise be empty.
-    private static byte[] emptyData = { 0 };
+    private static final byte[] emptyData = { 0 };
 
     // The output stream to send response to.
-    protected OutputStream out;
+    protected final OutputStream out;
 
     // The HttpReceiveSocket object that is providing this stream.
-    private HttpReceiveSocket owner;
+    private final HttpReceiveSocket owner;
 
     // True if HTTP response has been sent.
     private boolean responseSent = false;
