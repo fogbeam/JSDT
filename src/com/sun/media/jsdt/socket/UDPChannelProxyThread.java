@@ -28,18 +28,18 @@ import com.sun.media.jsdt.impl.SessionImpl;
 /**
  * JSDT UDP Channel proxy thread class.
  *
- * @version     2.3 - 27th October 2017
+ * @version     2.3 - 20th November 2017
  * @author      Rich Burridge
  */
 
 final class
 UDPChannelProxyThread extends UDPSocketThread {
 
-    /** The client-side session associated with this channel thread. */
-    private SessionImpl session;
+    // The client-side session associated with this channel thread.
+    private final SessionImpl session;
 
-    /** The client-side channel associated with this channel thread. */
-    private Channel channel;
+    // The client-side channel associated with this channel thread.
+    private final Channel channel;
 
 /**
  * <A NAME="SD_UDPCHANNELPROXYTHREAD"></A>

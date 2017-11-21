@@ -37,7 +37,7 @@ import java.util.EventObject;
  * - when a Client has removed a Consumer from the Channel.
  * </PRE>
  *
- * @version     2.3 - 27th October 2017
+ * @version     2.3 - 20th November 2017
  * @author      Rich Burridge
  * @since       JSDT 1.0
  */
@@ -67,25 +67,25 @@ ChannelEvent extends EventObject implements JSDTDebugFlags {
      *
      *  @serial
      */
-    private Session session;
+    private final Session session;
 
     /** The channel this event occured on.
      *
      *  @serial
      */
-    protected Channel channel;
+    protected final Channel channel;
 
     /** The name of the client causing this event.
      *
      *  @serial
      */
-    private String clientName;
+    private final String clientName;
 
     /** The type of this Channel event.
      *
      *  @serial
      */
-    private int type;
+    private final int type;
 
 
 /**

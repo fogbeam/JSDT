@@ -36,7 +36,7 @@ import java.util.EventObject;
  * - when a Client has been expelled from a ByteArray.
  * </PRE>
  *
- * @version     2.3 - 27th October 2017
+ * @version     2.3 - 20th November 2017
  * @author      Rich Burridge
  * @since       JSDT 1.0
  */
@@ -63,25 +63,25 @@ ByteArrayEvent extends EventObject implements JSDTDebugFlags {
      *
      *  @serial
      */
-    private Session session;
+    private final Session session;
 
     /** The byte array associated with this ByteArray event.
      *
      *  @serial
      */
-    private ByteArray byteArray;
+    private final ByteArray byteArray;
 
     /** The name of the client causing this event.
      *
      *  @serial
      */
-    private String clientName;
+    private final String clientName;
 
     /** The type of this ByteArray event.
      *
      *  @serial
      */
-    private int type;
+    private final int type;
 
 
 /**

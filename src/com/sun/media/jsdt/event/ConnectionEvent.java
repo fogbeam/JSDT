@@ -31,7 +31,7 @@ import java.util.EventObject;
  * - when a Connection failure has occured.
  * </PRE>
  *
- * @version     2.3 - 27th October 2017
+ * @version     2.3 - 20th November 2017
  * @author      Rich Burridge
  * @since       JSDT 2.0
  */
@@ -46,19 +46,19 @@ ConnectionEvent extends EventObject implements JSDTDebugFlags {
      *
      *  @serial
      */
-    private String address;
+    private final String address;
 
     /** The port number that caused the connection event.
      *
      *  @serial
      */
-    private int port;
+    private final int port;
 
     /** The type of this Connection event.
      *
      *  @serial
      */
-    private int type;
+    private final int type;
 
 
 /**

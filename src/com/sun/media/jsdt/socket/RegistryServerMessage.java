@@ -26,7 +26,7 @@ import com.sun.media.jsdt.impl.Message;
 /**
  * JSDT Registry server message class.
  *
- * @version     2.3 - 6th November 2017
+ * @version     2.3 - 20th November 2017
  * @author      Rich Burridge
  */
 
@@ -34,7 +34,7 @@ final class
 RegistryServerMessage extends JSDTMessage {
 
     // Handle to server-side registry object.
-    private Registry registry;
+    private final Registry registry;
 
 
 /**

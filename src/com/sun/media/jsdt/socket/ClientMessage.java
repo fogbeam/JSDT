@@ -28,24 +28,24 @@ import com.sun.media.jsdt.event.*;
 /**
  * JSDT client message thread class.
  *
- * @version     2.3 - 27th October 2017
+ * @version     2.3 - 20th November 2017
  * @author      Rich Burridge
  */
 
 final class
 ClientMessage extends JSDTMessage implements Runnable {
 
-    /** The client to be notified. */
-    private Client client;
+    // The client to be notified.
+    private final Client client;
 
-    /** The type of object the expel/invite message refers to. */
-    private char objectType;
+    // The type of object the expel/invite message refers to.
+    private final char objectType;
 
-    /** The name of the object being send a Client message. */
-    private String objectName;
+    // The name of the object being send a Client message.
+    private final String objectName;
 
-    /** The message to process. */
-    private Message message;
+    // The message to process.
+    private final Message message;
 
 
 /**

@@ -40,7 +40,7 @@ import java.util.EventObject;
  * - when a Client has been given a Token.
  * </PRE>
  *
- * @version     2.3 - 27th October 2017
+ * @version     2.3 - 20th November 2017
  * @author      Rich Burridge
  * @since       JSDT 1.0
  */
@@ -78,25 +78,25 @@ public class ClientEvent extends EventObject implements JSDTDebugFlags {
      *
      *  @serial
      */
-    private Session session;
+    private final Session session;
 
     /** The client associated with this Client event.
      *
      *  @serial
      */
-    private Client client;
+    private final Client client;
 
     /** The name of the resource that this event occured on.
      *
      *  @serial
      */
-    protected String resourceName;
+    protected final String resourceName;
 
     /** The type of this Client event.
      *
      *  @serial
      */
-    private int type;
+    private final int type;
 
 
 /**

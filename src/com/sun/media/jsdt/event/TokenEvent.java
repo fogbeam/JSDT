@@ -40,7 +40,7 @@ import java.util.EventObject;
  * - when a Client has been expelled from a Token.
  * </PRE>
  *
- * @version     2.3 - 27th October 2017
+ * @version     2.3 - 20th November 2017
  * @author      Rich Burridge
  * @since       JSDT 1.0
  */
@@ -79,25 +79,25 @@ TokenEvent extends EventObject implements JSDTDebugFlags {
      *
      *  @serial
      */
-    private Session session;
+    private final Session session;
 
     /** The token this event occured on.
      *
      *  @serial
      */
-    protected Token token;
+    protected final Token token;
 
     /** The name of the client causing this event.
      *
      *  @serial
      */
-    private String clientName;
+    private final String clientName;
 
     /** The type of this Token event.
      *
      *  @serial
      */
-    private int type;
+    private final int type;
 
 
 /**

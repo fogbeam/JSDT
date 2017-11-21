@@ -24,7 +24,7 @@ package com.sun.media.jsdt.impl;
 /**
  * JSDT Manager implementation.
  *
- * @version     2.3 - 28th October 2017
+ * @version     2.3 - 20th November 2017
  * @author      Rich Burridge
  */
 
@@ -35,7 +35,7 @@ JSDTManagerImpl extends JSDTObject {
      *
      *  @serial
      */
-    protected String name;
+    protected final String name;
 
 
 /**

@@ -27,7 +27,7 @@ import java.util.*;
 /**
  * JSDT cleanup connections thread class.
  *
- * @version     2.3 - 4th November 2017
+ * @version     2.3 - 20th November 2017
  * @author      Rich Burridge
  * @author      Manfred N. Riem
  */
@@ -36,7 +36,7 @@ final class
 CleanupConnections extends JSDTObject implements Runnable, socketDebugFlags {
 
     // The session server that started this thread.
-    private SessionServer sessionServer;
+    private final SessionServer sessionServer;
 
     // The latest proxy ping times, keyed by id.
     private Hashtable<Integer, Long> pingIds = null;

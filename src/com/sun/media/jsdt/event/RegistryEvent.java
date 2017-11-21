@@ -35,7 +35,7 @@ import java.util.EventObject;
  * - when the connection to the registry fails.
  * </PRE>
  *
- * @version     2.3 - 27th October 2017
+ * @version     2.3 - 20th November 2017
  * @author      Rich Burridge
  * @since       JSDT 2.0
  */
@@ -62,32 +62,32 @@ RegistryEvent extends EventObject implements JSDTDebugFlags {
      *
      *  @serial
      */
-    private String clientName;
+    private final String clientName;
 
     /** The URL string for the resource within the registry that the event
      *  affects.
      *
      *  @serial
      */
-    private URLString resourceName;
+    private final URLString resourceName;
 
     /** The type of this Registry event.
      *
      *  @serial
      */
-    private int type;
+    private final int type;
 
     /** The host address that caused the registry event.
      *
      *  @serial
      */
-    private String address;
+    private final String address;
 
     /** The port number that caused the registry event.
      *
      *  @serial
      */
-    private int port;
+    private final int port;
 
 
 /**

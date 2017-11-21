@@ -41,7 +41,7 @@ import java.util.EventObject;
  * - when a Session has been destroyed.
  * </PRE>
  *
- * @version     2.3 - 27th October 2018
+ * @version     2.3 - 20th November 2018
  * @author      Rich Burridge
  * @since       JSDT 1.0
  */
@@ -87,25 +87,25 @@ SessionEvent extends EventObject implements JSDTDebugFlags {
      *
      *  @serial
      */
-    private Session session;
+    private final Session session;
 
     /** The name of the client causing this event.
      *
      *  @serial
      */
-    private String clientName;
+    private final String clientName;
 
     /** The name of the resource within the session that the event affects.
      *
      *  @serial
      */
-    private String resourceName;
+    private final String resourceName;
 
     /** The type of this Session event.
      *
      *  @serial
      */
-    private int type;
+    private final int type;
 
 
 /**

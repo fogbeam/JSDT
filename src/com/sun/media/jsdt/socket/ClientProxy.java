@@ -29,7 +29,7 @@ import java.net.*;
 /**
  * JSDT Client client-side proxy class.
  *
- * @version     2.3 - 5th November 2017
+ * @version     2.3 - 20th November 2017
  * @author      Rich Burridge
  */
 
@@ -40,7 +40,7 @@ ClientProxy extends JSDTObject implements socketDebugFlags {
     protected String name = null;
 
     // The client-side client associated with this client client.
-    protected Client client;
+    protected final Client client;
 
     // Proxy thread for this client.
     ClientProxyThread proxyThread;

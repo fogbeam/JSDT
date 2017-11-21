@@ -29,7 +29,7 @@ import java.io.*;
 /**
  * JSDT session proxy message class.
  *
- * @version     2.3 - 6th November 2017
+ * @version     2.3 - 20th November 2017
  * @author      Rich Burridge
  */
 
@@ -42,7 +42,7 @@ SessionProxyMessage extends JSDTMessage {
     private static Object proxyLock = null;
 
     // Handle to the SessionProxy object for this message.
-    private SessionProxy sp;
+    private final SessionProxy sp;
 
 
 /**

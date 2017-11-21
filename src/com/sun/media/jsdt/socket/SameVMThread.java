@@ -28,7 +28,7 @@ import java.util.Vector;
 /**
  * JSDT Same VM thread parent class (socket implementation).
  *
- * @version     2.3 - 6th November 2017
+ * @version     2.3 - 20th November 2017
  * @author      Rich Burridge
  */
 

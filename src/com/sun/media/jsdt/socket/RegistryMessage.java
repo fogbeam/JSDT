@@ -28,21 +28,21 @@ import com.sun.media.jsdt.impl.Message;
 /**
  * JSDT connection failed message thread class.
  *
- * @version     2.3 - 27th October 2017
+ * @version     2.3 - 20th November 2017
  * @author      Rich Burridge
  */
 
 final class
 RegistryMessage extends JSDTMessage implements Runnable {
 
-    /** The Registry event type. */
-    private int type;
+    // The Registry event type.
+    private final int type;
 
-    /** The listener to inform of the registry state change. */
-    private RegistryListener listener;
+    // The listener to inform of the registry state change.
+    private final RegistryListener listener;
 
-    /** The registry state change event. */
-    private RegistryEvent event;
+    // The registry state change event.
+    private final RegistryEvent event;
 
 
 /**

@@ -28,7 +28,7 @@ import java.io.*;
 /**
  * JSDT channel proxy message class.
  *
- * @version     2.3 - 4th November 2017
+ * @version     2.3 - 20th November 2017
  * @author      Rich Burridge
  */
 
@@ -36,7 +36,7 @@ final class
 ChannelProxyMessage extends JSDTMessage {
 
     // The client-side session associated with this channel thread.
-    private SessionImpl session;
+    private final SessionImpl session;
 
 
 /**

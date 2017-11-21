@@ -28,7 +28,7 @@ import java.io.*;
 /**
  * JSDT proxy authentication client class.
  *
- * @version     2.3 - 3rd November 2017
+ * @version     2.3 - 20th November 2017
  * @author      Rich Burridge
  */
 
@@ -36,36 +36,36 @@ final class
 AuthenticateClient extends JSDTObject
                    implements Client, Runnable, socketDebugFlags {
 
-    /** The client-side session associated with this authentication client. */
-    private SessionImpl session;
+    // The client-side session associated with this authentication client.
+    private final SessionImpl session;
 
-    /** The kind of managed object, the client is trying to perform the
-     *  priviledged operation on: Session, ByteArray, Channel or Token.
+    /* The kind of managed object, the client is trying to perform the
+     * priviledged operation on: Session, ByteArray, Channel or Token.
      */
     char objectType;
 
-    /** The name of the managed object, the client is trying to perform the
-     *  priviledged operation on.
+    /* The name of the managed object, the client is trying to perform the
+     * priviledged operation on.
      */
     String objectName = null;
 
-    /** The action the client is trying to perform on the managed object. */
+    // The action the client is trying to perform on the managed object.
     private int objectAction;
 
-    /** The id to use in client/server messages. */
+    // The id to use in client/server messages.
     int id = 0;
 
-    /** The name of this client. */
+    // The name of this client.
     private String name;
 
-    /** The client-side proxy associated with the Session for this object. */
-    private SessionProxy sp;
+    // The client-side proxy associated with the Session for this object.
+    private final SessionProxy sp;
 
-    /** The client-side managable object. */
-    private Manageable manageable;
+    // The client-side managable object.
+    private final Manageable manageable;
 
-    /** The client-side manager associated with this manageable object. */
-    private JSDTManager manager;
+    // The client-side manager associated with this manageable object.
+    private final JSDTManager manager;
 
 
 /**

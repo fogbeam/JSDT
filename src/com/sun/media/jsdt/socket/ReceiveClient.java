@@ -28,7 +28,7 @@ import java.util.Vector;
 /**
  * JSDT proxy receive client class.
  *
- * @version     2.3 - 6th November 2017
+ * @version     2.3 - 20th November 2017
  * @author      Rich Burridge
  */
 
@@ -37,7 +37,7 @@ ReceiveClient extends JSDTObject
               implements Client, ChannelConsumer, socketDebugFlags {
 
     // The Client associated with the receive() operation.
-    private Client client;
+    private final Client client;
 
     // Data message queue (from server).
     private Vector<Data> messages = null;

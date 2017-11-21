@@ -28,7 +28,7 @@ import java.io.*;
 /**
  * JSDT Naming proxy message class.
  *
- * @version     2.3 - 6th November 2017
+ * @version     2.3 - 20th November 2017
  * @author      Rich Burridge
  */
 
@@ -36,12 +36,12 @@ final class
 NamingProxyMessage extends JSDTObject implements socketDebugFlags {
 
     /* The lock to only allow one proxy-side message to be processed at
-     *  any time.
+     * any time.
      */
     private static Object proxyLock = null;
 
     // Handle to the NamingProxy object for this message.
-    private NamingProxy np;
+    private final NamingProxy np;
 
 
 /**

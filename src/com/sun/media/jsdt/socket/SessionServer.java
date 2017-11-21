@@ -30,7 +30,7 @@ import java.util.*;
 /**
  * JSDT Session Server-side class.
  *
- * @version     2.3 - 6th November 2017
+ * @version     2.3 - 20th November 2017
  * @author      Rich Burridge
  */
 
@@ -41,7 +41,7 @@ SessionServer extends ManageableServer implements AbstractSessionServer {
     private String url = null;
 
     // The unique session number for this session.
-    private short sessionNo;
+    private final short sessionNo;
 
     // The server-side session associated with this session server.
     protected SessionImpl session;
@@ -62,7 +62,7 @@ SessionServer extends ManageableServer implements AbstractSessionServer {
     private Hashtable<String, Token> tokens = null;
 
     // Object that is cleanup up connections that are no longer pinging.
-    private CleanupConnections cc;
+    private final CleanupConnections cc;
 
     // The thread cleaning up connections that are no longer pinging.
     private Thread cleanupThread = null;

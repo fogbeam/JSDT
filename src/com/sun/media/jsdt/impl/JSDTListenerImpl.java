@@ -26,7 +26,7 @@ import java.util.EventListener;
 /**
  * JSDT Listener implementation.
  *
- * @version     2.3 - 28th October 2017
+ * @version     2.3 - 20th November 2017
  * @author      Rich Burridge
  */
 
@@ -37,13 +37,13 @@ JSDTListenerImpl extends JSDTObject {
      *
      *  @serial
      */
-    private String name;
+    private final String name;
 
     /** The JSDT manageable listener associated with this object.
      *
      *  @serial
      */
-    private EventListener listener;
+    private final EventListener listener;
 
 
 /**

@@ -29,7 +29,7 @@ import java.util.EventListener;
 /**
  * JSDT observer message thread class.
  *
- * @version     2.3 - 5th November 2017
+ * @version     2.3 - 20th November 2017
  * @author      Rich Burridge
  */
 
@@ -37,19 +37,19 @@ final class
 ListenerMessage extends JSDTMessage implements Runnable {
 
     // The event listener to be notified.
-    private EventListener eventListener;
+    private final EventListener eventListener;
 
     // The name of the resource that this event is about.
-    private String resourceName;
+    private final String resourceName;
 
     // The client name to use in the listener event.
-    private String clientName;
+    private final String clientName;
 
     // The type of manageable object to raise the event on.
-    private Manageable manageable;
+    private final Manageable manageable;
 
     // The listener event type.
-    private int type;
+    private final int type;
 
 
 /**

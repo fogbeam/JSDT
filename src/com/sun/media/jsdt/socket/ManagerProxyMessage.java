@@ -27,7 +27,7 @@ import com.sun.media.jsdt.impl.*;
 /**
  * JSDT manager proxy message class.
  *
- * @version     2.3 - 5th November 2017
+ * @version     2.3 - 20th November 2017
  * @author      Rich Burridge
  */
 
@@ -35,10 +35,10 @@ final class
 ManagerProxyMessage extends JSDTMessage {
 
     // The client-side managable object for this message.
-    private Manageable manageable;
+    private final Manageable manageable;
 
     // The client-side manager associated with this message.
-    private JSDTManager manager;
+    private final JSDTManager manager;
 
 
 /**
