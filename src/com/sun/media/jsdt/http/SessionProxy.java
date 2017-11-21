@@ -41,7 +41,7 @@ SessionProxy extends ManageableProxy implements AbstractSessionProxy {
     private final short sessionNo;
 
     // The JSDT URL string associated with this session.
-    String final url;
+    final String url;
 
     // The shared bytes arrays currently created in this session.
     private Hashtable<String, ByteArray> byteArrays = null;

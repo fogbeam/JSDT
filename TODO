@@ -36,10 +36,10 @@
   https://stackoverflow.com/questions/20782164/c-java-datainputstream-readfully-equivalent
 - First player in ppong game "locks up" after a while with debug messages on.
 - Test synth demo on two different machines.
+- Stock demo applet not calculating it's height correctly when initial stock
+  is added.
 - Synth demo doesn't seem to play the second instance of the client application
   when running on the same machine.
-- Get the stock demo working again (need to finish fixing up the server parsing
-  to use the marketwatch web page).
 - Get the sound demo working.
 - Get the phone demo working.
 
