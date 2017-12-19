@@ -43,7 +43,8 @@ StockRecord implements StockDebugFlags {
 
     private boolean isValid;
 
-    private String symbol, time, value, change, percentChange;
+    private final String symbol;
+    private String time, value, change, percentChange;
 
 
     public

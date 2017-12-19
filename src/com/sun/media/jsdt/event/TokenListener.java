@@ -64,7 +64,8 @@ TokenListener extends EventListener, Serializable {
  * @param event the Token event containing more information.
  */
 
-    void
+@SuppressWarnings("EmptyMethod")
+void
     tokenGiven(TokenEvent event);
 
 

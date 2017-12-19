@@ -101,10 +101,10 @@ public final class
 CGIHandler {
 
     // Get CGI parameters that we need.
-    static int ContentLength = Integer.getInteger("CONTENT_LENGTH", 0);
-    private static String QueryString = System.getProperty("QUERY_STRING", "");
-    static String RequestMethod = System.getProperty("REQUEST_METHOD", "");
-    static String ServerName = System.getProperty("SERVER_NAME", "");
+    static final int ContentLength = Integer.getInteger("CONTENT_LENGTH", 0);
+    private static final String QueryString = System.getProperty("QUERY_STRING", "");
+    static final String RequestMethod = System.getProperty("REQUEST_METHOD", "");
+    static final String ServerName = System.getProperty("SERVER_NAME", "");
     static final int ServerPort = Integer.getInteger("SERVER_PORT", 0);
 
     // List of handlers for supported commands.

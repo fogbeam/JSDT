@@ -31,6 +31,7 @@ import com.sun.media.jsdt.event.TokenListener;
  * @since       JSDT 1.0
  */
 
+@SuppressWarnings("UnusedReturnValue")
 public interface
 Token extends Manageable {
 

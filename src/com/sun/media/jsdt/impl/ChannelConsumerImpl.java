@@ -30,6 +30,7 @@ import com.sun.media.jsdt.*;
  * @author      Rich Burridge
  */
 
+@SuppressWarnings("unused")
 public class
 ChannelConsumerImpl extends JSDTObject implements ChannelConsumer {
 

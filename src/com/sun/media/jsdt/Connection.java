@@ -125,6 +125,7 @@ Connection extends JSDTObject {
  * or <CODE>null</CODE> if it did not have one.
  */
 
+    @SuppressWarnings("UnusedReturnValue")
     public static Object
     setProperty(String key, String value) {
         if (Connection_Debug) {

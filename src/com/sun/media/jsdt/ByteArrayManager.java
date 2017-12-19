@@ -29,6 +29,7 @@ package com.sun.media.jsdt;
  * @since       JSDT 1.0
  */
 
+@SuppressWarnings("unused")
 public interface
 ByteArrayManager extends JSDTManager {
 

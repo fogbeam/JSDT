@@ -27,7 +27,7 @@ import java.io.*;
 /**
  * JSDT Socket thread class.
  *
- * @version     2.3 - 6th November 2017
+ * @version     2.3 - 21st November 2017
  * @author      Rich Burridge
  */
 
@@ -191,7 +191,7 @@ SocketThread extends JSDTThread implements Runnable, socketDebugFlags {
                               " was: "        + waitValue);
                     }
 
-                    waitValue = (id   << 32) + (sessionNo << 16) +
+                    waitValue = ((long) id << 32) + (sessionNo << 16) +
                                 (type <<  8) + action;
 
                     if (SocketThread_Debug) {
@@ -288,7 +288,7 @@ SocketThread extends JSDTThread implements Runnable, socketDebugFlags {
                 found = false;
                 synchronized (waitValueLock) {
                     if (waitValue != 0) {
-                        long s = (message.id        << 32) +
+                        long s = ((long) message.id << 32) +
                                  (message.sessionNo << 16) +
                                  (message.type      <<  8) + message.action;
 

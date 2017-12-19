@@ -99,6 +99,15 @@ In particular the section on working with git repositories:
 
   https://www.jetbrains.com/help/idea/using-git-integration.html
 
+JSDT uses one external module (servlet-api-2.5.jar), which you can download
+from:
+
+  http://mirrors.ibiblio.org/pub/mirrors/maven2/javax/servlet/servlet-api/2.5/servlet-api-2.5.jar
+
+this should be placed under the lib directory:
+
+  ~/IdeaProjects/JSDT/lib/servlet-api-2.5.jar
+
 To build JSDT with the IntelliJ IDEA select Build -> Build Project from the
 main window menubar.
 

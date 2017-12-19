@@ -195,7 +195,7 @@ SameVMManagerProxyThread extends SameVMThread {
                 found = false;
                 synchronized (waitValueLock) {
                     if (waitValue != 0) {
-                        long s = (message.id        << 32) +
+                        long s = ((long) message.id << 32) +
                                  (message.sessionNo << 16) +
                                  (message.type      <<  8) + message.action;
 

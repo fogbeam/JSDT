@@ -768,7 +768,7 @@ HttpThread extends JSDTThread implements Runnable, httpDebugFlags {
                               " was: "        + waitValue);
                     }
 
-                    waitValue = (id   << 32) + (sessionNo << 16) +
+                    waitValue = ((long) id << 32) + (sessionNo << 16) +
                                 (type <<  8) + action;
 
                     if (HttpThread_Debug) {

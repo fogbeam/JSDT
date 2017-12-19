@@ -32,6 +32,7 @@ import java.io.Serializable;
  * @since       JSDT 1.0
  */
 
+@SuppressWarnings("EmptyMethod")
 public interface
 ChannelListener extends EventListener, Serializable {
 
