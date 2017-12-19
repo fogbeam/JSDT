@@ -36,7 +36,7 @@ import java.util.StringTokenizer;
  * to each client joined to the channel. These in turn, play the sound on
  * the workstation speaker.
  *
- * @version     2.3 - 20th November 2017
+ * @version     2.3 - 19th December 2017
  * @author      Rich Burridge
  */
 
@@ -202,7 +202,7 @@ SoundUser extends Applet
     private void
     initialize() {
         Panel button1, button2, button3, button4, buttonGrid, panel;
-        URL docBase = null;
+        URL docBase;
 
         if (SoundUser_Debug) {
             System.err.println("SoundUser: initialize.");

@@ -31,7 +31,7 @@ import java.util.*;
 /**
  * JSDT Check connections thread class.
  *
- * @version     2.3 - 20th November 2017
+ * @version     2.3 - 19th December 2017
  * @author      Rich Burridge
  * @author      Manfred N. Riem
  */
@@ -43,13 +43,11 @@ ConnectionThread extends JSDTObject implements Runnable, socketDebugFlags {
     private final Hashtable sessions;
 
     // The listeners (and event masks), observing connection failures.
-    private Hashtable<ConnectionListener, Integer> listeners = null;
+    private final Hashtable<ConnectionListener, Integer>
+                      listeners = new Hashtable<>();
 
     // The thread running this ConnectionThread object.
     private final Thread thread;
-
-    // Set true if we haven't received a ping reply and have timed out.
-    private boolean maybeFailure = false;
 
     // The time of the last successful reply to a ping message.
     private long lastPingTime = System.currentTimeMillis();
@@ -73,7 +71,6 @@ ConnectionThread extends JSDTObject implements Runnable, socketDebugFlags {
         }
 
         this.sessions = sessions;
-        listeners     = new Hashtable<>();
         thread        = Util.startThread(this, "ConnectionThread", true);
 
     }
@@ -197,19 +194,16 @@ ConnectionThread extends JSDTObject implements Runnable, socketDebugFlags {
                     in.readInt();
                     t.finishReply();
                     lastPingTime = System.currentTimeMillis();
-                    maybeFailure = false;
                 } catch (IOException ioe) {
                     t.finishReply();
                     informListeners(host, port,
                                     ConnectionEvent.CONNECTION_FAILED);
                 } catch (TimedOutException toe) {
                     t.finishReply();
-                    maybeFailure = true;
                     currentTime = System.currentTimeMillis();
                     if (currentTime - lastPingTime > period) {
                         informListeners(host, port,
                                         ConnectionEvent.CONNECTION_FAILED);
-                        maybeFailure = false;
                         lastPingTime = System.currentTimeMillis();
                     }
                 }

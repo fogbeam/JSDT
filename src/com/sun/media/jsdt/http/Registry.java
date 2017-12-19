@@ -42,7 +42,7 @@ import java.util.*;
  *
  * Based on the RMI Registry class.
  *
- * @version     2.3 - 16th November 2017
+ * @version     2.3 - 19th December 2017
  * @author      Rich Burridge
  */
 
@@ -749,7 +749,7 @@ Registry extends JSDTObject
     void
     challenge(Message message) {
         RegistryClient client;
-        Integer        idValue = new Integer(message.id);
+        Integer        idValue = message.id;
 
         if (Registry_Debug) {
             debug("Registry: challenge:" +
@@ -757,7 +757,7 @@ Registry extends JSDTObject
         }
 
         synchronized (idClients) {
-            client = (RegistryClient) idClients.get(idValue);
+            client = idClients.get(idValue);
             idClients.remove(idValue);
         }
 

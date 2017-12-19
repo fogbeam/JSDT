@@ -32,7 +32,7 @@ package examples.sound;
  * Code to implement this is based upon the audio jukebox work of Befhar
  * Razavi.
  *
- * @version     2.3 - 20th November 2017
+ * @version     2.3 - 19th December 2017
  * @author      Rich Burridge
  */
 
@@ -119,8 +119,8 @@ CommandConsumer implements ChannelConsumer, SoundDebugFlags {
                                 " audio file name: " + audioFileName);
         }
 
-        sampleRate = (Integer) sampleRates.get(audioFileName);
-        return((sampleRate != null) ? sampleRate.intValue() : 0);
+        sampleRate = sampleRates.get(audioFileName);
+        return((sampleRate != null) ? sampleRate : 0);
     }
 
 
@@ -133,8 +133,8 @@ CommandConsumer implements ChannelConsumer, SoundDebugFlags {
                                 " audio file name: " + audioFileName);
         }
 
-        noChannels = (Integer) channels.get(audioFileName);
-        return((noChannels != null) ? noChannels.intValue() : 0);
+        noChannels = channels.get(audioFileName);
+        return((noChannels != null) ? noChannels : 0);
     }
 
 
@@ -147,8 +147,8 @@ CommandConsumer implements ChannelConsumer, SoundDebugFlags {
                                 " audio file name: " + audioFileName);
         }
 
-        encoding = (Integer) encodings.get(audioFileName);
-        return((encoding != null) ? encoding.intValue() : 0);
+        encoding = encodings.get(audioFileName);
+        return((encoding != null) ? encoding : 0);
     }
 
 

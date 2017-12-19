@@ -33,7 +33,7 @@ import java.util.*;
  *
  * Based on the RMI Naming class.
  *
- * @version     2.3 - 26th October 2017
+ * @version     2.3 - 19th December 2017
  * @author      Rich Burridge
  * @since       JSDT 1.0
  */
@@ -546,7 +546,7 @@ Naming extends JSDTObject {
             connections = new Hashtable<>();
         }
 
-        if ((naming = (Naming) connections.get(host)) == null) {
+        if ((naming = connections.get(host)) == null) {
             int port = Util.getIntProperty("registryPort", registryPort);
             naming = new Naming(host, port, connectType);
             synchronized (connections) {

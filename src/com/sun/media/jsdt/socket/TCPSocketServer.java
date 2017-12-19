@@ -30,7 +30,7 @@ import java.util.*;
 /**
  * JSDT TCP Socket Server class.
  *
- * @version     2.3 - 6th November 2017
+ * @version     2.3 - 19th December 2017
  * @author      Rich Burridge
  */
 
@@ -109,9 +109,7 @@ TCPSocketServer extends JSDTObject implements Runnable, socketDebugFlags {
                   " session no: " + sessionNo);
         }
 
-        if (sessions.get(key) == null) {
-            sessions.put(key, session);
-        }
+        sessions.putIfAbsent(key, session);
     }
 
 

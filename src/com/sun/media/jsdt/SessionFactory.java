@@ -32,7 +32,7 @@ import java.util.Vector;
  * The session would then be published by the naming service, and tied
  * to a specific URL.
  *
- * @version     2.3 - 16th November 2017
+ * @version     2.3 - 19th December 2017
  * @author      Rich Burridge
  * @since       JSDT 1.0
  */
@@ -117,8 +117,7 @@ SessionFactory extends JSDTObject {
  *  client-side handle to the Session.
  */
                 session = (SessionImpl) Naming.lookup(urlString);
-            } catch (AlreadyBoundException abe) {
-            } catch (NotBoundException nbex) {
+            } catch (AlreadyBoundException | NotBoundException e) {
             }
         }
 
@@ -126,9 +125,8 @@ SessionFactory extends JSDTObject {
             if (autoJoin) {
                 session.join(client);
             }
-        } catch (NoSuchByteArrayException nsbe) {
-        } catch (NoSuchChannelException nsce) {
-        } catch (NoSuchTokenException nste) {
+        } catch (NoSuchByteArrayException | NoSuchChannelException |
+                 NoSuchTokenException e) {
         }
 
         return(session);
@@ -221,8 +219,7 @@ SessionFactory extends JSDTObject {
  *  client-side handle to the Session.
  */
                 session = (SessionImpl) Naming.lookup(urlString);
-            } catch (AlreadyBoundException abe) {
-            } catch (NotBoundException nbex) {
+            } catch (AlreadyBoundException | NotBoundException e) {
             }
         }
 
@@ -233,9 +230,8 @@ SessionFactory extends JSDTObject {
                 } else {
                     throw new PermissionDeniedException();
                 }
-            } catch (NoSuchByteArrayException nsbe) {
-            } catch (NoSuchChannelException nsce) {
-            } catch (NoSuchTokenException nste) {
+            } catch (NoSuchByteArrayException | NoSuchChannelException |
+                     NoSuchTokenException e) {
             }
         }
 
@@ -247,9 +243,8 @@ SessionFactory extends JSDTObject {
             if (autoJoin) {
                 session.join(client);
             }
-        } catch (NoSuchByteArrayException nsbe) {
-        } catch (NoSuchChannelException nsce) {
-        } catch (NoSuchTokenException nste) {
+        } catch (NoSuchByteArrayException | NoSuchChannelException |
+                 NoSuchTokenException e) {
         }
 
         return(session);
@@ -305,11 +300,9 @@ SessionFactory extends JSDTObject {
                                                      urlString, false);
 
                 session.destroy(client);
-            } catch (NoSuchByteArrayException nbe) {
-            } catch (NoSuchChannelException nce) {
-            } catch (NoSuchTokenException nte) {
-            } catch (PortInUseException piue) {
-            } catch (NameInUseException niue) {
+            } catch (NoSuchByteArrayException | NoSuchChannelException |
+                     NoSuchTokenException | PortInUseException |
+                     NameInUseException e) {
             }
         } else {
             throw new NotBoundException();
@@ -419,9 +412,8 @@ SessionFactory extends JSDTObject {
 
         try {
             managed = session.isManaged();
-        } catch (NoSuchByteArrayException nsbe) {
-        } catch (NoSuchChannelException nsce) {
-        } catch (NoSuchTokenException nste) {
+        } catch (NoSuchByteArrayException | NoSuchChannelException |
+                 NoSuchTokenException e) {
         }
 
         return(managed);

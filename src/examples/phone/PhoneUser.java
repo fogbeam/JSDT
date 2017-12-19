@@ -31,7 +31,7 @@ import javax.sound.sampled.*;
 /**
  * Simple Internet Phone.
  *
- * @version     2.3 - 20th November 2017
+ * @version     2.3 - 19th December 2017
  * @author      Rich Burridge
  * @author      Pete Boysen
  */
@@ -45,9 +45,7 @@ PhoneUser extends Applet
     private TargetDataLine inputChannel;
     private SourceDataLine outputChannel;
     private AudioFormat    inputFormat      = null;
-    private final int      inputBufferSize  = 4096;
     private AudioFormat    outputFormat     = null;
-    private final int      outputBufferSize = inputBufferSize * 4;
     private final byte[]   data             = new byte[4096];
 
     private Label     setNameLabel;
@@ -215,7 +213,9 @@ PhoneUser extends Applet
 
     private void
     initPhone() {
-        Thread inputThread;
+        final int inputBufferSize  = 4096;
+        final int outputBufferSize = inputBufferSize * 4;
+        Thread    inputThread;
 
         if (PhoneUser_Debug) {
             System.err.println("PhoneUser: initPhone.");

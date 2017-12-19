@@ -33,7 +33,7 @@ import javax.servlet.*;
  *
  * (Based on the RMI servlet handler class in the rmiservlethandler package).
  *
- * @version     2.3 - 21st November 2017
+ * @version     2.3 - 19th December 2017
  *
  * When a JSDT client initiates contact with a remote server, it attempts to
  * establish a connection using each of the following protocols in turn,
@@ -207,7 +207,7 @@ ServletHandler extends HttpServlet {
  * @param res  http Servlet response
  *
  * @exception  ServletException and IOException when invoking
- *             methods of <code>req<code> or <code>res<code>.
+ *             methods of <code>req</code> or <code>res</code>.
  */
 
     public void

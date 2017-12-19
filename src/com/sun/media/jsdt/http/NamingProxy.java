@@ -35,7 +35,7 @@ import java.util.*;
  *
  * Based on the RMI Naming class.
  *
- * @version     2.3 - 20th December 2017
+ * @version     2.3 - 19th December 2017
  * @author      Rich Burridge
  */
 
@@ -53,10 +53,10 @@ NamingProxy extends JSDTObject
     private Hashtable connections = null;
 
     // The sessions currently bound.
-    private Hashtable<String, Session> sessions = null;
+    private final Hashtable<String, Session> sessions = new Hashtable<>();
 
     // The clients currently bound.
-    private Hashtable<String, Client> clients = null;
+    private final Hashtable<String, Client> clients = new Hashtable<>();
 
     // The client-side thread for contacting the registry.
     HttpThread proxyThread = null;
@@ -71,16 +71,13 @@ NamingProxy extends JSDTObject
     private Thread pThread = null;
 
     // The listeners (and event masks), observing changes for the Registry.
-    Hashtable<RegistryListener, Integer> listeners = null;
+    final Hashtable<RegistryListener, Integer> listeners = new Hashtable<>();
 
     // The client-side thread for detecting connection failure.
     private ConnectionThread connectionThread = null;
 
     // The thread running this NamingProxy object.
     private Thread thread;
-
-    // Set true if we haven't received a ping reply and have timed out.
-    private boolean maybeFailure = false;
 
     // The time of the last successful reply to a ping message.
     private long lastPingTime = System.currentTimeMillis();
@@ -111,10 +108,6 @@ NamingProxy extends JSDTObject
         this.connections = connections;
         this.host        = host;
         this.port        = port;
-
-        sessions  = new Hashtable<>();
-        clients   = new Hashtable<>();
-        listeners = new Hashtable<>();
 
         try {
             proxyThread = new NamingProxyThread(this, host, port);
@@ -1002,7 +995,6 @@ NamingProxy extends JSDTObject
             retval = in.readInt();
             proxyThread.finishReply();
             lastPingTime = System.currentTimeMillis();
-            maybeFailure = false;
 
             if (retval != 0) {
                 switch (retval) {
@@ -1021,11 +1013,9 @@ NamingProxy extends JSDTObject
             throw new ConnectionException();
         } catch (TimedOutException toe) {
             proxyThread.finishReply();
-            maybeFailure = true;
             currentTime = System.currentTimeMillis();
             if (currentTime - lastPingTime > period) {
                 informListeners(null, null, ConnectionEvent.CONNECTION_FAILED);
-                maybeFailure = false;
                 lastPingTime = System.currentTimeMillis();
             }
         }
